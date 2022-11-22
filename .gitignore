@@ -1,0 +1,60 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+aec_frontend/node_modules
+aec_frontend/.pnp
+aec_frontend/.pnp.js
+
+# testing
+aec_frontend/coverage
+
+# production
+aec_frontend/build
+
+# misc
+aec_frontend/.DS_Store
+aec_frontend/.env.local
+aec_frontend/.env.development.local
+aec_frontend/.env.test.local
+aec_frontend/.env.production.local
+
+aec_frontend/npm-debug.log*
+aec_frontend/yarn-debug.log*
+aec_frontend/yarn-error.log*
+
+# Django #
+aec_backend/*.log
+aec_backend/*.pot
+aec_backend/*.pyc
+aec_backend/__pycache__
+aec_backend/db.sqlite3
+
+
+# Backup files # 
+aec_backend/*.bak 
+
+# If you are using PyCharm # 
+# User-specific stuff
+aec_backend/.idea/**/workspace.xml
+aec_backend/.idea/**/tasks.xml
+aec_backend/.idea/**/usage.statistics.xml
+aec_backend/.idea/**/dictionaries
+aec_backend/.idea/**/shelf
+
+# AWS User-specific
+aec_backend/.idea/**/aws.xml
+
+# Generated files
+aec_backend/.idea/**/contentModel.xml
+
+# Sensitive or high-churn files
+aec_backend/.idea/**/dataSources/
+aec_backend/.idea/**/dataSources.ids
+aec_backend/.idea/**/dataSources.local.xml
+aec_backend/.idea/**/sqlDataSources.xml
+aec_backend/.idea/**/dynamic.xml
+aec_backend/.idea/**/uiDesigner.xml
+aec_backend/.idea/**/dbnavigator.xml
+
+aec_venv
+
