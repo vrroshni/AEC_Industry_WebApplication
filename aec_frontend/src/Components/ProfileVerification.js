@@ -1,5 +1,5 @@
 import React from 'react'
-import '../ComponentsCSS/pdfpreview.css'
+import '../componentsCSS/pdfpreview.css'
 
 function ProfileVerification() {
     return (

@@ -1,10 +1,9 @@
-import './App.css';
-import Feed from './Components/Feed';
-import Login from './Components/Login';
-import Navbar from './Components/Navbar';
-import ProfileVerification from './Components/ProfileVerification';
-import Register from './Components/Register';
-import UserProfile from './Components/UserProfile';
+import Feed from './components/Feed';
+import Login from './components/Login';
+import Navbar from './components/Navbar';
+import ProfileVerification from './components/ProfileVerification';
+import Register from './components/Register';
+import UserProfile from './components/UserProfile';
 
 
 function App() {
@@ -14,7 +13,6 @@ function App() {
       {/* <Login/> */}
        {/* <Register/> */}
       <ProfileVerification/>
-
       {/* <UserProfile /> */}
 {/* <Feed/>  */}
     </div>
