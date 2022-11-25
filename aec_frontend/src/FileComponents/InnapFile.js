@@ -14,10 +14,8 @@ function InnapFile() {
                 {/* <!-- Required vendors --> */}
                 <script src="./innap/vendor/global/global.min.js"></script>
                 <script src="./innap/vendor/chart.js/Chart.bundle.min.js"></script>
-                <script src="./innap/vendor/jquery-nice-select/js/jquery.nice-select.min.js"></script>
 
                 {/* <!-- Chart piety plugin files --> */}
-                <script src="./innap/vendor/peity/jquery.peity.min.js"></script>
 
                 {/* <!-- Apex Chart --> */}
                 <script src="./innap/vendor/apexchart/apexchart.js"></script>

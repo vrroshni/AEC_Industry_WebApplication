@@ -12,7 +12,9 @@ function Login() {
                                     <div className="col-xl-12">
                                         <div className="auth-form">
                                             <div className="text-center mb-3">
-                                                <a href="index.html"><img src="images/logo-full.png" alt="" /></a>
+                                                <a >
+                                                    {/* <img src="images/logo-full.png" alt="" /> */}
+                                                    </a>
                                             </div>
                                             <h4 className="text-center mb-4">Sign in your account</h4>
                                             <form action="index.html">
@@ -34,7 +36,7 @@ function Login() {
                                                 </div>
                                             </form>
                                             <div className="new-account mt-3">
-                                                <p>Don't have an account? <a className="text-primary" href="./page-register.html">Sign up</a></p>
+                                                <p>Don't have an account? <a className="text-primary" >Sign up</a></p>
                                             </div>
                                         </div>
                                     </div>

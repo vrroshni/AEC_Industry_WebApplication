@@ -1,0 +1,177 @@
+/* Attachments */
+.attachments-container {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	width: calc(100% + 20px);
+	margin-bottom: -30px;
+}
+
+.attachment-box {
+	display: flex;
+	margin: 0 20px 20px 0;
+	background-color: #f4f4f4;
+	border-radius: 4px 0px 4px 4px;
+	font-weight: 600;
+	padding: 15px 20px;
+	padding-bottom: 45px;
+	padding-right: 25px;
+	line-height: 24px;
+	flex-direction: column;
+	color: #666;
+	position: relative;
+	transition: 0.3s;
+	flex: 0 1 calc(50% - 21px);
+	cursor: default;
+	position: relative;
+}
+
+.single-page-section .attachment-box { flex: 0 1 calc(33% - 20px); }
+.single-page-section .attachments-container { margin-bottom: -20px; }
+
+a.attachment-box { cursor: pointer; }
+
+.attachment-box:before {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	border-width: 0 20px 20px 0;
+	border-style: solid;
+	border-color: rgba(0,0,0,0.15) #fff;
+	transition: 0.3s;
+	border-radius: 0 0 0 4px;
+}
+
+a.attachment-box:hover {
+	background-color: #66676b;
+	color: #fff;
+}
+
+a.attachment-box:hover:before { border-color: rgba(0,0,0,0.25) #fff; }
+
+.attachment-box span {
+	font-size: 14px;
+	line-height: 20px;
+	display: inline-block;
+	flex: auto;
+}
+
+.attachment-box i {
+	display: block;
+	font-style: normal;
+	font-size: 14px;
+	color: #999;
+	font-weight: 500;
+	margin-top: 10px;
+	position: absolute;
+	bottom: 10px;
+	transition: 0.3s;
+}
+
+a.attachment-box:hover i {
+	color: rgba(255,255,255,0.7);
+}
+
+/* Remove Attachment Button */
+.attachment-box .remove-attachment {
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	color: #fff;
+	background-color: #dc3139;
+	box-shadow: 0 3px 8px rgba(234,65,81,0.15);
+	height: 28px;
+	width: 28px;
+	line-height: 28px;
+	border-radius: 3px;
+	font-weight: 500;
+	font-size: 14px;
+	transition: 0.3s;
+	opacity: 0;
+	transform: translateY(3px);
+}
+	.margin-top-0   { margin-top: 0px  !important; }
+	.margin-bottom-0   { margin-bottom: 0px  !important; }
+
+
+/* Ripple Effect
+------------------------------------- */
+.ripple-effect-dark,
+.ripple-effect {
+	overflow: hidden;
+	position: relative;
+	z-index: 1;
+}
+
+.ripple-effect span.ripple-overlay,
+.ripple-effect-dark span.ripple-overlay {
+	animation: ripple 0.9s;
+	border-radius: 100%;
+	background: #fff;
+	height: 12px;
+	position: absolute;
+	width: 12px;
+	line-height: 12px;
+	opacity: 0.1;
+	pointer-events: none;
+}
+
+.ripple-effect-dark span.ripple-overlay { background: #000; opacity: 0.07; }
+
+@keyframes ripple {
+  0% {
+	 -webkit-transform: scale(4);
+				transform: scale(4);
+  }
+  100% {
+	 opacity: 0;
+	 -webkit-transform: scale(40);
+				transform: scale(40);
+  }
+}
+
+.attachment-box .remove-attachment:before {
+	content: "\e9e4";
+	font-family: "Feather-Icons";
+}
+
+.attachment-box:hover .remove-attachment {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+
+.clearfix:before,
+.clearfix:after,
+.dl-horizontal dd:before,
+.dl-horizontal dd:after,
+.container:before,
+.container:after,
+.container-fluid:before,
+.container-fluid:after,
+.row:before,
+.row:after {
+  content: " ";
+  display: flex;
+}
+.clearfix:after,
+.dl-horizontal dd:after,
+.container:after,
+.container-fluid:after,
+.row:after {
+  clear: both;
+}
+
+.clearfix:before {
+   
+      content: " ";
+      display: flex;
+    
+  }
+.clearfix:after {
+  
+      content: " ";
+      display: flex;
+    
+  }
