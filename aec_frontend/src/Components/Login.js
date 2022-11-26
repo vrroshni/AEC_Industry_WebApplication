@@ -1,6 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
+import {useDispatch,useSelector} from 'react-redux'
+import {login} from '../actions/userActions'
 
 function Login() {
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
+    const dispatch=useDispatch()
+    const userLogin=useSelector(state=>state.userLogin)
+    const {loading,userInfo,error}=userLogin
+    const submitHandler=(e)=>{
+        e.preventDefault()
+        dispatch(login(username,password))
+    }
     return (
         <div className="vh-100" style={{ backgroundImage: "url(AECFiles/images/11.jpg)" }}>
             <div className="authincation h-100">
@@ -17,14 +28,15 @@ function Login() {
                                                     </a>
                                             </div>
                                             <h4 className="text-center mb-4">Sign in your account</h4>
-                                            <form action="index.html">
+                                            <form onSubmit={submitHandler} >
                                                 <div className="mb-3">
-                                                    <label className="mb-1"><strong>Email</strong></label>
-                                                    <input type="email" className="form-control" placeholder="hello@example.com" />
+                                                    <label className="mb-1"><strong>Username</strong></label>
+                                                    <input value={username} type="text" className="form-control" placeholder="username" onChange={(e)=>{setUsername(e.target.value)
+                                                    console.log(e.target.value)}}  />
                                                 </div>
                                                 <div className="mb-3">
                                                     <label className="mb-1"><strong>Password</strong></label>
-                                                    <input type="password" className="form-control" placeholder='•••••• ' />
+                                                    <input value={password} type="password" className="form-control" onChange={(e)=>setPassword(e.target.value)} />
                                                 </div>
                                                 <div className="row d-flex justify-content-between mt-4 mb-2">
                                                     <div className="mb-3">

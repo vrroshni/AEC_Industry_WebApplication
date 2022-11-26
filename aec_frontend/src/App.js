@@ -10,9 +10,9 @@ function App() {
   return (
     <div className="App">
       {/* <Navbar/> */}
-      {/* <Login/> */}
+      <Login/>
        {/* <Register/> */}
-      <ProfileVerification/>
+      {/* <ProfileVerification/> */}
       {/* <UserProfile /> */}
 {/* <Feed/>  */}
     </div>

@@ -44,6 +44,7 @@ class MyAccountManager(BaseUserManager):
         user.is_active  = True
         user.is_staff   = True
         user.is_superadmin  = True
+        user.is_client=False
         user.save(using=self._db)
         return user
 
@@ -60,10 +61,10 @@ class Account(AbstractBaseUser):
             )
     first_name      = models.CharField(max_length=50)
     last_name       = models.CharField(max_length=50)
-    full_name       =models.CharField(max_length=50)
+    full_name       =models.CharField(max_length=50,null=True)
     username        = models.CharField(max_length=50, unique=True)
     email           = models.EmailField(max_length=100, unique=True)
-    phone_number    = models.CharField(max_length=50)
+    phone_number    = models.CharField(max_length=50,null=True)
     referral_code   = models.CharField(max_length=50, null=True, blank=True)
     ref_active      = models.BooleanField(default=False ,null = True)
     code_reffered   = models.CharField(max_length=50, null=True, blank=True)
@@ -118,8 +119,12 @@ class ProfileVerification(models.Model):
     experience=models.IntegerField(default=0)
     is_verified=models.BooleanField(default=False)
     is_premium=models.BooleanField(default=False)
-    cerificate=models.FileField(upload_to='')
-    cv=models.FileField(upload_to='')
-    id_proof=models.FileField(upload_to='')
+    paid_at=models.DateField(null=True)
+    cerificate=models.FileField(upload_to='certificates')
+    cv=models.FileField(upload_to='cv')
+    id_proof=models.FileField(upload_to='idproofs')
+
+    def __str__(self):
+        return self.user.username
 
 
