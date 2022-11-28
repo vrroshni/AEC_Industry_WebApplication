@@ -13,7 +13,7 @@ function UserProfile() {
                                 </div>
                                 <div className="profile-info">
 									<div className="profile-photo">
-										<img src="./innap/images/profile/profile.png" className="img-fluid rounded-circle" alt=""/>
+										<img src="/innap/images/profile/profile.png" className="img-fluid rounded-circle" alt=""/>
 									</div>
 									<div className="profile-details">
 										<div className="profile-name px-3 pt-2">

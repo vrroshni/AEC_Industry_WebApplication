@@ -29,8 +29,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     #     token['user_id'] = user.id
     #     # ...
     #     return token
-    print('im here...')
-
     def validate(self,attrs):
         print(attrs,'atttrrrr')
         data=super().validate(attrs)
@@ -66,19 +64,49 @@ def registerUser(request):
         if Account.objects.filter(username=data['username']).exists():
             message = {'detail': 'User with this username already exists'}
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        if Account.objects.filter(email=data['email']).exists():
+            message = {'detail': 'User with this email already exists'}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
         Account.objects.create_user(
-            first_name=data['first_name'],
-            last_name=data['last_name'],
+            first_name=data['firstname'],
+            last_name=data['lastname'],
             username=data['username'],
-            phone_number=data['phone_number'],
+            phone_number=data['phonenumber'],
             email=data['email'],
             password=data['password']
         )
         return Response(status=status.HTTP_201_CREATED)
     except:
-        message = {'detail': 'User with this email already exists'}
+        message ={'detail':"error"} 
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+        
+
+@api_view(['POST'])
+def profileVerification(request):
+    data = request.data
+    print(data)
+    try:
+        # if ProfileVerification.objects.filter(username=data['username']).exists():
+        #     message = {'detail': 'User with this username already exists'}
+        #     return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        # if Account.objects.filter(email=data['email']).exists():
+        #     message = {'detail': 'User with this email already exists'}
+        #     return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        ProfileVerification.objects.create_user(
+            first_name=data['firstname'],
+            last_name=data['lastname'],
+            username=data['username'],
+            phone_number=data['phonenumber'],
+            email=data['email'],
+            password=data['password']
+        )
+        return Response(status=status.HTTP_201_CREATED)
+    except:
+        message ={'detail':"error"} 
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -88,4 +116,25 @@ def registerUser(request):
 def getUserProfile(request):
     user=request.user
     serializer=ProfileSerializer(user,many=False)
+    return Response(serializer.data)
+
+
+
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def updateUserProfile(request):
+
+    user=request.user
+    print(user,'i am ......................')
+    serializer=ProfileSerializerWithToken(user,many=False)
+    data=request.data
+    user.first_name=data['first_name']
+    user.last_name=data['last_name']
+    user.username=data['username']
+    user.email=data['email']
+    user.phone_number=data['phone_number']
+    if data['password']!='':
+        user.password=make_password(data['password'])
+    user.save()
     return Response(serializer.data)

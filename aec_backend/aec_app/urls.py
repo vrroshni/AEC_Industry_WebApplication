@@ -11,8 +11,10 @@ urlpatterns = [
     path('tokenrefresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     #UserProfile
-    path('profile/', getUserProfile, name='profile'),
     path('register/', registerUser, name='register'),
+    path('profile/', getUserProfile, name='profile'),
+    path('profileverification/', profileVerification, name='profileverification'),
+    path('profile/update/', updateUserProfile, name='updateprofile'),
 
 
 

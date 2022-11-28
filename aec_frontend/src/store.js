@@ -2,44 +2,35 @@ import { combineReducers, applyMiddleware } from 'redux'
 import { configureStore } from '@reduxjs/toolkit'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
-import { userLoginReducer } from './reducers/userReducer'
+import { userLoginReducer, userRegisterReducer } from './reducers/userReducer'
+import storage from 'redux-persist/lib/storage'
+import { persistReducer } from 'redux-persist'
+// import logger from 'redux-logger'
 
-
+const persistConfig={
+    key:'root',
+    version:1,
+    storage
+}
 
 const reducers = combineReducers({
 
     userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
 
 })
+
+const persistedReducer=persistReducer(persistConfig,reducers)
 const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null
 
 
 
 const initialState = {
-    userLoginInfo:{userInfo:userInfoFromStorage}
-
+    userLoginInfo: { userInfo: userInfoFromStorage }
 }
 
 const middleware = [thunk]
 
-const store = configureStore({reducer:reducers}, initialState, composeWithDevTools(applyMiddleware(...middleware)))
+const store = configureStore({ reducer: persistedReducer }, initialState, composeWithDevTools(applyMiddleware(...middleware)))
 
 export default store
-
-
-
-
-// ...
-// let reducers = combineReducers({
-//      book: booking_reducer,
-//      admin: admin_reducer,
-// })
-
-// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-// const store = configureStore(
-//         {reducer:reducers},
-//         composeEnhancers(
-//             applyMiddleware(thunkMiddleware)
-//         )
-//     );
-// ...
