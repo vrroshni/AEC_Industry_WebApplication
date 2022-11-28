@@ -3,7 +3,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	flex-direction: row;
-	width: calc(100% + 20px);
+	width: 600px		;
 	margin-bottom: -30px;
 }
 

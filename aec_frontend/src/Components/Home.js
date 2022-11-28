@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import AllContext from '../context/AllContext'
+
 
 function Home() {
   return (

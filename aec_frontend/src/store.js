@@ -2,7 +2,7 @@ import { combineReducers, applyMiddleware } from 'redux'
 import { configureStore } from '@reduxjs/toolkit'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
-import { userLoginReducer, userRegisterReducer } from './reducers/userReducer'
+import { userLoginReducer, userRegisterReducer,profileverificationReducer } from './reducers/userReducer'
 import storage from 'redux-persist/lib/storage'
 import { persistReducer } from 'redux-persist'
 // import logger from 'redux-logger'
@@ -17,6 +17,7 @@ const reducers = combineReducers({
 
     userLogin: userLoginReducer,
     userRegister: userRegisterReducer,
+    userProfileVerification:profileverificationReducer
 
 })
 

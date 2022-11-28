@@ -14,12 +14,11 @@ import AllContext from './context/AllContext';
 function App() {
   return (
     <div className="App">
-      {/* <AllContext> */}
         <Routes>
           <Route path='/' element={<Common />}>
             <Route index element={<Home />} />
             <Route path='feed/' element={<Feed />} />
-            <Route path='profile/verification/' element={<ProfileVerification />} />
+            <Route path='profile_verification/' element={<ProfileVerification />} />
             <Route path='profile' element={<UserProfile />} />
             <Route  path='*' element={<Error/>}/>
           </Route>
@@ -34,7 +33,6 @@ function App() {
             <Route path='allposts' element={<UserProfile />} />
           </Route>
         </Routes>
-      {/* </AllContext> */}
     </div>
   );
 }

@@ -88,7 +88,7 @@ function Login() {
                                                 </div>
                                             </form>
                                             <div className="new-account mt-3">
-                                                <p>Don't have an account? <a className="text-primary" >Sign up</a></p>
+                                                <p>Don't have an account? <a className="text-primary" onClick={()=>navigate('/register')} >Sign up</a></p>
                                             </div>
                                         </div>
                                     </div>

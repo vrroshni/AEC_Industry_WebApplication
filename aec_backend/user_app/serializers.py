@@ -38,7 +38,7 @@ class ProfileSerializerWithToken(ProfileSerializer):
     token=serializers.SerializerMethodField(read_only=True)
     class Meta:
         model=Account
-        fields=['id','username','full_name','email','phone_number','followers','following','connections','is_client','is_superadmin','token']
+        fields=['id','username','full_name','email','phone_number','followers','following','connections','is_client','is_superadmin','token','pro_pic','cover_pic']
     def get_token(self,obj):
         token=RefreshToken.for_user(obj)
         return str(token.access_token)

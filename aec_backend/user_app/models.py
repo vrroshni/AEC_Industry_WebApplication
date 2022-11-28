@@ -65,12 +65,15 @@ class Account(AbstractBaseUser):
     username        = models.CharField(max_length=50, unique=True)
     email           = models.EmailField(max_length=100, unique=True)
     phone_number    = models.CharField(max_length=50,null=True)
+    pro_pic         =models.FileField(upload_to='pro_pic',blank=True,null=True,default='/1.png')
+    cover_pic       =models.FileField(upload_to='cover_pic',blank=True,null=True,default='/cover.jpg')
     referral_code   = models.CharField(max_length=50, null=True, blank=True)
     ref_active      = models.BooleanField(default=False ,null = True)
     code_reffered   = models.CharField(max_length=50, null=True, blank=True)
     followers       =models.IntegerField(default=0)
     following       =models.IntegerField(default=0)
     connections     =models.IntegerField(default=0)
+
  
 
     #Required fields
@@ -82,9 +85,6 @@ class Account(AbstractBaseUser):
     is_active       = models.BooleanField(default=True)
     is_superadmin   = models.BooleanField(default=False) 
     is_client       =models.BooleanField(default=True)
-
-
-   
 
 
     # -------------------------------------------------------------------------------------------------------------------- #
@@ -108,23 +108,28 @@ class Account(AbstractBaseUser):
         return True
 
 
-
-
-
-
 class ProfileVerification(models.Model):
     user=models.ForeignKey(Account,on_delete=models.CASCADE,null=True)
     date=models.DateField(auto_now_add=True,null=True)
     location=models.CharField(max_length=50,null=True)
+    description=models.CharField(max_length=500,null=True)
+    portfolio_website=models.CharField(max_length=50,null=True)
     experience=models.IntegerField(default=0)
+    date_of_birth=models.DateField(null=True)
+    paid_at=models.DateField(null=True)
+    role=models.CharField(max_length=50,null=True)
+
+    
+    verif_send_status=models.BooleanField(default=False)
     is_verified=models.BooleanField(default=False)
     is_premium=models.BooleanField(default=False)
-    paid_at=models.DateField(null=True)
-    cerificate=models.FileField(upload_to='certificates')
-    cv=models.FileField(upload_to='cv')
-    id_proof=models.FileField(upload_to='idproofs')
+    is_rejected=models.BooleanField(default=False)
 
-    def __str__(self):
-        return self.user.username
+    certificate=models.FileField(upload_to='certificates',null=True)
+    cv=models.FileField(upload_to='cv',null=True)
+    id_proof=models.FileField(upload_to='idproofs',null=True)
+
+    # def __str__(self):
+    #     return self.user.username
 
 

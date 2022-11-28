@@ -1,12 +1,14 @@
-import React from 'react'
+import React,{useEffect,useState} from 'react'
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux'
 import { registeruser } from '../actions/userActions'
+import { useNavigate } from 'react-router-dom'
+
 
 
 
 function Register() {
-
+    const [reload, setReload] = useState(false)
     const { register, handleSubmit, watch, formState: { errors } } = useForm({
         mode: "onChange"
     });
@@ -50,8 +52,19 @@ function Register() {
     };
 
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const userRegister = useSelector(state => state.userRegister)
-    const { loading,error } = userRegister
+    const { loading,error,status } = userRegister
+    useEffect(() => {
+        if (status) {
+            navigate('/login')
+        } else if (status === false) {
+            
+        } else {
+            console.log('nothing happens')
+        }
+
+    }, [reload])
     const submitHandler = (e) => {
         alert('form submitting')
         const username = e.username
@@ -61,15 +74,18 @@ function Register() {
         const phonenumber = e.phonenumber
         const password = e.password
         dispatch(registeruser(username,firstname,lastname, email,phonenumber,password))
+        .then(() => {
+            setReload(!reload)
+        })
     }
 
 
     return (
-        <div className="vh-100" style={{ backgroundImage: "url(AECFiles/images/11.jpg)", height: "118vh !important" }}>
+        <div className="" style={{ backgroundImage: "url(AECFiles/images/11.jpg)" }}>
             <div className="authincation h-100">
                 <div className="container h-100">
                     <div className="row justify-content-center h-100 align-items-center">
-                        <div className="col-md-6">
+                        <div className="col-md-6 mt-5">
                             <div className="authincation-content">
                                 <div className="row no-gutters">
                                     <div className="col-xl-12">

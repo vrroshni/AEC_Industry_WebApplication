@@ -89,23 +89,26 @@ def profileVerification(request):
     data = request.data
     print(data)
     try:
-        # if ProfileVerification.objects.filter(username=data['username']).exists():
-        #     message = {'detail': 'User with this username already exists'}
-        #     return Response(message, status=status.HTTP_400_BAD_REQUEST)
-        # if Account.objects.filter(email=data['email']).exists():
-        #     message = {'detail': 'User with this email already exists'}
-        #     return Response(message, status=status.HTTP_400_BAD_REQUEST)
-        ProfileVerification.objects.create_user(
-            first_name=data['firstname'],
-            last_name=data['lastname'],
-            username=data['username'],
-            phone_number=data['phonenumber'],
-            email=data['email'],
-            password=data['password']
+        user=Account.objects.get(id=data['user'])
+        profile=ProfileVerification.objects.create(
+            user=user,
+            location=data['location'],
+            experience=data['experience'],
+            certificate=data['certificate'],
+            cv=data['cv'],
+            description=data['description'],
+
+            id_proof=data['id_proof'],
+            portfolio_website=data['website'],
+            date_of_birth=data['dob'],
+            verif_send_status=True,
+            role=data['role']
         )
-        return Response(status=status.HTTP_201_CREATED)
+        print(profile)
+        serializer=ProfileVerificationSerializer(profile,many=False)
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
     except:
-        message ={'detail':"error"} 
+        message ={'detail':"Something went wrong"} 
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 

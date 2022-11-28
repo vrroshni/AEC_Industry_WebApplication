@@ -11,7 +11,6 @@ import {
     USER_PROFILEVERIFY_REQUEST,
     USER_PROFILEVERIFY_SUCCESS,
     USER_PROFILEVERIFY_FAIL,
-    // USER_PROFILEVERIFIED_SUCCESS,
 } from '../constants/userConstants'
 
 export const userLoginReducer = (state = {}, action) => {
@@ -33,6 +32,22 @@ export const userLoginReducer = (state = {}, action) => {
     }
 }
 
+export const userRegisterReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_REGISTER_REQUEST:
+            return { loading: true }
+
+        case USER_REGISTER_SUCCESS:
+            return { loading: false,status:true }
+
+        case USER_REGISTER_FAIL:
+            return { loading: false, error: action.payload,status:false }
+
+
+        default:
+            return state;
+    }
+}
 
 
 export const profileverificationReducer = (state = {}, action) => {
@@ -41,31 +56,13 @@ export const profileverificationReducer = (state = {}, action) => {
             return { loading: true }
 
         case USER_PROFILEVERIFY_SUCCESS:
-            return { loading: false,fullProfileInfo: action.payload }
+            return { loading: false,fullProfileInfo: action.payload,status:true }
 
         case USER_PROFILEVERIFY_FAIL:
-            return { loading: false, error: action.payload }
+            return { loading: false, error: action.payload,status:false }
 
         // case USER_PROFILEVERIFIED_SUCCESS:
         //     return { loading: false, error: action.payload }
-        default:
-            return state;
-    }
-}
-
-
-export const userRegisterReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_REGISTER_REQUEST:
-            return { loading: true }
-
-        case USER_REGISTER_SUCCESS:
-            return { loading: false }
-
-        case USER_REGISTER_FAIL:
-            return { loading: false, error: action.payload }
-
-
         default:
             return state;
     }

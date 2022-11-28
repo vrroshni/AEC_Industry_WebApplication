@@ -13,8 +13,6 @@ import {
     USER_PROFILEVERIFY_SUCCESS,
     USER_PROFILEVERIFY_FAIL,
 
-    // USER_PROFILEVERIFIED_SUCCESS,
-    // USER_PROFILEVERIFIED_FAIL,
 } from '../constants/userConstants'
 
 
@@ -93,9 +91,7 @@ export const registeruser = (username, firstname, lastname, email, phonenumber, 
 }
 
 
-
-
-export const profileverification = (user,location,experience,cerificate,cv,id_proof) => async (dispatch) => {
+export const profileverification = (user,role,location,experience,description,dob,website,id_image,cv_pdf,certi_pdf) => async (dispatch) => {
     try {
 
         dispatch({
@@ -104,12 +100,11 @@ export const profileverification = (user,location,experience,cerificate,cv,id_pr
 
         const config = {
             headers: {
-                'Content-type': 'application/json'
+                'Content-type': 'multipart/form-data'
             }
         }
-
         const { data } = await axios.post('profileverification/',
-            { 'user': user, 'location': location,'experience':experience,'cerificate':cerificate,'cv':cv,'id_proof':id_proof }, config
+            { 'user': user,'role':role, 'location': location,'experience':experience,'website':website,'description':description,'dob':dob,'certificate':certi_pdf,'cv':cv_pdf,'id_proof':id_image }, config
         )
 
         dispatch({
@@ -117,7 +112,6 @@ export const profileverification = (user,location,experience,cerificate,cv,id_pr
             payload: data
         })
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
 
     } catch (error) {
         dispatch({
@@ -127,6 +121,45 @@ export const profileverification = (user,location,experience,cerificate,cv,id_pr
         })
     }
 }
+
+
+
+export const updateProfile = (username, password) => async (dispatch) => {
+
+    try {
+
+        dispatch({
+            type: USER_LOGIN_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }
+
+        const { data } = await axios.post('login/',
+            { 'username': username, 'password': password }, config
+        )
+
+        dispatch({
+            type: USER_LOGIN_SUCCESS,
+            payload: data
+            
+        })
+        localStorage.setItem('userInfo', JSON.stringify(data))
+        
+
+    } catch (error) {
+        dispatch({
+            type: USER_LOGIN_FAIL,
+            payload: error.response && error.response.data.detail ?
+                error.response.data.detail : error.message,
+        })
+    }
+}
+
+
 
 
 
