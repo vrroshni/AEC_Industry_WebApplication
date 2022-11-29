@@ -85,7 +85,7 @@ function ProfileVerification() {
                         id_proof[0]?.type
                     ) || "Only PNG, JPEG e GIF",
             },
-        },
+        }
     };
     const productImageRegister = register("id_image", registerOptions.id_image)
 

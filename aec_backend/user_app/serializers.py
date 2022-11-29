@@ -29,7 +29,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model=Account
-        fields=['id','username','full_name','email','phone_number','followers','following','connections','is_client','is_superadmin']
+        fields='__all__'
 
 
 

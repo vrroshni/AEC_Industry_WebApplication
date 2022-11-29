@@ -13,7 +13,7 @@ urlpatterns = [
     path('register/', registerUser, name='register'),
     path('profile/', getUserProfile, name='profile'),
     path('profileverification/', profileVerification, name='profileverification'),
-    path('profile/update/', updateUserProfile, name='updateprofile'),
+    path('updateprofile/', updateUserProfile, name='updateprofile'),
 
 
 

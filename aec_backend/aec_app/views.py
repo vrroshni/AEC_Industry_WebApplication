@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from rest_framework.decorators import api_view,permission_classes
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.permissions import IsAuthenticated,IsAdminUser#staff status true
+from rest_framework.permissions import IsAuthenticated, IsAdminUser  # staff status true
 from .models import *
 from user_app.serializers import *
 from rest_framework import status
@@ -13,7 +13,7 @@ from django.contrib.auth.hashers import make_password
 # Create your views here.
 @api_view(['GET'])
 def index(request):
-    routes=[
+    routes = [
         "HELLO"
     ]
     return Response(routes)
@@ -29,19 +29,18 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     #     token['user_id'] = user.id
     #     # ...
     #     return token
-    def validate(self,attrs):
-        print(attrs,'atttrrrr')
-        data=super().validate(attrs)
+    def validate(self, attrs):
+        print(attrs, 'atttrrrr')
+        data = super().validate(attrs)
         print(data)
-        serializer=ProfileSerializerWithToken(self.user).data
-        for k,v in serializer.items():
-            data[k]=v                                                                                                                 
+        serializer = ProfileSerializerWithToken(self.user).data
+        for k, v in serializer.items():
+            data[k] = v
         return data
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
-
 
 
 # ------------------------------ for user needs ------------------------------ #
@@ -54,7 +53,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 #             return Response(user.data,status=status.HTTP_201_CREATED)
 #     else:
 #             return Response(status=status.HTTP_404_NOT_FOUND)
-    
+
 
 @api_view(['POST'])
 def registerUser(request):
@@ -77,20 +76,17 @@ def registerUser(request):
         )
         return Response(status=status.HTTP_201_CREATED)
     except:
-        message ={'detail':"error"} 
+        message = {'detail': "error"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
-
-
-        
 
 @api_view(['POST'])
 def profileVerification(request):
     data = request.data
     print(data)
     try:
-        user=Account.objects.get(id=data['user'])
-        profile=ProfileVerification.objects.create(
+        user = Account.objects.get(id=data['user'])
+        profile = ProfileVerification.objects.create(
             user=user,
             location=data['location'],
             experience=data['experience'],
@@ -105,39 +101,50 @@ def profileVerification(request):
             role=data['role']
         )
         print(profile)
-        serializer=ProfileVerificationSerializer(profile,many=False)
-        return Response(serializer.data,status=status.HTTP_201_CREATED)
+        serializer = ProfileVerificationSerializer(profile, many=False)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     except:
-        message ={'detail':"Something went wrong"} 
+        message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getUserProfile(request):
-    user=request.user
-    serializer=ProfileSerializer(user,many=False)
+    user = request.user
+    serializer = ProfileSerializer(user, many=False)
     return Response(serializer.data)
-
-
 
 
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def updateUserProfile(request):
+    user = request.user
+    try:
+        serializer = ProfileSerializerWithToken(user, many=False)
+        data = request.data
+        if Account.objects.exclude(id=user.id).filter(username=data['username']).exists():
+            message = {'detail': 'User with this username already exists'}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        if Account.objects.exclude(id=user.id).filter(email=data['email']).exists():
+            message = {'detail': 'User with this email already exists'}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
-    user=request.user
-    print(user,'i am ......................')
-    serializer=ProfileSerializerWithToken(user,many=False)
-    data=request.data
-    user.first_name=data['first_name']
-    user.last_name=data['last_name']
-    user.username=data['username']
-    user.email=data['email']
-    user.phone_number=data['phone_number']
-    if data['password']!='':
-        user.password=make_password(data['password'])
-    user.save()
-    return Response(serializer.data)
+
+        user.first_name = data['firstname']
+        user.last_name = data['lastname']
+        user.username = data['username']
+        user.email = data['email']
+        user.phone_number = data['phonenumber']
+        if data['password'] != '':
+            user.password = make_password(data['password'])
+        if data['pro_pic'] != '':
+            user.pro_pic = data['pro_pic']
+        if data['cover_pic'] != '':
+            user.cover_pic = data['cover_pic']
+        user.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
