@@ -19,11 +19,14 @@ import {
     USER_UPDATE_PROFILE_REQUEST,
     USER_UPDATE_PROFILE_SUCCESS,
     USER_UPDATE_PROFILE_FAIL,
-    USER_UPDATE_PROFILE_RESET
+    USER_UPDATE_PROFILE_RESET,
 
 
+    USER_PROFILEREQUEST_INDIVIDUAL_VIEW,
+    USER_PROFILEREQUEST_INDIVIDUAL_FAILED,
 
 } from '../constants/userConstants'
+
 
 export const userLoginReducer = (state = {}, action) => {
     switch (action.type) {
@@ -31,10 +34,10 @@ export const userLoginReducer = (state = {}, action) => {
             return { loading: true }
 
         case USER_LOGIN_SUCCESS:
-            return { loading: false, userInfo: action.payload,status:true }
+            return { loading: false, userInfo: action.payload, status: true }
 
         case USER_LOGIN_FAIL:
-            return { loading: false, error: action.payload,status:false }
+            return { loading: false, error: action.payload, status: false }
 
         case USER_LOGOUT:
             return {}
@@ -44,22 +47,24 @@ export const userLoginReducer = (state = {}, action) => {
     }
 }
 
+
+
 export const userRegisterReducer = (state = {}, action) => {
     switch (action.type) {
         case USER_REGISTER_REQUEST:
             return { loading: true }
 
         case USER_REGISTER_SUCCESS:
-            return { loading: false,status:true }
+            return { loading: false, status: true }
 
         case USER_REGISTER_FAIL:
-            return { loading: false, error: action.payload,status:false }
-
-
+            return { loading: false, error: action.payload, status: false }
         default:
             return state;
     }
 }
+
+
 
 export const getUserProfileReducer = (state = {}, action) => {
     switch (action.type) {
@@ -67,10 +72,10 @@ export const getUserProfileReducer = (state = {}, action) => {
             return { loading: true }
 
         case USER_PROFILE_SUCCESS:
-            return { loading: false,fullUserProfileInfo:action.payload,status:true }
+            return { loading: false, fullUserProfileInfo: action.payload, status: true }
 
         case USER_PROFILE_FAIL:
-            return { loading: false, error: action.payload,status:false }
+            return { loading: false, error: action.payload, status: false }
 
 
         default:
@@ -85,13 +90,16 @@ export const profileverificationReducer = (state = {}, action) => {
             return { loading: true }
 
         case USER_PROFILEVERIFY_SUCCESS:
-            return { loading: false,fullProfileInfo: action.payload,status:true }
+            return { loading: false, fullProfileInfo: action.payload, status: true }
 
         case USER_PROFILEVERIFY_FAIL:
-            return { loading: false, error: action.payload,status:false }
+            return { loading: false, error: action.payload, status: false }
 
-        // case USER_PROFILEVERIFIED_SUCCESS:
-        //     return { loading: false, error: action.payload }
+        case USER_PROFILEREQUEST_INDIVIDUAL_VIEW:
+            return { prof_request: action.payload }
+
+        case USER_PROFILEREQUEST_INDIVIDUAL_FAILED:
+            return { prof_request_error: action.payload }
         default:
             return state;
     }
@@ -105,16 +113,18 @@ export const updateUserProfileReducer = (state = {}, action) => {
             return { loading: true }
 
         case USER_UPDATE_PROFILE_SUCCESS:
-            return { loading: false,result:true }
+            return { loading: false, result: true }
 
         case USER_UPDATE_PROFILE_FAIL:
-            return { loading: false, updateerror: action.payload,result:false }
+            return { loading: false, updateerror: action.payload, result: false }
 
         case USER_UPDATE_PROFILE_RESET:
-            return { }
+            return {}
 
 
         default:
             return state;
     }
 }
+
+

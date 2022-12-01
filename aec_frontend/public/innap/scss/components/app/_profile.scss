@@ -1,7 +1,6 @@
 .photo-content{
     position: relative;
     .cover-photo{
-        background: url(../images/profile/cover.jpg);
         background-size: cover;
         background-position: center;
         min-height: 15.625rem;
@@ -91,9 +90,9 @@
                     top: 0;
                     z-index: 0;
                 }
-                img{
-                    // margin-bottom: 0.075rem;
-                }
+                // img{
+                //     // margin-bottom: 0.075rem;
+                // }
                 p{
                     position: absolute;
                     top: 0;

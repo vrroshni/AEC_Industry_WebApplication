@@ -12,6 +12,7 @@ urlpatterns = [
     #UserProfile
     path('register/', registerUser, name='register'),
     path('profile/', getUserProfile, name='profile'),
+    path('userrequest/', getUserRequest, name='userrequest'),
     path('profileverification/', profileVerification, name='profileverification'),
     path('updateprofile/', updateUserProfile, name='updateprofile'),
 

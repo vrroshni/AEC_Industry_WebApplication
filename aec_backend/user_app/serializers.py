@@ -45,6 +45,8 @@ class ProfileSerializerWithToken(ProfileSerializer):
 
 
 class ProfileVerificationSerializer(serializers.ModelSerializer):
+    user=ProfileSerializer(read_only=True)
+    
     class Meta:
         model=ProfileVerification
         fields='__all__'

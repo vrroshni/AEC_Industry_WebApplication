@@ -109,7 +109,7 @@ class Account(AbstractBaseUser):
 
 
 class ProfileVerification(models.Model):
-    user=models.ForeignKey(Account,on_delete=models.CASCADE,null=True)
+    user=models.ForeignKey(Account,related_name='user',on_delete=models.CASCADE,null=True)
     date=models.DateField(auto_now_add=True,null=True)
     location=models.CharField(max_length=50,null=True)
     description=models.CharField(max_length=500,null=True)

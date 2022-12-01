@@ -116,6 +116,20 @@ def getUserProfile(request):
     return Response(serializer.data)
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getUserRequest(request):
+    user = request.user
+    try:
+        data=ProfileVerification.objects.get(user=user.id)
+        serializer = ProfileVerificationSerializer(data, many=False)
+        return Response(serializer.data)
+    except:
+        message = {'detail': "Currently no requests"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def updateUserProfile(request):

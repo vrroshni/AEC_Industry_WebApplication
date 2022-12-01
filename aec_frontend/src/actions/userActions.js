@@ -20,8 +20,10 @@ import {
     USER_UPDATE_PROFILE_REQUEST,
     USER_UPDATE_PROFILE_SUCCESS,
     USER_UPDATE_PROFILE_FAIL,
-    USER_UPDATE_PROFILE_RESET
+    USER_UPDATE_PROFILE_RESET,
 
+    USER_PROFILEREQUEST_INDIVIDUAL_VIEW,
+    USER_PROFILEREQUEST_INDIVIDUAL_FAILED, 
 
 } from '../constants/userConstants'
 
@@ -165,6 +167,40 @@ export const getUserProfile = () => async (dispatch,getState) => {
     } catch (error) {
         dispatch({
             type: USER_PROFILE_FAIL,
+            payload: error.response && error.response.data.detail ?
+                error.response.data.detail : error.message,
+        })
+    }
+}
+
+export const getUserRequest = () => async (dispatch,getState) => {
+
+    try {
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.get('userrequest/', config
+        )
+
+        dispatch({
+            type: USER_PROFILEREQUEST_INDIVIDUAL_VIEW,
+            payload: data
+            
+        })
+        
+
+    } catch (error) {
+        dispatch({
+            type: USER_PROFILEREQUEST_INDIVIDUAL_FAILED,
             payload: error.response && error.response.data.detail ?
                 error.response.data.detail : error.message,
         })

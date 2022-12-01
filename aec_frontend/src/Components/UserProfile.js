@@ -47,6 +47,7 @@ function UserProfile() {
 			}
 		}
 	};
+	
 	const FirstnameRegister = register("firstname", registerOptions.firstname)
 	const LastNameRegister = register("lastname", registerOptions.lastname)
 	const UsernameRegister = register("username", registerOptions.username)
@@ -92,37 +93,47 @@ function UserProfile() {
 	const [pro_pic, setPro_pic] = useState('');
 	const [cover_pic, setCover_pic] = useState('');
 	return (
-		<div className="container">
+		<>
 			{fullUserProfileInfo && (<>
+				<div class="row page-titles">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active"><a href="/">UserProfile</a></li>
+                    <li class="breadcrumb-item"><a href="/">{fullUserProfileInfo.full_name}</a></li>
+                </ol>
+            </div>
 				<div className="row">
 					<div className="col-lg-12">
 						<div className="profile card card-body px-3 pt-3 pb-0">
 
 							<div className="profile-head">
 								<div className="photo-content">
-									<div className="cover-photo rounded"></div>
+									<div className="cover-photo rounded" style={{ backgroundImage:`url(${fullUserProfileInfo.cover_pic})`}}></div>
 								</div>
 								<div className="profile-info">
 									<div className="profile-photo">
-										<img src="/innap/images/profile/profile.png" className="img-fluid rounded-circle" alt="" />
+										<img src={fullUserProfileInfo.pro_pic} className="img-fluid rounded-circle" style={{minHeight:" 6rem"}} alt="" />
 									</div>
 									<div className="profile-details">
 										<div className="profile-name px-3 pt-2">
-											<h4 className="text-primary mb-0">{fullUserProfileInfo.username}</h4>
+											<h4 className="text-primary mb-0">{fullUserProfileInfo.full_name}</h4>
+											<p>@{fullUserProfileInfo.username}</p>
 										</div>
 										<div className="profile-email px-2 pt-2">
 											<h4 className="text-muted mb-0">{fullUserProfileInfo.email}</h4>
 											<p>Email</p>
 										</div>
-										{/* <div className="dropdown ms-auto">
-											<a href="#" className="btn btn-primary light sharp" data-bs-toggle="dropdown" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg></a>
+										<div className="dropdown ms-auto d-flex">
+										<div className="profile-email px-2 pt-2" onClick={()=>navigate('/profile_verification')}>
+											<p className="text-dark mb-0">Want to become a part of <span className="text-primary">Together</span>?</p>
+										</div>
+											{/* <a href="#" className="btn btn-primary light sharp" data-bs-toggle="dropdown" aria-expanded="true"><i className="fa fa-plus text-primary"></i></a>
 											<ul className="dropdown-menu dropdown-menu-end">
-												<li className="dropdown-item"><i className="fa fa-user-circle text-primary me-2"></i> View profile</li>
+												<li className="dropdown-item"><i className="fa fa-user-circle text-primary me-2"></i> Become</li>
 												<li className="dropdown-item"><i className="fa fa-users text-primary me-2"></i> Add to btn-close friends</li>
 												<li className="dropdown-item"><i className="fa fa-plus text-primary me-2"></i> Add to group</li>
 												<li className="dropdown-item"><i className="fa fa-ban text-primary me-2"></i> Block</li>
-											</ul>
-										</div> */}
+											</ul> */}
+										</div>
 									</div>
 								</div>
 							</div>
@@ -130,145 +141,6 @@ function UserProfile() {
 					</div>
 				</div>
 				<div className="row">
-					{/* <div className="col-xl-4">
-						<div className="row">
-							<div className="col-xl-12">
-								<div className="card">
-									<div className="card-body">
-										<div className="profile-statistics">
-											<div className="text-center">
-												<div className="row">
-													<div className="col">
-														<h3 className="m-b-0">150</h3><span>Follower</span>
-													</div>
-													<div className="col">
-														<h3 className="m-b-0">140</h3><span>Place Stay</span>
-													</div>
-													<div className="col">
-														<h3 className="m-b-0">45</h3><span>Reviews</span>
-													</div>
-												</div>
-												<div className="mt-4">
-													<a href="/" className="btn btn-primary mb-1 me-1">Follow</a> 
-													<a href="/" className="btn btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#sendMessageModal">Send Message</a>
-												</div>
-											</div>
-											<div className="modal fade" id="sendMessageModal">
-												<div className="modal-dialog modal-dialog-centered" role="document">
-													<div className="modal-content">
-														<div className="modal-header">
-															<h5 className="modal-title">Send Message</h5>
-															<button type="button" className="btn-close" data-bs-dismiss="modal"></button>
-														</div>
-														<div className="modal-body">
-															<form className="comment-form">
-																<div className="row"> 
-																	<div className="col-lg-6">
-																		<div className="mb-3">
-																			<label className="text-black font-w600 form-label">Name <span className="required">*</span></label>
-																			<input type="text" className="form-control" value="Author" name="Author" placeholder="Author"/>
-																		</div>
-																	</div>
-																	<div className="col-lg-6">
-																		<div className="mb-3">
-																			<label className="text-black font-w600 form-label">Email <span className="required">*</span></label>
-																			<input type="text" className="form-control" value="Email" placeholder="Email" name="Email"/>
-																		</div>
-																	</div>
-																	<div className="col-lg-12">
-																		<div className="mb-3">
-																			<label className="text-black font-w600 form-label">Comment</label>
-																			<textarea rows="8" className="form-control" name="comment" placeholder="Comment"></textarea>
-																		</div>
-																	</div>
-																	<div className="col-lg-12">
-																		<div className="mb-3 mb-0">
-																			<input type="submit" value="Post Comment" className="submit btn btn-primary" name="submit"/>
-																		</div>
-																	</div>
-																</div>
-															</form>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div className="col-xl-12">
-								<div className="card">
-									<div className="card-body">
-										<div className="profile-blog">
-											<h5 className="text-primary d-inline">Today Highlights</h5>
-											<img src="images/profile/1.jpg" alt="" className="img-fluid mt-4 mb-4 w-100"/>
-											<h4><a href="post-details.html" className="text-black">Darwin Creative Agency Theme</a></h4>
-											<p className="mb-0">A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div className="col-xl-12">
-								<div className="card">
-									<div className="card-body">
-										<div className="profile-interest">
-											<h5 className="text-primary d-inline">Interest</h5>
-											<div className="row mt-4 sp4" id="lightgallery">
-												<a href="images/profile/2.jpg" data-exthumbimage="images/profile/2.jpg" data-src="images/profile/2.jpg" className="mb-1 col-lg-4 col-xl-4 col-sm-4 col-6">
-													<img src="images/profile/2.jpg" alt="" className="img-fluid"/>
-												</a>
-												<a href="images/profile/3.jpg" data-exthumbimage="images/profile/3.jpg" data-src="images/profile/3.jpg" className="mb-1 col-lg-4 col-xl-4 col-sm-4 col-6">
-													<img src="images/profile/3.jpg" alt="" className="img-fluid"/>
-												</a>
-												<a href="images/profile/4.jpg" data-exthumbimage="images/profile/4.jpg" data-src="images/profile/4.jpg" className="mb-1 col-lg-4 col-xl-4 col-sm-4 col-6">
-													<img src="images/profile/4.jpg" alt="" className="img-fluid"/>
-												</a>
-												<a href="images/profile/3.jpg" data-exthumbimage="images/profile/3.jpg" data-src="images/profile/3.jpg" className="mb-1 col-lg-4 col-xl-4 col-sm-4 col-6">
-													<img src="images/profile/3.jpg" alt="" className="img-fluid"/>
-												</a>
-												<a href="images/profile/4.jpg" data-exthumbimage="images/profile/4.jpg" data-src="images/profile/4.jpg" className="mb-1 col-lg-4 col-xl-4 col-sm-4 col-6">
-													<img src="images/profile/4.jpg" alt="" className="img-fluid"/>
-												</a>
-												<a href="images/profile/2.jpg" data-exthumbimage="images/profile/2.jpg" data-src="images/profile/2.jpg" className="mb-1 col-lg-4 col-xl-4 col-sm-4 col-6">
-													<img src="images/profile/2.jpg" alt="" className="img-fluid"/>
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div className="col-xl-12">
-								<div className="card">
-									<div className="card-body">
-										<div className="profile-news">
-											<h5 className="text-primary d-inline">Our Latest News</h5>
-											<div className="media pt-3 pb-3">
-												<img src="images/profile/5.jpg" alt="image" className="me-3 rounded" width="75"/>
-												<div className="media-body">
-													<h5 className="m-b-5"><a href="post-details.html" className="text-black">Collection of textile samples</a></h5>
-													<p className="mb-0">I shared this on my fb wall a few months back, and I thought.</p>
-												</div>
-											</div>
-											<div className="media pt-3 pb-3">
-												<img src="images/profile/6.jpg" alt="image" className="me-3 rounded" width="75"/>
-												<div className="media-body">
-													<h5 className="m-b-5"><a href="post-details.html" className="text-black">Collection of textile samples</a></h5>
-													<p className="mb-0">I shared this on my fb wall a few months back, and I thought.</p>
-												</div>
-											</div>
-											<div className="media pt-3 pb-3">
-												<img src="images/profile/7.jpg" alt="image" className="me-3 rounded" width="75"/>
-												<div className="media-body">
-													<h5 className="m-b-5"><a href="post-details.html" className="text-black">Collection of textile samples</a></h5>
-													<p className="mb-0">I shared this on my fb wall a few months back, and I thought.</p>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-                    </div> */}
 					<div className="col-xl-12">
 						<div className="card">
 							<div className="card-body">
@@ -563,7 +435,7 @@ function UserProfile() {
 						</div>
 					</div>
 				</div> </>)}
-		</div>
+				</>
 
 	)
 }

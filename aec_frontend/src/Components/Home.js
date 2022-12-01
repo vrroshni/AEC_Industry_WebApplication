@@ -3,8 +3,11 @@ import AllContext from '../context/AllContext'
 
 
 function Home() {
+  
   return (
-    <div>Welcome to Together</div>
+    <div>
+      <h1>Welcome to Together!</h1>
+    </div>
   )
 }
 
