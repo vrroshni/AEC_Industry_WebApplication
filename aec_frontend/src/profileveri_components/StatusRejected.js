@@ -2,8 +2,7 @@ import React from 'react'
 
 function StatusRejected() {
   return (
-    <div>
-      <div class="row justify-content-center h-100 align-items-center">
+    <div class="row justify-content-center h-100 align-items-center">
       <div class="col-md-6">
         <div class="authincation-content">
           <div class="row no-gutters">
@@ -23,7 +22,8 @@ function StatusRejected() {
         </div>
       </div>
     </div>
-    </div>
+   
+    
   )
 }
 

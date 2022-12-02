@@ -78,7 +78,7 @@ class Account(AbstractBaseUser):
 
     #Required fields
     status          =models.CharField(max_length=100, null=True,choices=ROLE,default="CLIENT")
-    date_joined     = models.DateTimeField(auto_now_add=True)  
+    date_joined     = models.DateField(auto_now_add=True)  
     last_login      = models.DateTimeField(auto_now_add=True)  
     is_admin        = models.BooleanField(default=False)
     is_staff        = models.BooleanField(default=False)
@@ -129,7 +129,39 @@ class ProfileVerification(models.Model):
     cv=models.FileField(upload_to='cv',null=True)
     id_proof=models.FileField(upload_to='idproofs',null=True)
 
-    # def __str__(self):
-    #     return self.user.username
+    def __str__(self):
+        return self.user.username
 
 
+class Network(models.Model):
+    user=models.ForeignKey(Account,related_name='user_network',on_delete=models.CASCADE,null=True)
+    is_follow=models.BooleanField(default=False, null=True)
+    is_connect=models.BooleanField(default=False,null=True)
+    followed_by=models.ForeignKey(Account,related_name='followed_by',on_delete=models.CASCADE,null=True)
+
+
+class Review_Rating(models.Model):
+    rated_user=models.ForeignKey(Account,related_name='rated_user',on_delete=models.CASCADE,null=True)
+    review_desc=models.CharField(max_length=200,null=True)
+    rating=models.IntegerField(null=True, blank=True, default=0)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    
+    
+class Projects(models.Model):
+    PROJECT_STATUS=(
+        ('COMPLETED','COMPLETED'),
+        ('PENDING','PENDING'),
+            )
+    user=models.ForeignKey(Account,related_name='user_project',on_delete=models.CASCADE,null=True)
+    project_title=models.CharField(max_length=100,null=True)
+    project_desc=models.CharField(max_length=200,null=True)
+    project_image=models.FileField(upload_to='projects',null=True)
+    project_status=models.CharField(max_length=100, null=True,choices=PROJECT_STATUS,default="PENDING")
+    project_client=models.ForeignKey(Account,related_name='project_client_user',on_delete=models.CASCADE,null=True)
+    review=models.ForeignKey(Review_Rating,related_name='review_project',on_delete=models.CASCADE,null=True)
+
+    
+    
+
+
+    

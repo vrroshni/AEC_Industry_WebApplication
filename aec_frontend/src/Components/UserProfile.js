@@ -101,7 +101,7 @@ function UserProfile() {
                     <li class="breadcrumb-item"><a href="/">{fullUserProfileInfo.full_name}</a></li>
                 </ol>
             </div>
-				<div className="row">
+				<div className="row" style={{cursor:"pointer"}}>
 					<div className="col-lg-12">
 						<div className="profile card card-body px-3 pt-3 pb-0">
 
@@ -124,7 +124,7 @@ function UserProfile() {
 										</div>
 										<div className="dropdown ms-auto d-flex">
 										<div className="profile-email px-2 pt-2" onClick={()=>navigate('/profile_verification')}>
-											<p className="text-dark mb-0">Want to become a part of <span className="text-primary">Together</span>?</p>
+											<p  className="text-dark mb-0">Want to become a part of <span className="text-primary">Together</span>?</p>
 										</div>
 											{/* <a href="#" className="btn btn-primary light sharp" data-bs-toggle="dropdown" aria-expanded="true"><i className="fa fa-plus text-primary"></i></a>
 											<ul className="dropdown-menu dropdown-menu-end">

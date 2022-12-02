@@ -21,6 +21,15 @@ import {
     USER_UPDATE_PROFILE_FAIL,
     USER_UPDATE_PROFILE_RESET,
 
+    USER_ADD_POST_REQUEST,
+    USER_ADD_POST_SUCCESS,
+    USER_ADD_POST_FAIL,
+    USER_ADD_POST_RESET,
+
+
+    USER_FEED_ALL_POSTS_LIST_REQUEST,
+    USER_FEED_ALL_POSTS_LIST_SUCCESS,
+    USER_FEED_ALL_POSTS_LIST_FAIL,
 
     USER_PROFILEREQUEST_INDIVIDUAL_VIEW,
     USER_PROFILEREQUEST_INDIVIDUAL_FAILED,
@@ -128,3 +137,42 @@ export const updateUserProfileReducer = (state = {}, action) => {
 }
 
 
+export const postAddReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_ADD_POST_REQUEST:
+            return { loading: true }
+
+        case USER_ADD_POST_SUCCESS:
+            return { loading: false, addedpost: action.payload }
+
+        case USER_ADD_POST_FAIL:
+            return { loading: false, error: action.payload, result: false }
+
+        case USER_ADD_POST_RESET:
+            return {}
+
+        default:
+            return state;
+    }
+}
+
+
+
+export const FeedtReducer = (state = { posts: [] }, action) => {
+    switch (action.type) {
+        case USER_FEED_ALL_POSTS_LIST_REQUEST:
+            return { loading: true, posts: [] }
+
+        case USER_FEED_ALL_POSTS_LIST_SUCCESS:
+            return {
+                loading: false,
+                posts: action.payload,
+            }
+
+        case USER_FEED_ALL_POSTS_LIST_FAIL:
+            return { loading: false, error: action.payload }
+
+        default:
+            return state
+    }
+}

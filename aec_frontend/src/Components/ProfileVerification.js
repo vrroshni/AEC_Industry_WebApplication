@@ -126,15 +126,14 @@ function ProfileVerification() {
         const certi_pdf = e.certi_pdf[0];
         dispatch(
             profileverification(user, role, location, experience, description, dob, website, id_image, cv_pdf, certi_pdf)
-
         ).then(() => {
-            dispatch(getUserRequest())
             setReload(!reload)
         });
     };
     return (
         <div>
-            {!prof_request && <div className="row justify-content-center h-100 align-items-center">
+            {!prof_request && 
+            <div className="row justify-content-center h-100 align-items-center">
                 <div className="col-lg-12">
                     <div className="card">
                         <div className="card-header">
