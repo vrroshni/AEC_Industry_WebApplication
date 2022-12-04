@@ -9,9 +9,10 @@ import {
     getUserProfileReducer,
     updateUserProfileReducer,
     FeedReducer,
-    postAddReducer
+    postAddReducer,
+    networkReducer,
+    postInteractionReducer,
 } from './reducers/userReducer'
-
 import {
     allUserListReducer,
     statusChangeReducer,
@@ -45,6 +46,9 @@ const reducers = combineReducers({
     allUsers: allUserListReducer,
     statusChanger: statusChangeReducer,
     allProfRequests: allProfileRequestsReducer,
+
+    postInteraction:postInteractionReducer,
+    network:networkReducer,
 
     alerts:alertCreateReducer
 

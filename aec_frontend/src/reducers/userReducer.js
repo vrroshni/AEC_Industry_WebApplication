@@ -34,6 +34,18 @@ import {
     USER_PROFILEREQUEST_INDIVIDUAL_VIEW,
     USER_PROFILEREQUEST_INDIVIDUAL_FAILED,
 
+    USER_LIKED_POST,
+    USER_DISLIKED_POST,
+    USER_COMMENTED,
+    USER_COMMENT_REPLY,
+    USER_INTERACTION_RESET,
+
+
+    UNFOLLOW_FOLLOW_USER,
+    SEND_CONNECTION_REQUEST,
+    REJECT_CONNECTION_REQUEST,
+    USER_NETWORK_RESET
+
 } from '../constants/userConstants'
 
 
@@ -43,10 +55,10 @@ export const userLoginReducer = (state = {}, action) => {
             return { loading: true }
 
         case USER_LOGIN_SUCCESS:
-            return { loading: false, userInfo: action.payload}
+            return { loading: false, userInfo: action.payload }
 
         case USER_LOGIN_FAIL:
-            return { loading: false, error: action.payload}
+            return { loading: false, error: action.payload }
 
         case USER_LOGOUT:
             return {}
@@ -128,7 +140,7 @@ export const updateUserProfileReducer = (state = {}, action) => {
             return { loading: false, updateerror: action.payload, result: false }
 
         case USER_UPDATE_PROFILE_RESET:
-            return {result:null}
+            return { result: null }
 
 
         default:
@@ -143,10 +155,10 @@ export const postAddReducer = (state = {}, action) => {
             return { loading: true }
 
         case USER_ADD_POST_SUCCESS:
-            return { loading: false, addedpost: action.payload,added:true }
+            return { loading: false, addedpost: action.payload, added: true }
 
         case USER_ADD_POST_FAIL:
-            return { loading: false, error: action.payload,added:false }
+            return { loading: false, error: action.payload, added: false }
 
         case USER_ADD_POST_RESET:
             return {}
@@ -171,6 +183,61 @@ export const FeedReducer = (state = { posts: [] }, action) => {
 
         case USER_FEED_ALL_POSTS_LIST_FAIL:
             return { loading: false, error: action.payload }
+
+        default:
+            return state
+    }
+}
+
+export const postInteractionReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_LIKED_POST:
+            return {
+                liked: true
+            }
+
+        case USER_DISLIKED_POST:
+            return {
+                disliked: true
+            }
+
+        case USER_COMMENTED:
+            return {
+                commented: true
+            }
+
+        case USER_COMMENT_REPLY:
+            return {
+                reply_commented: true
+            }
+
+        case USER_INTERACTION_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+export const networkReducer = (state = {}, action) => {
+    switch (action.type) {
+        case UNFOLLOW_FOLLOW_USER:
+            return {
+                action: true
+            }
+
+        case SEND_CONNECTION_REQUEST:
+            return {
+                send: true
+            }
+
+        case REJECT_CONNECTION_REQUEST:
+            return {
+                reject: true
+            }
+
+        case USER_NETWORK_RESET:
+            return {}
 
         default:
             return state

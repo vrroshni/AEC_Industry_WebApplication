@@ -61,7 +61,6 @@ function Register() {
     const { loading,error,status } = userRegister
     useEffect(() => {
         if (status) {
-
             navigate('/login')
         } 
 

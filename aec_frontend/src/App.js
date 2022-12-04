@@ -19,9 +19,13 @@ import StatusPending from './profileveri_components/StatusPending';
 import StatusRejected from './profileveri_components/StatusRejected';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useEffect } from 'react';
 
 
 function App() {
+
+
+  
   return (
     <div className="App">
         <Routes>
@@ -44,6 +48,7 @@ function App() {
             <Route path='allposts/' element={<UserProfile />} />
           </Route>
         </Routes>
+        <ToastContainer />
     </div>
   );
 }

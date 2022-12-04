@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { toast } from 'react-toastify'
 import {
     USER_LOGIN_REQUEST,
     USER_LOGIN_SUCCESS,
@@ -34,6 +35,19 @@ import {
     USER_PROFILEREQUEST_INDIVIDUAL_VIEW,
     USER_PROFILEREQUEST_INDIVIDUAL_FAILED, 
 
+
+    USER_LIKED_POST,
+    USER_DISLIKED_POST,
+    USER_COMMENTED,
+    USER_COMMENT_REPLY,
+    USER_INTERACTION_RESET,
+
+
+    UNFOLLOW_FOLLOW_USER,
+    SEND_CONNECTION_REQUEST,
+    REJECT_CONNECTION_REQUEST,
+    USER_NETWORK_RESET
+
 } from '../constants/userConstants'
 
 
@@ -44,7 +58,7 @@ import {
 export const login = (username, password) => async (dispatch) => {
 
     try {
-
+        
         dispatch({
             type: USER_LOGIN_REQUEST
         })
@@ -64,6 +78,16 @@ export const login = (username, password) => async (dispatch) => {
             payload: data
             
         })
+        toast.success(' You have logged in succesfully!', {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            })
 
         localStorage.setItem('userInfo', JSON.stringify(data))
         
@@ -81,10 +105,21 @@ export const login = (username, password) => async (dispatch) => {
 export const logout = () => (dispatch) => {
     localStorage.removeItem('userInfo')
     dispatch({ type: USER_LOGOUT })
+    toast.success(' You have logged out succesfully!', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        })
 }
 
 export const registeruser = (username, firstname, lastname, email, phonenumber, password,) => async (dispatch) => {
     try {
+
 
         dispatch({
             type: USER_REGISTER_REQUEST
@@ -103,6 +138,7 @@ export const registeruser = (username, firstname, lastname, email, phonenumber, 
         dispatch({
             type: USER_REGISTER_SUCCESS,
         })
+
 
     } catch (error) {
         dispatch({
@@ -296,6 +332,7 @@ export const addPost = (post_desc,image,video) => async (dispatch,getState) => {
 }
 
 
+
 export const allFeed = () => async (dispatch, getState) => {
     try {
         dispatch({
@@ -334,3 +371,150 @@ export const allFeed = () => async (dispatch, getState) => {
 
 
 
+export const post_like = (id) => async (dispatch,getState) => {
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put('/like_post/',{'id':id}, config
+        )
+
+        dispatch({
+            type: USER_LIKED_POST,
+            
+        })
+}
+
+
+export const post_dislike = (id) => async (dispatch,getState) => {
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put('/dislike_post/',{'id':id}, config
+        )
+
+        dispatch({
+            type: USER_DISLIKED_POST,  
+        })
+}
+
+export const user_commented = (post_id,comment) => async (dispatch,getState) => {
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put('/user_commented/',{'id':post_id,'comment':comment}, config
+        )
+
+        dispatch({
+            type: USER_COMMENTED,  
+        })
+}
+
+export const user_comment_reply = (post_id,comment_id,comment) => async (dispatch,getState) => {
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put('/user_comment_reply/',{'post_id':post_id,'comment_id':comment_id,'comment':comment}, config
+        )
+
+        dispatch({
+            type: USER_COMMENT_REPLY,  
+        })
+}
+export const follow_unfollow = (user_id) => async (dispatch,getState) => {
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put('/follow_unfollow/',{'user_id':user_id,}, config
+        )
+
+        dispatch({
+            type: UNFOLLOW_FOLLOW_USER,  
+        })
+}
+
+export const send_connection = (user_id) => async (dispatch,getState) => {
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put('/send_connection/',{'user_id':user_id,}, config
+        )
+
+        dispatch({
+            type: SEND_CONNECTION_REQUEST,  
+        })
+}
+
+export const reject_connection = (user_id) => async (dispatch,getState) => {
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put('/reject_connection/',{'user_id':user_id,}, config
+        )
+
+        dispatch({
+            type: REJECT_CONNECTION_REQUEST,  
+        })
+}
