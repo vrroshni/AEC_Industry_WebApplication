@@ -43,10 +43,10 @@ export const userLoginReducer = (state = {}, action) => {
             return { loading: true }
 
         case USER_LOGIN_SUCCESS:
-            return { loading: false, userInfo: action.payload, status: true }
+            return { loading: false, userInfo: action.payload}
 
         case USER_LOGIN_FAIL:
-            return { loading: false, error: action.payload, status: false }
+            return { loading: false, error: action.payload}
 
         case USER_LOGOUT:
             return {}
@@ -128,7 +128,7 @@ export const updateUserProfileReducer = (state = {}, action) => {
             return { loading: false, updateerror: action.payload, result: false }
 
         case USER_UPDATE_PROFILE_RESET:
-            return {}
+            return {result:null}
 
 
         default:
@@ -143,10 +143,10 @@ export const postAddReducer = (state = {}, action) => {
             return { loading: true }
 
         case USER_ADD_POST_SUCCESS:
-            return { loading: false, addedpost: action.payload }
+            return { loading: false, addedpost: action.payload,added:true }
 
         case USER_ADD_POST_FAIL:
-            return { loading: false, error: action.payload, result: false }
+            return { loading: false, error: action.payload,added:false }
 
         case USER_ADD_POST_RESET:
             return {}
@@ -158,7 +158,7 @@ export const postAddReducer = (state = {}, action) => {
 
 
 
-export const FeedtReducer = (state = { posts: [] }, action) => {
+export const FeedReducer = (state = { posts: [] }, action) => {
     switch (action.type) {
         case USER_FEED_ALL_POSTS_LIST_REQUEST:
             return { loading: true, posts: [] }
@@ -176,3 +176,4 @@ export const FeedtReducer = (state = { posts: [] }, action) => {
             return state
     }
 }
+

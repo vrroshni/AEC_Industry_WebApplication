@@ -1,49 +1,118 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import Carousel from 'react-bootstrap/Carousel';
+import { BsFillCameraVideoFill, BsTypeH1 } from 'react-icons/bs';
+import { GoCommentDiscussion } from 'react-icons/go';
+import { SlLike } from 'react-icons/sl';
+import { addPost, allFeed } from '../actions/userActions'
+import { USER_ADD_POST_RESET } from '../constants/userConstants'
+import '../componentsCSS/feed.css'
+import dayjs from "dayjs";
+import Accordion from 'react-bootstrap/Accordion';
+import Message from '../components/Message'
+import Loader from '../components/Loader'
+
+
+
 
 function Feed() {
+    const [reload, setReload] = useState('')
+    const [image, setImage] = useState('')
+    const [video, setVideo] = useState('')
+    const [post_desc, setPost_desc] = useState('')
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const [fronterror, setfronterror] = useState(null)
+
+
+    const ImagehandleChange = (e) => {
+        setfronterror('')
+        setImage(e.target.files[0])
+    }
+
+    const VideohandleChange = (e) => {
+        setfronterror('')
+        setVideo(e.target.files[0])
+    }
+
+    const getUserProfileInfo = useSelector(state => state.getUserProfile)
+    const { fullUserProfileInfo } = getUserProfileInfo
+
+    const AllpostsInfo = useSelector(state => state.allposts)
+    const { posts } = AllpostsInfo
+
+    const addedPost = useSelector(state => state.addPost)
+    const { addedpost,loading, added } = addedPost
+
+    const submitHandler = (e) => {
+        e.preventDefault()
+        
+        if ((post_desc === '') && (image === '') && (video === '')) {
+            setfronterror('Add sometheing to post')
+        } else {
+            dispatch(addPost(post_desc, image, video))
+                .then(() => {
+                    setfronterror('')
+                    setImage('')
+                    setVideo('')
+                    setPost_desc('')
+                    setReload(!reload)
+                }
+                )
+
+        }
+    }
+    useEffect(() => {
+        dispatch(allFeed())
+        dispatch({ type: USER_ADD_POST_RESET })
+    }, [reload])
+
     return (
-        <div class="row">
-            <div class="col-xl-3">
+        <div className="row">
+            <div className="col-xl-3 firstbox">
                 <div className="row">
-                    <div className="col-xl-12">
-                        <div class="profile card card-body px-3 pt-3 pb-0">
-                            <div class="profile-head">
-                                <div class="photo-content">
-                                    <div class="cover-photo rounded" style={{ minHeight: "10.625rem" }}></div>
+                    <div className="col-xl-12 ">
+                        <div className="profile card card-body px-3 pt-3 pb-0">
+                            <div className="profile-head">
+                                <div className="photo-content">
+                                    <div className="cover-photo rounded" style={{ minHeight: "10.625rem", backgroundImage: `url(${fullUserProfileInfo.cover_pic})` }}></div>
                                 </div>
-                                <div class="profile-info">
-                                    <div class="profile-photo">
-                                        <img src="innap/images/profile/profile.png" class="img-fluid rounded-circle" alt="" />
+                                <div className="profile-info">
+                                    <div className="profile-photo">
+                                        <img src={fullUserProfileInfo.pro_pic} className="img-fluid rounded-circle" style={{ minHeight: " 6rem", minWidth: "6rem" }} alt="" />
                                     </div>
-                                    <div class="profile-details">
-                                        <div class="profile-name px-3 pt-2">
-                                            <h4 class="text-primary mb-0">Mitchell C. Shay</h4>
-                                            <p>UX / UI Designer</p>
+                                    <div className="profile-details">
+                                        <div className="profile-name px-3 pt-2">
+                                            <h4 className="text-primary mb-0">{fullUserProfileInfo.full_name}</h4>
+                                            <p>@{fullUserProfileInfo.username}</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="profile-statistics">
-                                    <div class="text-center">
-                                        <div class="row">
-                                            <div class="col">
-                                                <h3 class="m-b-0">150</h3><span>Follower</span>
+                    <div className="col-xl-12 ">
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="profile-statistics">
+                                    <div className="text-center">
+                                        <div className="row">
+                                            <div className="col">
+                                                <h3 className="m-b-0">{fullUserProfileInfo.followers}</h3><span>Followers</span>
                                             </div>
-                                            <div class="col">
-                                                <h3 class="m-b-0">140</h3><span>Place Stay</span>
+
+                                            <div className="col">
+                                                <h3 className="m-b-0">{fullUserProfileInfo.following}</h3><span>Followings</span>
                                             </div>
-                                            <div class="col">
-                                                <h3 class="m-b-0">45</h3><span>Reviews</span>
+                                            <div className="col">
+                                                <h3 className="m-b-0">{fullUserProfileInfo.connections}</h3><span>Connections</span>
                                             </div>
+
                                         </div>
-                                        <div class="mt-4">
-                                            <a href="javascript:void(0);" class="btn btn-primary mb-1 me-1">Follow</a>
-                                            <a href="javascript:void(0);" class="btn btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#sendMessageModal">Send Message</a>
+                                        <div className="mt-4">
+                                            <a href="/" className="btn btn-primary mb-1 me-1">Profile</a>
+                                            <a href="/" className="btn btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#sendMessageModal">Send Message</a>
                                         </div>
                                     </div>
                                 </div>
@@ -52,78 +121,117 @@ function Feed() {
                     </div>
                 </div>
             </div>
-            <div class="col-xl-6">
+            <div className="col-xl-6">
                 <div className="row">
                     <div className="col-xl-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="profile-tab">
-                                    <div class="custom-tab-1">
-                                        <ul class="nav nav-tabs">
-                                            <li class="nav-item"><a href="#my-posts" data-bs-toggle="tab" class="nav-link active show">Posts</a>
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="profile-tab">
+                                    <div className="custom-tab-1">
+                                        <ul className="nav nav-tabs">
+                                            <li className="nav-item"><a href="#my-posts" data-bs-toggle="tab" className="nav-link active show">Posts</a>
                                             </li>
                                         </ul>
-                                        <div class="tab-content">
-                                            <div id="my-posts" class="tab-pane fade active show">
-                                                <div class="my-post-content pt-3">
-                                                    <div class="post-input" style={{marginBottom:"0"}}>
-                                                        <textarea name="textarea" id="textarea" cols="30" rows="5" class="form-control bg-transparent" placeholder="Please type what you want...."></textarea>
-                                                        <a href="javascript:void(0);" class="btn btn-primary light me-1 px-3" data-bs-toggle="modal" data-bs-target="#cameraModal"><i class="fa fa-camera m-0"></i> </a>
-                                                        <div class="modal fade" id="cameraModal">
-                                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title">Upload images</h5>
-                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                                                        </button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <div class="input-group mb-3">
-                                                                            <span class="input-group-text">Upload</span>
-                                                                            <div class="form-file">
-                                                                                <input type="file" class="form-file-input form-control" />
+
+                                        <div className="tab-content">
+                                            <div id="my-posts" className="tab-pane fade active show">
+                                                <div className="my-post-content pt-3">
+                                                    {fronterror && <Message variant='danger'>{fronterror}</Message>}
+                                                    <div className="post-input" style={{ marginBottom: "0" }}>
+                                                        <form onSubmit={submitHandler}>
+                                                            <textarea name="post_desc" id="textarea" cols="30" rows="5" className="form-control bg-transparent" placeholder="Please type what you want...." value={post_desc} onChange={(e) => {
+                                                                setfronterror('')
+                                                                setPost_desc(e.target.value)
+                                                                console.log(post_desc)
+                                                            }}></textarea>
+                                                            <a className="btn btn-primary light me-2 px-3" data-bs-toggle="modal" data-bs-target="#cameraModal"><i className="fa fa-camera m-0"></i> </a>
+                                                            <a className="btn btn-primary light me-2 px-3" data-bs-toggle="modal" data-bs-target="#videomodal"><BsFillCameraVideoFill /></a>
+                                                            <div className="modal fade" id="cameraModal">
+                                                                <div className="modal-dialog modal-dialog-centered" role="document">
+                                                                    <div className="modal-content">
+                                                                        <div className="modal-header">
+                                                                            <h5 className="modal-title">Upload images</h5>
+                                                                            <button type="button" className="btn-close" data-bs-dismiss="modal">
+                                                                            </button>
+                                                                        </div>
+                                                                        <div className="modal-body">
+                                                                            {image && <div className="input-group mb-3">
+                                                                                <img
+                                                                                    alt="Preview"
+                                                                                    className='w-100 mb-3 rounded'
+                                                                                    src={URL.createObjectURL(
+                                                                                        image
+                                                                                    )}
+                                                                                ></img>
+
+                                                                            </div>}
+                                                                            <div className="input-group mb-3">
+                                                                                <span className="input-group-text">Upload</span>
+                                                                                <div className="form-file">
+                                                                                    <input type="file" className="form-file-input form-control" onChange={ImagehandleChange} />
+                                                                                </div>
                                                                             </div>
+                                                                        </div>
+                                                                        <div className="modal-footer">
+                                                                            <button type="button" className="btn btn-primary" data-bs-dismiss="modal">Continue</button>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#postModal">Post</a>
-                                                        <div class="modal fade" id="postModal">
-                                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title">Post</h5>
-                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                                                        </button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <textarea name="textarea" id="textarea2" cols="30" rows="5" class="form-control bg-transparent" placeholder="Please type what you want...."></textarea>
-                                                                        <a class="btn btn-primary btn-rounded" href="javascript:void(0)">Post</a>
+                                                            <div className="modal fade" id="videomodal">
+                                                                <div className="modal-dialog modal-dialog-centered" role="document">
+                                                                    <div className="modal-content">
+                                                                        <div className="modal-header">
+                                                                            <h5 className="modal-title">Upload video</h5>
+                                                                            <button type="button" className="btn-close" data-bs-dismiss="modal">
+                                                                            </button>
+                                                                        </div>
+                                                                        <div className="modal-body">
+                                                                            {video && <div className="input-group mb-5">
+                                                                                <video controls
+                                                                                    alt="Preview"
+                                                                                    className='w-100 mb-3 rounded'
+                                                                                    
+                                                                                ><source src={URL.createObjectURL(video)} /></video>
+
+                                                                            </div>}
+                                                                            <div className="input-group mb-3">
+                                                                                <span className="input-group-text">Upload</span>
+                                                                                <div className="form-file">
+                                                                                    <input type="file" className="form-file-input form-control" onChange={VideohandleChange} />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="modal-footer">
+
+                                                                            <button type="button" className="btn btn-primary" data-bs-dismiss="modal">Continue
+                                                                            </button>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                            <button className="btn btn-primary" type="submit">Post</button>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="modal fade" id="replyModal">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Post Reply</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    <div className="modal fade" id="replyModal">
+                                        <div className="modal-dialog modal-dialog-centered" role="document">
+                                            <div className="modal-content">
+                                                <div className="modal-header">
+                                                    <h5 className="modal-title">Post Reply</h5>
+                                                    <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
-                                                <div class="modal-body">
+                                                <div className="modal-body">
                                                     <form>
-                                                        <textarea class="form-control" rows="4">Message</textarea>
+                                                        <textarea className="form-control" rows="4">Message</textarea>
                                                     </form>
                                                 </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">btn-close</button>
-                                                    <button type="button" class="btn btn-primary">Reply</button>
+                                                <div className="modal-footer">
+                                                    <button type="button" className="btn btn-danger light" data-bs-dismiss="modal">btn-close</button>
+                                                    <button type="button" className="btn btn-primary">Reply</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -133,46 +241,102 @@ function Feed() {
                         </div>
                     </div>
                     <div className="col-xl-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="post-details">
-                                    <ul class="mb-2 post-meta " >
-                                        <div className="profile-photo d-flex flex-wrap" >
-                                            <img src="./innap/images/profile/profile.png" className="img-fluid rounded-circle me-1" style={{ width: "30px" }} alt="" />
-                                            <li class="post-author me-3 mt-1 " >By Admin</li>
-                                            <li class="post-date me-3 mt-1"><i class="fas fa-calendar-week me-2"></i>18 Nov 2020</li>
-                                            <li class="post-comment mt-1"><i class="far fa-comments me-2"></i> 28</li>
 
-                                        </div>
 
-                                    </ul>
-                                    <img src="innap/images/profile/8.jpg" alt="" class="img-fluid mb-3 w-100 rounded" />
-                                    <h3 class="mb-2 text-black">Collection of textile samples lay spread</h3>
+                        <div className="card">
+                        {loading && <Loader />}
+                            {posts?.length !== 0 ? posts?.map((post, id) => (
+                                <div className="card-body mt-4" style={{
+                                    boxShadow: "0.3125rem 0.3125rem 0.3125rem 0.3125rem rgb(82 63 105 / 5%)", border: "0rem solid transparent",
+                                    borderRadius: "1.375rem"
+                                }}>
+                                    <div className="post-details">
+                                        <ul className="mb-2 post-meta " >
+                                            <div className="profile-photo d-flex flex-wrap" >
+                                                <img src={post.user.pro_pic} className="img-fluid rounded-circle me-1" style={{ width: "30px", height: "30px" }} alt="" />
+                                                <li className="post-author me-3 mt-1 " >By {post.user.full_name}</li>
+                                                <li className="post-date me-3 mt-1"><i className="fas fa-calendar-week me-2"></i>{dayjs(post.posted_at).format("d MMM YYYY")}</li>
+                                                <li className="post-comment mt-1"><i className="far fa-comments me-2"></i> 28</li>
 
-                                    <p>A wonderful serenity has take possession of my entire soul like these sweet morning of spare which enjoy whole heart.A wonderful serenity has take possession of my entire soul like these sweet morning of spare which enjoy whole heart.</p>
-                                    <div class="comment-respond d-flex flex-column" id="respond">
-                                        <div className='d-flex'>
-                                            <button class="btn btn-primary me-2"><span class="me-2"><i class="fa fa-heart"></i></span>Like</button>
-                                            <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#replyModal"><span class="me-2"><i class="fa fa-reply"></i></span>Comment</button>
-                                        </div>
-                                        <div className="accordion accordion-start-indicator mt-4" id="accordion-five">
-                                            <div className="accordion-item">
-                                                <div className="accordion-header rounded-lg collapsed" id="accord-5One" data-bs-toggle="collapse" data-bs-target="#collapse5One" aria-controls="collapse5One" aria-expanded="false" role="button">
-                                                    <span className='text-black' >Show Comments<i className="far fa-comments ms-2"></i></span>
-                                                    <span className="accordion-header-indicator"></span>
-                                                </div>
-                                                <div id="collapse5One" className="accordion__body collapse" aria-labelledby="accord-5One" data-bs-parent="#accordion-five" >
-                                                    <div className="accordion-body-text">
-                                                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
-                                                    </div>
-                                                </div>
                                             </div>
 
+                                        </ul>
+                                        <Carousel>
+                                            {post.post_content_img && <Carousel.Item>
+                                                <img
+                                                    className="d-block w-100 mb-3 rounded"
+                                                    src={post.post_content_img}
+                                                    alt="First slide"
+                                                />
 
+                                            </Carousel.Item>}
+                                            {post.post_content_video && <Carousel.Item>
+                                                <video
+                                                    controls
+                                                    className="d-block w-100 mb-3 rounded"
+                                                    src={post.post_content_video}
+                                                    alt="Second slide"
+                                                />
+
+
+                                            </Carousel.Item>}
+
+                                        </Carousel>
+
+
+                                        {post.post_desc && <h4 className='py-4'>{post.post_desc}</h4>}
+                                        <div className="comment-respond d-flex flex-column" id="respond">
+                                            <div className='d-flex '>
+                                                {/* <button className="btn btn-primary me-2"><span className="me-2"><i className="fa fa-heart"></i></span>Like</button> */}
+                                                <SlLike style={{
+                                                    height: " 4em",
+                                                    width: "2em",
+                                                    color: "black"
+                                                }} />
+                                                <GoCommentDiscussion className='ms-3' data-bs-toggle="modal"data-bs-target="#replyModal"  style={{
+                                                    height: " 4em",
+                                                    width: "2em",
+                                                    color: "black"
+                                                }} />
+                                                {/* <button className="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#replyModal"><span className="me-2"><i className="fa fa-reply"></i></span>Comment</button> */}
+                                            </div>
+                                            <Accordion>
+                                                <Accordion.Item eventKey="0" style={{ marginBottom: " 1.25rem" }}>
+
+                                                    <Accordion.Header style={{ padding: "0", border: "none" }}>Show Comments<i className="far fa-comments ms-2"></i></Accordion.Header>
+                                                    <Accordion.Body>
+                                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                                                        eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+                                                        minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                                                        aliquip ex ea commodo consequat. Duis aute irure dolor in
+                                                        reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+                                                        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+                                                        culpa qui officia deserunt mollit anim id est laborum.
+                                                    </Accordion.Body>
+                                                </Accordion.Item>
+                                            </Accordion>
+                                            {/* <div className="accordion accordion-start-indicator mt-4" id="accordion-five">
+                                                <div className="accordion-item">
+                                                    <div className="accordion-header rounded-lg collapsed" id="accord-5One" data-bs-toggle="collapse" data-bs-target="#collapse5One" aria-controls="collapse5One" aria-expanded="false" role="button">
+                                                        <span className='text-black' >Show Comments<i className="far fa-comments ms-2"></i></span>
+                                                        <span className="accordion-header-indicator"></span>
+                                                    </div>
+                                                    <div id="collapse5One" className="accordion__body collapse" aria-labelledby="accord-5One" data-bs-parent="#accordion-five" >
+                                                        <div className="accordion-body-text">
+                                                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div> */}
                                         </div>
+
                                     </div>
                                 </div>
-                            </div>
+                            )) :
+                                null
+                            }
                         </div>
                     </div>
 
@@ -198,31 +362,31 @@ function Feed() {
                 </div>
             </div>
 
-            <div className="col-xl-3">
-                <div class="col-xl-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="profile-news">
-                                <h5 class="text-primary d-inline">Our Latest News</h5>
-                                <div class="media pt-3 pb-3">
-                                    <img src="innap/images/profile/5.jpg" alt="image" class="me-3 rounded" width="75" />
-                                    <div class="media-body">
-                                        <h5 class="m-b-5"><a href="post-details.html" class="text-black">Collection of textile samples</a></h5>
-                                        <p class="mb-0">I shared this on my fb wall a few months back, and I thought.</p>
+            <div className="col-xl-3 thirdbox">
+                <div className="col-xl-12">
+                    <div className="card">
+                        <div className="card-body">
+                            <div className="profile-news">
+                                <h5 className="text-primary d-inline">Our Latest News</h5>
+                                <div className="media pt-3 pb-3">
+                                    <img src="innap/images/profile/5.jpg" alt="image" className="me-3 rounded" width="75" />
+                                    <div className="media-body">
+                                        <h5 className="m-b-5"><a href="post-details.html" className="text-black">Collection of textile samples</a></h5>
+                                        <p className="mb-0">I shared this on my fb wall a few months back, and I thought.</p>
                                     </div>
                                 </div>
-                                <div class="media pt-3 pb-3">
-                                    <img src="innap/images/profile/6.jpg" alt="image" class="me-3 rounded" width="75" />
-                                    <div class="media-body">
-                                        <h5 class="m-b-5"><a href="post-details.html" class="text-black">Collection of textile samples</a></h5>
-                                        <p class="mb-0">I shared this on my fb wall a few months back, and I thought.</p>
+                                <div className="media pt-3 pb-3">
+                                    <img src="innap/images/profile/6.jpg" alt="image" className="me-3 rounded" width="75" />
+                                    <div className="media-body">
+                                        <h5 className="m-b-5"><a href="post-details.html" className="text-black">Collection of textile samples</a></h5>
+                                        <p className="mb-0">I shared this on my fb wall a few months back, and I thought.</p>
                                     </div>
                                 </div>
-                                <div class="media pt-3 pb-3">
-                                    <img src="innap/images/profile/7.jpg" alt="image" class="me-3 rounded" width="75" />
-                                    <div class="media-body">
-                                        <h5 class="m-b-5"><a href="post-details.html" class="text-black">Collection of textile samples</a></h5>
-                                        <p class="mb-0">I shared this on my fb wall a few months back, and I thought.</p>
+                                <div className="media pt-3 pb-3">
+                                    <img src="innap/images/profile/7.jpg" alt="image" className="me-3 rounded" width="75" />
+                                    <div className="media-body">
+                                        <h5 className="m-b-5"><a href="post-details.html" className="text-black">Collection of textile samples</a></h5>
+                                        <p className="mb-0">I shared this on my fb wall a few months back, and I thought.</p>
                                     </div>
                                 </div>
                             </div>

@@ -8,8 +8,8 @@ function AdminCommon() {
     return (
         <div id="main-wrapper">
             <AdminNavbar />
-            <div class="content-body">
-            <div class="container-fluid">
+            <div className="content-body">
+            <div className="container-fluid">
                 
                     <Outlet />
               </div>  

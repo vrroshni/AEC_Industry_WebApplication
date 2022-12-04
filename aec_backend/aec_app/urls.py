@@ -15,6 +15,8 @@ urlpatterns = [
     path('userrequest/', getUserRequest, name='userrequest'),
     path('profileverification/', profileVerification, name='profileverification'),
     path('updateprofile/', updateUserProfile, name='updateprofile'),
+    path('addpost/', addPost, name='addpost'),
+    path('allfeed/', allFeed, name='allfeed'),
 
 
 

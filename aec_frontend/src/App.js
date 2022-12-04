@@ -17,6 +17,8 @@ import AdminDashboard from './components/AdminDashboard';
 import Status_Success from './profileveri_components/Status_Success';
 import StatusPending from './profileveri_components/StatusPending';
 import StatusRejected from './profileveri_components/StatusRejected';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function App() {

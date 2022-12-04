@@ -8,14 +8,19 @@ import {
     profileverificationReducer,
     getUserProfileReducer,
     updateUserProfileReducer,
-    FeedtReducer,
+    FeedReducer,
     postAddReducer
 } from './reducers/userReducer'
+
 import {
     allUserListReducer,
     statusChangeReducer,
     allProfileRequestsReducer
 } from './reducers/adminReducer'
+import {
+    alertCreateReducer
+} from './reducers/alertReducer'
+
 import storage from 'redux-persist/lib/storage'
 import { persistReducer } from 'redux-persist'
 // import logger from 'redux-logger'
@@ -34,12 +39,14 @@ const reducers = combineReducers({
     getUserProfile: getUserProfileReducer,
     updateUserprofile: updateUserProfileReducer,
     addPost: postAddReducer,
-    allposts: FeedtReducer,
+    allposts: FeedReducer,
 
 
     allUsers: allUserListReducer,
     statusChanger: statusChangeReducer,
     allProfRequests: allProfileRequestsReducer,
+
+    alerts:alertCreateReducer
 
 })
 

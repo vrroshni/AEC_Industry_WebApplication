@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from aec_app.models import *
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
@@ -51,3 +52,19 @@ class ProfileVerificationSerializer(serializers.ModelSerializer):
         model=ProfileVerification
         fields='__all__'
     
+
+
+# class PostSerializer(serializers.ModelSerializer):
+#     user_post=ProfileSerializer(read_only=True)
+#     class Meta:
+#         model=Post
+#         fields='__all__'
+
+
+
+class PostSerializer(serializers.ModelSerializer):
+    user=ProfileSerializer(read_only=True)
+    
+    class Meta:
+        model=Post
+        fields='__all__'

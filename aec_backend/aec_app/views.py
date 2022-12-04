@@ -162,3 +162,42 @@ def updateUserProfile(request):
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def addPost(request):
+    user = request.user
+    
+    data = request.data
+    # try:
+    post=Post()
+    post.user=user
+    if data['post_desc'] != '':
+        post.post_desc = data['post_desc']
+    if data['image'] != '':
+        post.post_content_img = data['image']
+    if data['video'] != '':
+        post.post_content_video = data['video']
+    post.save()
+    serializer=PostSerializer(post,many=False)
+    return Response(serializer.data,status=status.HTTP_201_CREATED)
+    # except:
+        # message = {'detail': "Something went wrong"}
+        # return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def allFeed(request):
+    try:
+        posts=Post.objects.all()
+        serializer=PostSerializer(posts,many=True)
+        print(serializer.data,'KKKKKKKKKKKKKKKKKKK')
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)

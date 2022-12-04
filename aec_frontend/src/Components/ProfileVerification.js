@@ -101,8 +101,6 @@ function ProfileVerification() {
 
 
 
-    // const Profileinfo = useSelector((state) => state.userProfileVerification);
-    // let { loading, fullProfileInfo, error, status } = Profileinfo;
 
     const Profileinfo = useSelector((state) => state.userProfileVerification);
     let { loading, fullProfileInfo, error, status, prof_request, prof_request_error } = Profileinfo;
@@ -114,18 +112,8 @@ function ProfileVerification() {
 
 
     const submitHandler = (e) => {
-        const user = userInfo.id;
-        const role = e.role;
-        const location = e.location;
-        const experience = e.experience;
-        const description = e.description;
-        const dob = e.dob;
-        const website = e.website;
-        const id_image = image;
-        const cv_pdf = e.cv_pdf[0];
-        const certi_pdf = e.certi_pdf[0];
         dispatch(
-            profileverification(user, role, location, experience, description, dob, website, id_image, cv_pdf, certi_pdf)
+            profileverification(userInfo.id, e.role,  e.location,  e.experience,  e.description,  e.dob,  e.website, image, e.cv_pdf, e.certi_pdf)
         ).then(() => {
             setReload(!reload)
         });

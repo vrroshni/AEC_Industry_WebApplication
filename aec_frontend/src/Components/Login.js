@@ -3,6 +3,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { login } from '../actions/userActions'
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom'
+import Message from '../components/Message'
+import Loader from '../components/Loader'
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
 
 
 
@@ -10,6 +16,7 @@ import { useNavigate } from 'react-router-dom'
 function Login() {
     const [reload, setReload] = useState(false)
     const navigate = useNavigate()
+
     const { register, handleSubmit, formState: { errors } } = useForm({
         mode: "onChange"
     });
@@ -25,25 +32,21 @@ function Login() {
     };
     const dispatch = useDispatch()
     const userLogin = useSelector(state => state.userLogin)
-    const { loading, userInfo, error, status } = userLogin
+    const { loading, userInfo, error} = userLogin
+
     useEffect(() => {
-        if (status) {
+        if (userInfo?.is_superadmin) {
+            navigate('/admin/')
+            window.location.reload()
+        }
+        if (userInfo?.is_superadmin === false) {
             navigate('/')
-        } else if (status === false) {
-            
-        } else {
-            console.log('nothing happens')
         }
 
-    }, [reload])
+    }, [userInfo])
+    
     const submitHandler = (e) => {
-        const username = e.username
-        const password = e.password
-        dispatch(login(username, password))
-            .then(() => {
-                setReload(!reload)
-            })
-
+        dispatch(login(e.username, e.password))
     }
 
 
@@ -58,11 +61,14 @@ function Login() {
                                     <div className="col-xl-12">
                                         <div className="auth-form">
                                             <div className="text-center mb-3">
+                                            
                                                 <a >
                                                     {/* <img src="images/logo-full.png" alt="" /> */}
                                                 </a>
                                             </div>
                                             <h4 className="text-center mb-4">Sign in your account</h4>
+                                            {loading && <Loader />}
+                                            {error && <Message variant='danger'>{error}</Message>}
                                             <form onSubmit={handleSubmit(submitHandler)} >
                                                 <div className="mb-3">
                                                     <label className="mb-1"><strong>Username</strong></label>
@@ -88,8 +94,10 @@ function Login() {
                                                 </div>
                                             </form>
                                             <div className="new-account mt-3">
-                                                <p>Don't have an account? <a className="text-primary" onClick={()=>navigate('/register')} >Sign up</a></p>
+                                                <p>Don't have an account? <a className="text-primary" onClick={() => navigate('/register')} >Sign up</a></p>
                                             </div>
+                                            <ToastContainer />
+                                           
                                         </div>
                                     </div>
                                 </div>
@@ -103,3 +111,4 @@ function Login() {
 }
 
 export default Login
+

@@ -3,6 +3,9 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux'
 import { getUserProfile, updateProfile } from '../actions/userActions'
 import { useNavigate } from 'react-router-dom'
+import Message from '../components/Message'
+import Loader from '../components/Loader'
+
 
 function UserProfile() {
 	const [reload, setReload] = useState(false)
@@ -13,8 +16,6 @@ function UserProfile() {
 		username: { required: "Username is required" },
 		firstname: { required: "First Name is required" },
 		lastname: { required: "Last Name is required" },
-		// pro_pic: {  },
-		// cover_pic: {  },
 		email: {
 			required: "Email is required",
 			pattern: {
@@ -61,19 +62,15 @@ function UserProfile() {
 
 
 	const getUserProfileInfo = useSelector(state => state.getUserProfile)
-	const { loading, error, fullUserProfileInfo,status } = getUserProfileInfo
+	const { fullUserProfileInfo } = getUserProfileInfo
 
 	const updateprofileinfo = useSelector(state => state.updateUserprofile)
-	const {  result,updateerror } = updateprofileinfo
+	const { loading, result,updateerror } = updateprofileinfo
 
 	useEffect(() => {
-		dispatch(getUserProfile())
+		
 		if (result) {
-            console.log('successs')
-        } else if (status === false) {
-            console.log('error')
-        } else {
-            console.log('nothing happens')
+            dispatch(getUserProfile())
         }
 
 
@@ -95,10 +92,10 @@ function UserProfile() {
 	return (
 		<>
 			{fullUserProfileInfo && (<>
-				<div class="row page-titles">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item active"><a href="/">UserProfile</a></li>
-                    <li class="breadcrumb-item"><a href="/">{fullUserProfileInfo.full_name}</a></li>
+				<div className="row page-titles">
+                <ol className="breadcrumb">
+                    <li className="breadcrumb-item active"><a href="/">UserProfile</a></li>
+                    <li className="breadcrumb-item"><a href="/">{fullUserProfileInfo.full_name}</a></li>
                 </ol>
             </div>
 				<div className="row" style={{cursor:"pointer"}}>
@@ -251,6 +248,8 @@ function UserProfile() {
 														<div className=" mb-3 text-center">
 															<h3 className="text-primary">Edit User Profile</h3>
 														</div>
+														{loading && <Loader />}
+                                            {updateerror && <Message variant='danger'>{updateerror}</Message>}
 
 														<form onSubmit={handleSubmit(submitHandler)}>
 															<div className="row mt-4">

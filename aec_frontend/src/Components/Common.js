@@ -7,10 +7,10 @@ import Navbar from './Navbar'
 
 function common() {
   return (
-    <div id="main-wrapper" class="show menu-toggle">
+    <div id="main-wrapper" className="show menu-toggle">
       <Navbar />
-      <div class="content-body">
-        <div class="container-fluid">
+      <div className="content-body">
+        <div className="container-fluid">
           <Outlet />
         </div>
       </div>

@@ -3,6 +3,10 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux'
 import { registeruser } from '../actions/userActions'
 import { useNavigate } from 'react-router-dom'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+
+
 
 
 
@@ -57,28 +61,16 @@ function Register() {
     const { loading,error,status } = userRegister
     useEffect(() => {
         if (status) {
+
             navigate('/login')
-        } else if (status === false) {
-            
-        } else {
-            console.log('nothing happens')
-        }
+        } 
 
-    }, [reload])
+    }, [status])
     const submitHandler = (e) => {
-        alert('form submitting')
-        const username = e.username
-        const firstname = e.firstname
-        const lastname = e.lastname
-        const email = e.email
-        const phonenumber = e.phonenumber
-        const password = e.password
-        dispatch(registeruser(username,firstname,lastname, email,phonenumber,password))
-        .then(() => {
-            setReload(!reload)
-        })
+        dispatch(registeruser( e.username,e.firstname,e.lastname, e.email,e.phonenumber,e.password))
+        
     }
-
+  
 
     return (
         <div className="" style={{ backgroundImage: "url(AECFiles/images/11.jpg)" }}>
@@ -91,11 +83,13 @@ function Register() {
                                     <div className="col-xl-12">
                                         <div className="auth-form">
                                             <div className="text-center">
-                                                <a href="index.html">
+                                                {/* <a href="index.html"> */}
                                                     {/* <img src="AECFiles/images/logo-full.png" alt=""/> */}
-                                                </a>
+                                                {/* </a> */}
                                             </div>
                                             <h4 className="text-center mb-4">Sign up your account</h4>
+                                            {loading && <Loader />}
+                                            {error && <Message variant='danger'>{error}</Message>}
                                             <form onSubmit={handleSubmit(submitHandler)} >
                                                 <div className="mb-3">
                                                     <label className="mb-1"><strong>First Name</strong></label>
@@ -151,7 +145,7 @@ function Register() {
                                                 </div>
                                             </form>
                                             <div className="new-account mt-3">
-                                                <p>Already have an account? <a className="text-primary" href="page-login.html">Sign in</a></p>
+                                                <p>Already have an account? <a className="text-primary" onClick={()=>navigate('/login')}>Sign in</a></p>
                                             </div>
                                         </div>
                                     </div>

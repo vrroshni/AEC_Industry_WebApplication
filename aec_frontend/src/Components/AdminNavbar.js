@@ -133,7 +133,7 @@ function AdminNavbar() {
             <div className="deznav">
                 <div className="deznav-scroll">
                     <ul className="metismenu" id="menu">
-                        <li><a className="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+                        <li><a className="has-arrow ai-icon" href="/" aria-expanded="false">
                             <i className="flaticon-025-dashboard"></i>
                             <span className="nav-text">Dashboard</span>
                         </a>
@@ -148,14 +148,14 @@ function AdminNavbar() {
                             </ul>
 
                         </li>
-                        <li><a className="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+                        <li><a className="has-arrow ai-icon" href="/" aria-expanded="false">
                             <i className="flaticon-050-info"></i>
                             <span className="nav-text">Apps</span>
                         </a>
                             <ul aria-expanded="false">
                                 <li><a href="./app-profile.html">Profile</a></li>
                                 <li><a href="./post-details.html">Post Details</a></li>
-                                <li><a className="has-arrow" href="javascript:void()" aria-expanded="false">Email</a>
+                                <li><a className="has-arrow" href="/" aria-expanded="false">Email</a>
                                     <ul aria-expanded="false">
                                         <li><a href="./email-compose.html">Compose</a></li>
                                         <li><a href="./email-inbox.html">Inbox</a></li>
@@ -163,7 +163,7 @@ function AdminNavbar() {
                                     </ul>
                                 </li>
                                 <li><a href="./app-calender.html">Calendar</a></li>
-                                <li><a className="has-arrow" href="javascript:void()" aria-expanded="false">Shop</a>
+                                <li><a className="has-arrow" href="/" aria-expanded="false">Shop</a>
                                     <ul aria-expanded="false">
                                         <li><a href="./ecom-product-grid.html">Product Grid</a></li>
                                         <li><a href="./ecom-product-list.html">Product List</a></li>
@@ -176,7 +176,7 @@ function AdminNavbar() {
                                 </li>
                             </ul>
                         </li>
-                        <li><a className="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+                        <li><a className="has-arrow ai-icon" href="/" aria-expanded="false">
                             <i className="flaticon-041-graph"></i>
                             <span className="nav-text">Charts</span>
                         </a>
@@ -189,7 +189,7 @@ function AdminNavbar() {
                                 <li><a href="./chart-peity.html">Peity</a></li>
                             </ul>
                         </li>
-                        <li><a className="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+                        <li><a className="has-arrow ai-icon" href="/" aria-expanded="false">
                             <i className="flaticon-086-star"></i>
                             <span className="nav-text">Bootstrap</span>
                         </a>
@@ -213,7 +213,7 @@ function AdminNavbar() {
 
                             </ul>
                         </li>
-                        <li><a className="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+                        <li><a className="has-arrow ai-icon" href="/" aria-expanded="false">
                             <i className="flaticon-045-heart"></i>
                             <span className="nav-text">Plugins</span>
                         </a>
@@ -232,7 +232,7 @@ function AdminNavbar() {
                             <span className="nav-text">Widget</span>
                         </a>
                         </li>
-                        <li><a className="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+                        <li><a className="has-arrow ai-icon" href="/" aria-expanded="false">
                             <i className="flaticon-072-printer"></i>
                             <span className="nav-text">Forms</span>
                         </a>
@@ -244,7 +244,7 @@ function AdminNavbar() {
                                 <li><a href="form-validation.html">Form Validate</a></li>
                             </ul>
                         </li>
-                        <li><a className="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+                        <li><a className="has-arrow ai-icon" href="/" aria-expanded="false">
                             <i className="flaticon-043-menu"></i>
                             <span className="nav-text">Table</span>
                         </a>
@@ -253,14 +253,14 @@ function AdminNavbar() {
                                 <li><a href="table-datatable-basic.html">Datatable</a></li>
                             </ul>
                         </li>
-                        <li><a className="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+                        <li><a className="has-arrow ai-icon" href="/" aria-expanded="false">
                             <i className="flaticon-022-copy"></i>
                             <span className="nav-text">Pages</span>
                         </a>
                             <ul aria-expanded="false">
                                 <li><a href="./page-login.html">Login</a></li>
                                 <li><a href="./page-register.html">Register</a></li>
-                                <li><a className="has-arrow" href="javascript:void()" aria-expanded="false">Error</a>
+                                <li><a className="has-arrow" href="/" aria-expanded="false">Error</a>
                                     <ul aria-expanded="false">
                                         <li><a href="./page-error-400.html">Error 400</a></li>
                                         <li><a href="./page-error-403.html">Error 403</a></li>

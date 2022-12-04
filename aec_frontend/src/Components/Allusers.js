@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { listUsers, statuschange } from '../actions/adminActions'
+import Message from '../components/Message'
+import Loader from '../components/Loader'
+
 
 
 
@@ -14,17 +17,22 @@ function Allusers() {
     const statusInfo = useSelector(state => state.statusChanger)
     const { blocked } = statusInfo
 
-
+    const blockhandler=(id)=>{
+        dispatch(statuschange(id))
+        .then(() => {
+            setReload(!reload)
+        })
+    }
+  
 
     useEffect(() => {
         dispatch(listUsers())
     }, [reload])
 
     return (
-
         <div>
-            {users ?
-                <>
+            {users?.length !== 0 ?
+                (<>
                     <div className="row page-titles">
                         <ol className="breadcrumb">
                             <li className="breadcrumb-item active"><a href="/">ALL USERS</a></li>
@@ -39,7 +47,9 @@ function Allusers() {
                                 </div>
                                 <div className="card-body">
                                     <div className="table-responsive">
+
                                         <table className="table table-responsive-md">
+                                            
                                             <thead>
                                                 <tr>
                                                     <th style={{ width: "80px" }}><strong>#</strong></th>
@@ -68,21 +78,9 @@ function Allusers() {
                                                             </td>
                                                             <td>{user.is_active === true ? <span className="badge light badge-success">Active</span> : <span className="badge light badge-danger">InActive</span>}</td>
                                                             <td>
-                                                                {user.is_active === true ? <span onClick={() => {
-                                                                    dispatch(statuschange(user.id))
-                                                                        .then(() => {
-                                                                            setReload(!reload)
-                                                                        })
-
-                                                                }} className="btn btn-xs  btn-danger">Block</span> : <span onClick={() => {
-                                                                    dispatch(statuschange(user.id))
-                                                                        .then(() => {
-                                                                            setReload(!reload)
-                                                                        })
-                                                                }} className="btn btn-xs btn-success">Unblock</span>}
+                                                                {user.is_active === true ? <span onClick={blockhandler(user.id)} className="btn btn-xs  btn-danger">Block</span> : <span onClick={blockhandler(user.id)} className="btn btn-xs btn-success">Unblock</span>}
                                                             </td>
                                                         </tr>
-
                                                     )
                                                 })}
 
@@ -92,11 +90,15 @@ function Allusers() {
                                 </div>
                             </div>
                         </div>
-                    </div></> : <div className="row page-titles text-center">
-                    <ol className="breadcrumb">
-                        <li className="breadcrumb-item active"><a href="/">NO USERS AVAILABLE</a></li>
-                    </ol>
-                </div>}
+                    </div>
+                </>
+                ) : (
+                    <div className="row page-titles text-center">
+                        <ol className="breadcrumb">
+                            <li className="breadcrumb-item active"><a href="/">NO USERS AVAILABLE</a></li>
+                        </ol>
+                    </div>
+                )}
 
         </div>
     )
