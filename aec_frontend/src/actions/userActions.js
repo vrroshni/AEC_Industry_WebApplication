@@ -46,7 +46,7 @@ import {
     UNFOLLOW_FOLLOW_USER,
     SEND_CONNECTION_REQUEST,
     REJECT_CONNECTION_REQUEST,
-    USER_NETWORK_RESET
+    USER_NETWORK_RESET,
 
 } from '../constants/userConstants'
 
@@ -318,7 +318,11 @@ export const addPost = (post_desc,image,video) => async (dispatch,getState) => {
 
         dispatch({
             type: USER_ADD_POST_SUCCESS,
-            payload: data
+        })
+
+        dispatch({
+            type:USER_FEED_ALL_POSTS_LIST_SUCCESS,
+            payload:data
         })
 
 
@@ -384,12 +388,16 @@ export const post_like = (id) => async (dispatch,getState) => {
             }
         }
 
-        const { data } = await axios.put('/like_post/',{'id':id}, config
+        const { data } = await axios.patch('/user/like_post/',{'id':id}, config
         )
 
         dispatch({
             type: USER_LIKED_POST,
             
+        })
+        dispatch({
+            type:USER_FEED_ALL_POSTS_LIST_SUCCESS,
+            payload:data
         })
 }
 
@@ -407,11 +415,16 @@ export const post_dislike = (id) => async (dispatch,getState) => {
             }
         }
 
-        const { data } = await axios.put('/dislike_post/',{'id':id}, config
+        const { data } = await axios.patch('/user/dislike_post/',{'id':id}, config
         )
 
         dispatch({
             type: USER_DISLIKED_POST,  
+        })
+
+        dispatch({
+            type:USER_FEED_ALL_POSTS_LIST_SUCCESS,
+            payload:data
         })
 }
 
@@ -428,11 +441,16 @@ export const user_commented = (post_id,comment) => async (dispatch,getState) => 
             }
         }
 
-        const { data } = await axios.put('/user_commented/',{'id':post_id,'comment':comment}, config
+        const { data } = await axios.put('/user/user_commented/',{'id':post_id,'comment':comment}, config
         )
 
         dispatch({
             type: USER_COMMENTED,  
+        })
+
+        dispatch({
+            type:USER_FEED_ALL_POSTS_LIST_SUCCESS,
+            payload:data
         })
 }
 
@@ -449,13 +467,19 @@ export const user_comment_reply = (post_id,comment_id,comment) => async (dispatc
             }
         }
 
-        const { data } = await axios.put('/user_comment_reply/',{'post_id':post_id,'comment_id':comment_id,'comment':comment}, config
+        const { data } = await axios.put('/user/user_comment_reply/',{'post_id':post_id,'comment_id':comment_id,'comment':comment}, config
         )
 
         dispatch({
             type: USER_COMMENT_REPLY,  
         })
+        
+        dispatch({
+            type:USER_FEED_ALL_POSTS_LIST_SUCCESS,
+            payload:data
+        })
 }
+
 export const follow_unfollow = (user_id) => async (dispatch,getState) => {
 
         const {
@@ -469,7 +493,7 @@ export const follow_unfollow = (user_id) => async (dispatch,getState) => {
             }
         }
 
-        const { data } = await axios.put('/follow_unfollow/',{'user_id':user_id,}, config
+        const { data } = await axios.put('/user/follow_unfollow/',{'user_id':user_id,}, config
         )
 
         dispatch({
@@ -511,7 +535,27 @@ export const reject_connection = (user_id) => async (dispatch,getState) => {
             }
         }
 
-        const { data } = await axios.put('/reject_connection/',{'user_id':user_id,}, config
+        const { data } = await axios.put('/user/reject_connection/',{'user_id':user_id,}, config
+        )
+
+        dispatch({
+            type: REJECT_CONNECTION_REQUEST,  
+        })
+}
+export const accept_connection = (user_id) => async (dispatch,getState) => {
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put('/user/accept_connection/',{'user_id':user_id,}, config
         )
 
         dispatch({

@@ -44,17 +44,6 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 
 # ------------------------------ for user needs ------------------------------ #
-# @api_view(['POST'])
-# def registerUser(request):
-#     data=request.data
-#     user=AccountSerializer(data=data)
-#     if user.is_valid():
-#             user.save()
-#             return Response(user.data,status=status.HTTP_201_CREATED)
-#     else:
-#             return Response(status=status.HTTP_404_NOT_FOUND)
-
-
 @api_view(['POST'])
 def registerUser(request):
     data = request.data
@@ -170,34 +159,36 @@ def addPost(request):
     user = request.user
     
     data = request.data
-    # try:
-    post=Post()
-    post.user=user
-    if data['post_desc'] != '':
-        post.post_desc = data['post_desc']
-    if data['image'] != '':
-        post.post_content_img = data['image']
-    if data['video'] != '':
-        post.post_content_video = data['video']
-    post.save()
-    serializer=PostSerializer(post,many=False)
-    return Response(serializer.data,status=status.HTTP_201_CREATED)
-    # except:
-        # message = {'detail': "Something went wrong"}
-        # return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        post=Post()
+        post.user=user
+        if data['post_desc'] != '':
+            post.post_desc = data['post_desc']
+        if data['image'] != '':
+            post.post_content_img = data['image']
+        if data['video'] != '':
+            post.post_content_video = data['video']
+        post.save()
+        posts=Post.objects.all().order_by('-posted_at')
+        serializer=PostSerializer(posts,many=True)
+        if serializer.is_valid:
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def allFeed(request):
+
     try:
-        posts=Post.objects.all()
+        posts=Post.objects.all().order_by('-posted_at')
         serializer=PostSerializer(posts,many=True)
-        print(serializer.data,'KKKKKKKKKKKKKKKKKKK')
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)

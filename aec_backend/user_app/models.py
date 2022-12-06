@@ -134,10 +134,17 @@ class ProfileVerification(models.Model):
 
 
 class Network(models.Model):
-    user=models.ForeignKey(Account,related_name='user_network',on_delete=models.CASCADE,null=True)
+    followed_to=models.ForeignKey(Account,related_name='user_network',on_delete=models.CASCADE,null=True)
     is_follow=models.BooleanField(default=False, null=True)
-    is_connect=models.BooleanField(default=False,null=True)
+    is_connect=models.BooleanField(null=True)
+    connect_status=models.CharField(max_length=100, null=True)
     followed_by=models.ForeignKey(Account,related_name='followed_by',on_delete=models.CASCADE,null=True)
+    followed_at=models.DateTimeField(auto_now_add=True)
+    is_rejected=models.BooleanField(null=True)
+    
+    def __str__(self):
+        return self.followed_by.username
+
 
 
 class Review_Rating(models.Model):

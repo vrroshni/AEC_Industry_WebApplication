@@ -2,21 +2,27 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import Carousel from 'react-bootstrap/Carousel';
-import { BsFillCameraVideoFill, BsTypeH1 } from 'react-icons/bs';
+import { BsFillCameraVideoFill } from 'react-icons/bs';
 import { GoCommentDiscussion } from 'react-icons/go';
-import { SlLike } from 'react-icons/sl';
-import { addPost, allFeed } from '../actions/userActions'
+import { SlLike, SlDislike } from 'react-icons/sl';
+import { addPost, allFeed, post_like, post_dislike } from '../actions/userActions'
 import { USER_ADD_POST_RESET } from '../constants/userConstants'
 import '../componentsCSS/feed.css'
 import dayjs from "dayjs";
 import Accordion from 'react-bootstrap/Accordion';
 import Message from '../components/Message'
 import Loader from '../components/Loader'
+import { useForm } from "react-hook-form";
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+
 
 
 
 
 function Feed() {
+    const [show, setShow] = useState(false);
+
     const [reload, setReload] = useState('')
     const [image, setImage] = useState('')
     const [video, setVideo] = useState('')
@@ -24,6 +30,16 @@ function Feed() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [fronterror, setfronterror] = useState(null)
+
+    const { register, handleSubmit, control, watch, formState: { errors } } = useForm({
+        mode: "onChange"
+    });
+    const registerOptions = {
+        comment: { required: "Comment is required" }
+    }
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
 
     const ImagehandleChange = (e) => {
@@ -43,11 +59,10 @@ function Feed() {
     const { posts } = AllpostsInfo
 
     const addedPost = useSelector(state => state.addPost)
-    const { addedpost,loading, added } = addedPost
+    const { addedpost, loading, added } = addedPost
 
     const submitHandler = (e) => {
         e.preventDefault()
-        
         if ((post_desc === '') && (image === '') && (video === '')) {
             setfronterror('Add sometheing to post')
         } else {
@@ -57,17 +72,32 @@ function Feed() {
                     setImage('')
                     setVideo('')
                     setPost_desc('')
-                    setReload(!reload)
+                    dispatch({ type: USER_ADD_POST_RESET })
                 }
                 )
 
         }
     }
+
+    const user_like = (id) => {
+        dispatch(post_like(id))
+
+    }
+
+    const user_dislike = (id) => {
+        dispatch(post_dislike(id))
+
+    }
+
     useEffect(() => {
         dispatch(allFeed())
-        dispatch({ type: USER_ADD_POST_RESET })
     }, [reload])
 
+
+    const CommentSubmitHandler = (e) => {
+
+
+    }
     return (
         <div className="row">
             <div className="col-xl-3 firstbox">
@@ -111,7 +141,7 @@ function Feed() {
 
                                         </div>
                                         <div className="mt-4">
-                                            <a href="/" className="btn btn-primary mb-1 me-1">Profile</a>
+                                            <a onClick={() => navigate('/profile')} className="btn btn-primary mb-1 me-1">Profile</a>
                                             <a href="/" className="btn btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#sendMessageModal">Send Message</a>
                                         </div>
                                     </div>
@@ -191,7 +221,7 @@ function Feed() {
                                                                                 <video controls
                                                                                     alt="Preview"
                                                                                     className='w-100 mb-3 rounded'
-                                                                                    
+
                                                                                 ><source src={URL.createObjectURL(video)} /></video>
 
                                                                             </div>}
@@ -217,7 +247,7 @@ function Feed() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="modal fade" id="replyModal">
+                                    {/* <div className="modal fade" id="replyModal">
                                         <div className="modal-dialog modal-dialog-centered" role="document">
                                             <div className="modal-content">
                                                 <div className="modal-header">
@@ -235,7 +265,7 @@ function Feed() {
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>
@@ -244,9 +274,9 @@ function Feed() {
 
 
                         <div className="card">
-                        {loading && <Loader />}
+                            {loading && <Loader />}
                             {posts?.length !== 0 ? posts?.map((post, id) => (
-                                <div className="card-body mt-4" style={{
+                                <div key={id} className="card-body mt-4" style={{
                                     boxShadow: "0.3125rem 0.3125rem 0.3125rem 0.3125rem rgb(82 63 105 / 5%)", border: "0rem solid transparent",
                                     borderRadius: "1.375rem"
                                 }}>
@@ -256,7 +286,7 @@ function Feed() {
                                                 <img src={post.user.pro_pic} className="img-fluid rounded-circle me-1" style={{ width: "30px", height: "30px" }} alt="" />
                                                 <li className="post-author me-3 mt-1 " >By {post.user.full_name}</li>
                                                 <li className="post-date me-3 mt-1"><i className="fas fa-calendar-week me-2"></i>{dayjs(post.posted_at).format("d MMM YYYY")}</li>
-                                                <li className="post-comment mt-1"><i className="far fa-comments me-2"></i> 28</li>
+                                                <li className="post-comment mt-1"><i className="far fa-comments me-2"></i> {post.comments}</li>
 
                                             </div>
 
@@ -288,51 +318,76 @@ function Feed() {
                                         <div className="comment-respond d-flex flex-column" id="respond">
                                             <div className='d-flex '>
                                                 {/* <button className="btn btn-primary me-2"><span className="me-2"><i className="fa fa-heart"></i></span>Like</button> */}
-                                                <SlLike style={{
+                                                <SlLike onClick={() => user_like(post.id)} style={{
                                                     height: " 4em",
                                                     width: "2em",
                                                     color: "black"
                                                 }} />
-                                                <GoCommentDiscussion className='ms-3' data-bs-toggle="modal"data-bs-target="#replyModal"  style={{
+                                                <p className='mt-4 ms-3'>{post.likes}</p>
+                                                <SlDislike className='ms-3' onClick={() => user_dislike(post.id)} style={{
                                                     height: " 4em",
                                                     width: "2em",
                                                     color: "black"
                                                 }} />
+                                                <p className='mt-4 ms-3'>{post.dislikes}</p>
+                                                <GoCommentDiscussion className='ms-3' style={{
+                                                    height: " 4em",
+                                                    width: "2em",
+                                                    color: "black"
+                                                }} />
+                                                <p className='mt-4 ms-3'>{post.comments}</p>
                                                 {/* <button className="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#replyModal"><span className="me-2"><i className="fa fa-reply"></i></span>Comment</button> */}
                                             </div>
                                             <Accordion>
                                                 <Accordion.Item eventKey="0" style={{ marginBottom: " 1.25rem" }}>
 
-                                                    <Accordion.Header style={{ padding: "0", border: "none" }}>Show Comments<i className="far fa-comments ms-2"></i></Accordion.Header>
+                                                    <Accordion.Header style={{ padding: "0", border: "none" }}>Post a Comment<i className="far fa-comments ms-2"></i></Accordion.Header>
                                                     <Accordion.Body>
-                                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                                        eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-                                                        minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                                                        aliquip ex ea commodo consequat. Duis aute irure dolor in
-                                                        reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                                                        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                                                        culpa qui officia deserunt mollit anim id est laborum.
+                                                        <form onSubmit={handleSubmit(CommentSubmitHandler)}>
+                                                            <div className="modal-body">
+                                                                <div>
+                                                                    <textarea className="form-control" rows="4" name='comment' {...register('comment', registerOptions.comment)} ></textarea>
+                                                                    <small className="text-danger">
+                                                                        {errors?.comment && errors.comment.message}
+                                                                    </small>
+                                                                </div>
+                                                                <div>
+                                                                    <button type="submit" className='btn btn-primary'>post</button>
+                                                                </div>
+                                                            </div>
+                                                            {/* <div className="modal-footer">
+                                                            </div> */}
+                                                        </form>
                                                     </Accordion.Body>
                                                 </Accordion.Item>
                                             </Accordion>
-                                            {/* <div className="accordion accordion-start-indicator mt-4" id="accordion-five">
-                                                <div className="accordion-item">
-                                                    <div className="accordion-header rounded-lg collapsed" id="accord-5One" data-bs-toggle="collapse" data-bs-target="#collapse5One" aria-controls="collapse5One" aria-expanded="false" role="button">
-                                                        <span className='text-black' >Show Comments<i className="far fa-comments ms-2"></i></span>
-                                                        <span className="accordion-header-indicator"></span>
-                                                    </div>
-                                                    <div id="collapse5One" className="accordion__body collapse" aria-labelledby="accord-5One" data-bs-parent="#accordion-five" >
-                                                        <div className="accordion-body-text">
-                                                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-
-                                            </div> */}
                                         </div>
 
                                     </div>
+
+                                    {/* <div className="modal fade" id="replyModal">
+                                        <div className="modal-dialog modal-dialog-centered" role="document">
+                                            <div className="modal-content">
+                                                <div className="modal-header">
+                                                    <h5 className="modal-title">{post.id}</h5>
+                                                    <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <form onSubmit={handleSubmit(CommentSubmitHandler)}>
+                                                    <div className="modal-body">
+
+                                                        <textarea className="form-control" rows="4" name='comment' {...register('comment', registerOptions.comment)} ></textarea>
+                                                        <small className="text-danger">
+                                                            {errors?.comment && errors.comment.message}
+                                                        </small>
+
+                                                    </div>
+                                                    <div className="modal-footer">
+                                                        <button type="submit" className="btn btn-primary">Post</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div> */}
                                 </div>
                             )) :
                                 null
@@ -342,25 +397,7 @@ function Feed() {
 
                 </div>
             </div>
-            <div className="modal fade" id="replyModal">
-                <div className="modal-dialog modal-dialog-centered" role="document">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">Post Reply</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div className="modal-body">
-                            <form>
-                                <textarea className="form-control" rows="4">Message</textarea>
-                            </form>
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-danger light" data-bs-dismiss="modal">btn-close</button>
-                            <button type="button" className="btn btn-primary">Reply</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
 
             <div className="col-xl-3 thirdbox">
                 <div className="col-xl-12">

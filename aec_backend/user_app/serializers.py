@@ -59,10 +59,15 @@ class ProfileVerificationSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model=Post
 #         fields='__all__'
-
+class PostReactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post_Reaction
+        fields = "__all__"
 
 
 class PostSerializer(serializers.ModelSerializer):
+    post_reaction = PostReactionSerializer()
+    
     user=ProfileSerializer(read_only=True)
     
     class Meta:
