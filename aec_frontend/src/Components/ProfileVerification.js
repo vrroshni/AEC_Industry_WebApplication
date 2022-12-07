@@ -14,6 +14,8 @@ import StatusRejected from "../profileveri_components/StatusRejected";
 function ProfileVerification() {
     const [reload, setReload] = useState(false);
     const [image, setImage] = useState('');
+    const [cv, setCv] = useState('');
+    const [certi, setCertifi] = useState('');
     const {
         register,
         handleSubmit,
@@ -27,6 +29,14 @@ function ProfileVerification() {
     const handleImageUpload = (e) => {
         let file = e.target.files[0]
         setImage(file)
+    }
+    const handleCVUpload = (e) => {
+        let file = e.target.files[0]
+        setCv(file)
+    }
+    const handleCertiUpload = (e) => {
+        let file = e.target.files[0]
+        setCertifi(file)
     }
     const registerOptions = {
         role: {
@@ -42,7 +52,7 @@ function ProfileVerification() {
         cv_pdf: {
             required: "C V is required",
         },
-        certi_pdf: {
+        certipdf: {
             required: "Certificate is required",
         },
         location: {
@@ -82,16 +92,18 @@ function ProfileVerification() {
 
         id_proof: {
             required: "ID Proof is required",
-            validate: {
-                lessThan10MB: (id_proof) => id_proof[0]?.size < 10000000 || "Max 10MB",
-                acceptedFormats: (id_proof) =>
-                    ["image/jpeg", "image/png", "image/gif"].includes(
-                        id_proof[0]?.type
-                    ) || "Only PNG, JPEG e GIF",
-            },
+            // validate: {
+            //     lessThan10MB: (id_proof) => id_proof[0]?.size < 10000000 || "Max 10MB",
+            //     acceptedFormats: (id_proof) =>
+            //         ["image/jpeg", "image/png", "image/gif"].includes(
+            //             id_proof[0]?.type
+            //         ) || "Only PNG, JPEG e GIF",
+            // },
         }
     };
     const productImageRegister = register("id_image", registerOptions.id_image)
+    const CVRegister = register("cv_pdf", registerOptions.cv_pdf)
+    const CertiRegister = register("certipdf", registerOptions.certipdf)
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -112,10 +124,20 @@ function ProfileVerification() {
 
 
     const submitHandler = (e) => {
+        const user = userInfo.id;
+        const role = e.role;
+        const location = e.location;
+        const experience = e.experience;
+        const description = e.description;
+        const dob = e.dob;
+        const website = e.website;
+        const id_image = image;
+        const cv_pdf = cv;
+        const certi_pdf = certi;
         dispatch(
-            profileverification(userInfo.id, e.role,  e.location,  e.experience,  e.description,  e.dob,  e.website, image, e.cv_pdf, e.certi_pdf)
+            profileverification(user,role,location,experience,description,dob,website,id_image,cv_pdf,certi_pdf)
         ).then(() => {
-            setReload(!reload)
+            setReload(!reload);
         });
     };
     return (
@@ -132,6 +154,7 @@ function ProfileVerification() {
                                 <form
                                     className="needs-validation"
                                     onSubmit={handleSubmit(submitHandler)}
+                                    
                                 >
                                     <div className="row">
                                         <div className="col-xl-6">
@@ -372,8 +395,11 @@ function ProfileVerification() {
                                                                 className="form-file-input form-control"
                                                                 id="validationCustom20"
                                                                 name="cv_pdf"
-                                                                {...register('cv_pdf', registerOptions.cv_pdf)}
-
+                                                                {...CVRegister}
+                                                                onChange={e => {
+                                                                    CVRegister.onChange(e);
+                                                                    handleCVUpload(e);
+                                                                }}
                                                             />
 
                                                         </div>
@@ -410,16 +436,19 @@ function ProfileVerification() {
                                                                 type="file"
                                                                 className="form-file-input form-control"
                                                                 id="validationCustom21"
-                                                                name="certi_pdf"
-                                                                {...register('certi_pdf', registerOptions.certi_pdf)}
-
+                                                                name="certipdf"
+                                                                {...CertiRegister}
+                                                                onChange={e => {
+                                                                    CertiRegister.onChange(e);
+                                                                    handleCertiUpload(e);
+                                                                }}
                                                             />
 
                                                         </div>
 
                                                     </div>
                                                     <small className="text-danger">
-                                                        {errors?.certi_pdf && errors.certi_pdf.message}
+                                                        {errors?.certipdf && errors.certipdf.message}
                                                     </small>
                                                 </div>
                                             </div>

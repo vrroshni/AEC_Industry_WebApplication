@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { logout, getUserProfile, getUserRequest } from '../actions/userActions'
+import { logout, getUserProfile, getUserRequest, allFeed } from '../actions/userActions'
 import { useNavigate } from 'react-router-dom'
 
 
 
 function Navbar() {
+
     const userInfo = useSelector(state => state.getUserProfile)
     const { fullUserProfileInfo } = userInfo
     const dispatch = useDispatch()
@@ -15,6 +16,7 @@ function Navbar() {
     useEffect(() => {
         if (!fullUserProfileInfo) {
             dispatch(getUserProfile())
+            dispatch(allFeed())
         }
 
     }, [])
@@ -134,120 +136,38 @@ function Navbar() {
 
             <div className="deznav">
                 <div className="deznav-scroll">
-                    <ul className="metismenu" id="menu">
-                        {userInfo && <> <li><a className="has-arrow ai-icon" aria-expanded="false">
-                            <i className="flaticon-025-dashboard"></i>
-                            <span className="nav-text">Together</span>
-                        </a>
-                            <ul aria-expanded="false">
-                                <li><a onClick={() => navigate('/')} >Home</a></li>
-                            </ul>
-                        </li>
-                            <li><a className="has-arrow ai-icon"  aria-expanded="false">
-                                <i className="flaticon-050-info"></i>
-                                <span className="nav-text">Profile</span>
-                            </a>
-                                <ul aria-expanded="false">
-                                    <li><a onClick={() => navigate('/profile')} >User Profile</a></li>
-                                </ul>
-                            </li>
-                            <li><a className="has-arrow ai-icon"  aria-expanded="false">
-                                <i className="flaticon-041-graph"></i>
-                                <span className="nav-text">Feed</span>
-                            </a>
-                                <ul aria-expanded="false">
-                                    <li><a onClick={() => navigate('/feed')} >Feed </a></li>
-                                </ul>
-                            </li> </>}
-                        {/*<li><a className="has-arrow ai-icon" href="/" aria-expanded="false">
-                            <i className="flaticon-086-star"></i>
-                            <span className="nav-text">Bootstrap</span>
-                        </a>
-                            <ul aria-expanded="false">
-                                <li><a href="./ui-accordion.html">Accordion</a></li>
-                                <li><a href="./ui-alert.html">Alert</a></li>
-                                <li><a href="./ui-badge.html">Badge</a></li>
-                                <li><a href="./ui-button.html">Button</a></li>
-                                <li><a href="./ui-modal.html">Modal</a></li>
-                                <li><a href="./ui-button-group.html">Button Group</a></li>
-                                <li><a href="./ui-list-group.html">List Group</a></li>
-                                <li><a href="./ui-card.html">Cards</a></li>
-                                <li><a href="./ui-carousel.html">Carousel</a></li>
-                                <li><a href="./ui-dropdown.html">Dropdown</a></li>
-                                <li><a href="./ui-popover.html">Popover</a></li>
-                                <li><a href="./ui-progressbar.html">Progressbar</a></li>
-                                <li><a href="./ui-tab.html">Tab</a></li>
-                                <li><a href="./ui-typography.html">Typography</a></li>
-                                <li><a href="./ui-pagination.html">Pagination</a></li>
-                                <li><a href="./ui-grid.html">Grid</a></li>
-
-                            </ul>
-                        </li>
-                        <li><a className="has-arrow ai-icon" href="/" aria-expanded="false">
-                            <i className="flaticon-045-heart"></i>
-                            <span className="nav-text">Plugins</span>
-                        </a>
-                            <ul aria-expanded="false">
-                                <li><a href="./uc-select2.html">Select 2</a></li>
-                                <li><a href="./uc-nestable.html">Nestedable</a></li>
-                                <li><a href="./uc-noui-slider.html">Noui Slider</a></li>
-                                <li><a href="./uc-sweetalert.html">Sweet Alert</a></li>
-                                <li><a href="./uc-toastr.html">Toastr</a></li>
-                                <li><a href="./map-jqvmap.html">Jqv Map</a></li>
-                                <li><a href="./uc-lightgallery.html">Light Gallery</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="widget-basic.html" className="ai-icon" aria-expanded="false">
-                            <i className="flaticon-013-checkmark"></i>
-                            <span className="nav-text">Widget</span>
-                        </a>
-                        </li>
-                        <li><a className="has-arrow ai-icon" href="/" aria-expanded="false">
-                            <i className="flaticon-072-printer"></i>
-                            <span className="nav-text">Forms</span>
-                        </a>
-                            <ul aria-expanded="false">
-                                <li><a href="./form-element.html">Form Elements</a></li>
-                                <li><a href="./form-wizard.html">Wizard</a></li>
-                                <li><a href="./form-ckeditor.html">CkEditor</a></li>
-                                <li><a href="form-pickers.html">Pickers</a></li>
-                                <li><a href="form-validation.html">Form Validate</a></li>
-                            </ul>
-                        </li>
-                        <li><a className="has-arrow ai-icon" href="/" aria-expanded="false">
-                            <i className="flaticon-043-menu"></i>
-                            <span className="nav-text">Table</span>
-                        </a>
-                            <ul aria-expanded="false">
-                                <li><a href="table-bootstrap-basic.html">Bootstrap</a></li>
-                                <li><a href="table-datatable-basic.html">Datatable</a></li>
-                            </ul>
-                        </li>
-                        <li><a className="has-arrow ai-icon" href="/" aria-expanded="false">
-                            <i className="flaticon-022-copy"></i>
-                            <span className="nav-text">Pages</span>
-                        </a>
-                            <ul aria-expanded="false">
-                                <li><a href="./page-login.html">Login</a></li>
-                                <li><a href="./page-register.html">Register</a></li>
-                                <li><a className="has-arrow" href="/" aria-expanded="false">Error</a>
+                    {
+                        fullUserProfileInfo &&
+                        <>
+                            <ul className="metismenu" id="menu">
+                                <li><a className="has-arrow ai-icon" aria-expanded="false">
+                                    <i className="flaticon-025-dashboard"></i>
+                                    <span className="nav-text">Together</span>
+                                </a>
                                     <ul aria-expanded="false">
-                                        <li><a href="./page-error-400.html">Error 400</a></li>
-                                        <li><a href="./page-error-403.html">Error 403</a></li>
-                                        <li><a href="./page-error-404.html">Error 404</a></li>
-                                        <li><a href="./page-error-500.html">Error 500</a></li>
-                                        <li><a href="./page-error-503.html">Error 503</a></li>
+                                        <li><a onClick={() => navigate('/')} >Home</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="./page-lock-screen.html">Lock Screen</a></li>
-                                <li><a href="./empty-page.html">Empty Page</a></li>
+                                <li><a className="has-arrow ai-icon" aria-expanded="false">
+                                    <i className="flaticon-050-info"></i>
+                                    <span className="nav-text">Profile</span>
+                                </a>
+                                    <ul aria-expanded="false">
+                                        <li><a onClick={() => navigate('/profile')} >User Profile</a></li>
+                                    </ul>
+                                </li>
+                                <li><a className="has-arrow ai-icon" aria-expanded="false">
+                                    <i className="flaticon-041-graph"></i>
+                                    <span className="nav-text">Feed</span>
+                                </a>
+                                    <ul aria-expanded="false">
+                                        <li><a onClick={() => navigate('/feed')} >Feed </a></li>
+                                    </ul>
+                                </li>
                             </ul>
-                        </li> */}
-                    </ul>
-                    <div className="copyright">
-                        <p><strong>Innap Hotel Admin</strong> © 2021 All Rights Reserved</p>
-                        <p className="fs-12">Made with <span className="heart"></span> by DexignZone</p>
-                    </div>
+                        </>
+                    }
+
                 </div>
             </div>
         </div>

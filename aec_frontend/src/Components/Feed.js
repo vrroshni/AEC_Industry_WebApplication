@@ -5,41 +5,42 @@ import Carousel from 'react-bootstrap/Carousel';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 import { GoCommentDiscussion } from 'react-icons/go';
 import { SlLike, SlDislike } from 'react-icons/sl';
-import { addPost, allFeed, post_like, post_dislike } from '../actions/userActions'
+import { addPost, allFeed, post_like, post_dislike, user_commented } from '../actions/userActions'
 import { USER_ADD_POST_RESET } from '../constants/userConstants'
 import '../componentsCSS/feed.css'
 import dayjs from "dayjs";
 import Accordion from 'react-bootstrap/Accordion';
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { useForm } from "react-hook-form";
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
 
 
+const mystyle = {
+    background: "var(--primary)",
+    marginLeft: "0.625rem",
+    borderRadius: "0 1.375rem 1.375rem 1.375rem",
+    padding: " 0.625rem 0.9375rem",
+    color: "#fff",
+    position: "relative"
+}
 
 
 
 function Feed() {
-    const [show, setShow] = useState(false);
 
     const [reload, setReload] = useState('')
     const [image, setImage] = useState('')
     const [video, setVideo] = useState('')
     const [post_desc, setPost_desc] = useState('')
+    const [fronterror, setfronterror] = useState(null)
+    const [posterror, setPosterror] = useState('')
+    const [comment, setComment] = useState('')
+
+
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const [fronterror, setfronterror] = useState(null)
 
-    const { register, handleSubmit, control, watch, formState: { errors } } = useForm({
-        mode: "onChange"
-    });
-    const registerOptions = {
-        comment: { required: "Comment is required" }
-    }
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+
 
 
     const ImagehandleChange = (e) => {
@@ -59,7 +60,16 @@ function Feed() {
     const { posts } = AllpostsInfo
 
     const addedPost = useSelector(state => state.addPost)
-    const { addedpost, loading, added } = addedPost
+    const { loading } = addedPost
+
+    const postcomments = useSelector(state => state.allcomments)
+    const { comments } = postcomments
+
+    const postreactions = useSelector(state => state.allreactions)
+    const { reactions } = postreactions
+
+    const commentreplies = useSelector(state => state.allreplies)
+    const { comments_replies } = commentreplies
 
     const submitHandler = (e) => {
         e.preventDefault()
@@ -93,9 +103,17 @@ function Feed() {
         dispatch(allFeed())
     }, [reload])
 
-
     const CommentSubmitHandler = (e) => {
-
+        e.preventDefault()
+        setPosterror('')
+        if (e.target.comment.value === '') {
+            setPosterror('Add comment to post')
+            setComment('')
+            return
+        }
+        dispatch(user_commented(e.target.post.value, comment))
+        setComment('')
+        setPosterror('')
 
     }
     return (
@@ -106,7 +124,7 @@ function Feed() {
                         <div className="profile card card-body px-3 pt-3 pb-0">
                             <div className="profile-head">
                                 <div className="photo-content">
-                                    <div className="cover-photo rounded" style={{ minHeight: "10.625rem", backgroundImage: `url(${fullUserProfileInfo.cover_pic})` }}></div>
+                                    <div className="cover-photo rounded" style={{ minHeight: "10.625rem", backgroundImage: `url(${fullUserProfileInfo?.cover_pic})` }}></div>
                                 </div>
                                 <div className="profile-info">
                                     <div className="profile-photo">
@@ -116,6 +134,7 @@ function Feed() {
                                         <div className="profile-name px-3 pt-2">
                                             <h4 className="text-primary mb-0">{fullUserProfileInfo.full_name}</h4>
                                             <p>@{fullUserProfileInfo.username}</p>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -142,7 +161,7 @@ function Feed() {
                                         </div>
                                         <div className="mt-4">
                                             <a onClick={() => navigate('/profile')} className="btn btn-primary mb-1 me-1">Profile</a>
-                                            <a href="/" className="btn btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#sendMessageModal">Send Message</a>
+                                            {/* <a href="/" className="btn btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#sendMessageModal">Send Message</a> */}
                                         </div>
                                     </div>
                                 </div>
@@ -247,25 +266,7 @@ function Feed() {
                                             </div>
                                         </div>
                                     </div>
-                                    {/* <div className="modal fade" id="replyModal">
-                                        <div className="modal-dialog modal-dialog-centered" role="document">
-                                            <div className="modal-content">
-                                                <div className="modal-header">
-                                                    <h5 className="modal-title">Post Reply</h5>
-                                                    <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div className="modal-body">
-                                                    <form>
-                                                        <textarea className="form-control" rows="4">Message</textarea>
-                                                    </form>
-                                                </div>
-                                                <div className="modal-footer">
-                                                    <button type="button" className="btn btn-danger light" data-bs-dismiss="modal">btn-close</button>
-                                                    <button type="button" className="btn btn-primary">Reply</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> */}
+
                                 </div>
                             </div>
                         </div>
@@ -338,26 +339,45 @@ function Feed() {
                                                 <p className='mt-4 ms-3'>{post.comments}</p>
                                                 {/* <button className="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#replyModal"><span className="me-2"><i className="fa fa-reply"></i></span>Comment</button> */}
                                             </div>
+
                                             <Accordion>
                                                 <Accordion.Item eventKey="0" style={{ marginBottom: " 1.25rem" }}>
 
                                                     <Accordion.Header style={{ padding: "0", border: "none" }}>Post a Comment<i className="far fa-comments ms-2"></i></Accordion.Header>
                                                     <Accordion.Body>
-                                                        <form onSubmit={handleSubmit(CommentSubmitHandler)}>
-                                                            <div className="modal-body">
-                                                                <div>
-                                                                    <textarea className="form-control" rows="4" name='comment' {...register('comment', registerOptions.comment)} ></textarea>
-                                                                    <small className="text-danger">
-                                                                        {errors?.comment && errors.comment.message}
-                                                                    </small>
+                                                        <form onSubmit={CommentSubmitHandler}>
+                                                            <div className="modal-body" style={{ padding: "0" }}>
+                                                                <div className="row">
+                                                                    <div className='col-10'>
+                                                                        <input type="text" name="post" hidden value={post.id} />
+                                                                        <textarea className="form-control mb-3" rows="4" value={comment} name='comment' onChange={(e) => {
+                                                                            setPosterror('')
+                                                                            setComment(e.target.value)
+                                                                        }}  ></textarea>
+                                                                        {posterror && <Message variant='danger'>{posterror}</Message>}
+                                                                    </div>
+                                                                    <div className='col-2'>
+                                                                        <button type="submit" className='btn btn-primary'>post</button>
+                                                                    </div>
                                                                 </div>
-                                                                <div>
-                                                                    <button type="submit" className='btn btn-primary'>post</button>
-                                                                </div>
+
                                                             </div>
-                                                            {/* <div className="modal-footer">
-                                                            </div> */}
+
                                                         </form>
+                                                        {comments?.filter(comments => comments.post === post.id).map(post_comments => (
+                                                                <div class="d-flex justify-content-start mb-3">
+                                                                    <div class="img_cont_msg">
+                                                                        <img src={post_comments.user.pro_pic} class="rounded-circle user_img_msg" alt="" style={{ width: "30px", height: "30px" }} />
+                                                                    </div>
+                                                                    <div class="msg_cotainer" style={mystyle} >
+                                                                       {post_comments.comment_desc}
+                                                                    </div>
+                                                                </div>
+                                                        
+                                                        ))}
+
+                                                        
+
                                                     </Accordion.Body>
                                                 </Accordion.Item>
                                             </Accordion>
@@ -365,29 +385,7 @@ function Feed() {
 
                                     </div>
 
-                                    {/* <div className="modal fade" id="replyModal">
-                                        <div className="modal-dialog modal-dialog-centered" role="document">
-                                            <div className="modal-content">
-                                                <div className="modal-header">
-                                                    <h5 className="modal-title">{post.id}</h5>
-                                                    <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <form onSubmit={handleSubmit(CommentSubmitHandler)}>
-                                                    <div className="modal-body">
 
-                                                        <textarea className="form-control" rows="4" name='comment' {...register('comment', registerOptions.comment)} ></textarea>
-                                                        <small className="text-danger">
-                                                            {errors?.comment && errors.comment.message}
-                                                        </small>
-
-                                                    </div>
-                                                    <div className="modal-footer">
-                                                        <button type="submit" className="btn btn-primary">Post</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div> */}
                                 </div>
                             )) :
                                 null

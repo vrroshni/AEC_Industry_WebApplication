@@ -109,7 +109,7 @@ class Account(AbstractBaseUser):
 
 
 class ProfileVerification(models.Model):
-    user=models.ForeignKey(Account,related_name='user',on_delete=models.CASCADE,null=True)
+    user=models.ForeignKey(Account,related_name='user',on_delete=models.CASCADE)
     date=models.DateField(auto_now_add=True,null=True)
     location=models.CharField(max_length=50,null=True)
     description=models.CharField(max_length=500,null=True)
@@ -139,7 +139,7 @@ class Network(models.Model):
     is_connect=models.BooleanField(null=True)
     connect_status=models.CharField(max_length=100, null=True)
     followed_by=models.ForeignKey(Account,related_name='followed_by',on_delete=models.CASCADE,null=True)
-    followed_at=models.DateTimeField(auto_now_add=True)
+    followed_at=models.DateTimeField(auto_now_add=True,null=True)
     is_rejected=models.BooleanField(null=True)
     
     def __str__(self):

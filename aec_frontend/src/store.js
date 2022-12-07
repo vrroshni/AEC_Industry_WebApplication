@@ -12,15 +12,18 @@ import {
     postAddReducer,
     networkReducer,
     postInteractionReducer,
+    allUserReactionsReducer,
+    allcommentsReducer,
+    allcommentsreplyReducer
 } from './reducers/userReducer'
+
 import {
     allUserListReducer,
     statusChangeReducer,
     allProfileRequestsReducer
 } from './reducers/adminReducer'
-import {
-    alertCreateReducer
-} from './reducers/alertReducer'
+
+
 
 import storage from 'redux-persist/lib/storage'
 import { persistReducer } from 'redux-persist'
@@ -41,6 +44,10 @@ const reducers = combineReducers({
     updateUserprofile: updateUserProfileReducer,
     addPost: postAddReducer,
     allposts: FeedReducer,
+    allreactions:allUserReactionsReducer,
+    allcomments:allcommentsReducer,
+    allreplies:allcommentsreplyReducer,
+
 
 
     allUsers: allUserListReducer,
@@ -50,7 +57,7 @@ const reducers = combineReducers({
     postInteraction:postInteractionReducer,
     network:networkReducer,
 
-    alerts:alertCreateReducer
+
 
 })
 

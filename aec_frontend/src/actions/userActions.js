@@ -33,7 +33,7 @@ import {
     USER_FEED_ALL_POSTS_LIST_FAIL,
 
     USER_PROFILEREQUEST_INDIVIDUAL_VIEW,
-    USER_PROFILEREQUEST_INDIVIDUAL_FAILED, 
+    USER_PROFILEREQUEST_INDIVIDUAL_FAILED,
 
 
     USER_LIKED_POST,
@@ -48,6 +48,10 @@ import {
     REJECT_CONNECTION_REQUEST,
     USER_NETWORK_RESET,
 
+    ALL_USERS_REACTIONS,
+    ALL_USERS_COMMENTS,
+    ALL_USERS_COMMENTS_REPLY
+
 } from '../constants/userConstants'
 
 
@@ -58,7 +62,7 @@ import {
 export const login = (username, password) => async (dispatch) => {
 
     try {
-        
+
         dispatch({
             type: USER_LOGIN_REQUEST
         })
@@ -76,7 +80,7 @@ export const login = (username, password) => async (dispatch) => {
         dispatch({
             type: USER_LOGIN_SUCCESS,
             payload: data
-            
+
         })
         toast.success(' You have logged in succesfully!', {
             position: "top-right",
@@ -87,10 +91,10 @@ export const login = (username, password) => async (dispatch) => {
             draggable: true,
             progress: undefined,
             theme: "colored",
-            })
+        })
 
         localStorage.setItem('userInfo', JSON.stringify(data))
-        
+
 
     } catch (error) {
         dispatch({
@@ -114,7 +118,7 @@ export const logout = () => (dispatch) => {
         draggable: true,
         progress: undefined,
         theme: "colored",
-        })
+    })
 }
 
 export const registeruser = (username, firstname, lastname, email, phonenumber, password,) => async (dispatch) => {
@@ -150,6 +154,51 @@ export const registeruser = (username, firstname, lastname, email, phonenumber, 
 }
 
 
+// export const profileverification = ( role, location, experience, description, dob, website, image, cv_pdf, certipdf) => async (dispatch,getState) => {
+//     try {
+
+//         dispatch({
+//             type: USER_PROFILEVERIFY_REQUEST
+//         })
+//         const {
+//             userLogin: { userInfo },
+//         } = getState()
+
+//         const config = {
+//             headers: {
+//                 'Content-type': 'multipart/form-data',
+//                 Authorization: `Bearer ${userInfo.token}`
+//             }
+//         }
+//         console.log(image,'immmmmmmmmmmmmm',cv_pdf,'cvvvvvvvvvv',certipdf,'certiiiiiiiiiii')
+//         console.log('here............................')
+
+//         // const { data } = await axios.get('/profile/', config
+//         // )
+//         // ,{ 'role': role, 'location': location, 'experience': experience, 'certificate': certi_pdf, 'cv': cv_pdf, 'description': description, 'id_proof': id_image, 'website': website, 'dob': dob }
+//         // ,{ 'role': role, 'location': location, 'experience': experience, 'description': description,'website': website, 'dob': dob }
+//         const { data } = await axios.post("profileverification/",{ 'role': role, 'location': location, 'experience': experience, 'description': description,'website': website, 'dob': dob },config)
+//         console.log("kooooooooooooooooooooooooo")
+
+//         dispatch({
+//             type: USER_PROFILEVERIFY_SUCCESS,
+//             payload: data
+//         })
+
+       
+
+
+//     } catch (error) {
+//         dispatch({
+//             type: USER_PROFILEVERIFY_FAIL,
+//             payload: error.response && error.response.data.detail ?
+//                 error.response.data.detail : error.message,
+//         })
+//     }
+// }
+
+
+
 export const profileverification = (user,role,location,experience,description,dob,website,id_image,cv_pdf,certi_pdf) => async (dispatch) => {
     try {
 
@@ -183,7 +232,9 @@ export const profileverification = (user,role,location,experience,description,do
 
 
 
-export const getUserProfile = () => async (dispatch,getState) => {
+
+
+export const getUserProfile = () => async (dispatch, getState) => {
 
     try {
 
@@ -207,9 +258,9 @@ export const getUserProfile = () => async (dispatch,getState) => {
         dispatch({
             type: USER_PROFILE_SUCCESS,
             payload: data
-            
+
         })
-        
+
 
     } catch (error) {
         dispatch({
@@ -220,7 +271,7 @@ export const getUserProfile = () => async (dispatch,getState) => {
     }
 }
 
-export const getUserRequest = () => async (dispatch,getState) => {
+export const getUserRequest = () => async (dispatch, getState) => {
 
     try {
 
@@ -241,9 +292,9 @@ export const getUserRequest = () => async (dispatch,getState) => {
         dispatch({
             type: USER_PROFILEREQUEST_INDIVIDUAL_VIEW,
             payload: data
-            
+
         })
-        
+
 
     } catch (error) {
         dispatch({
@@ -259,7 +310,7 @@ export const getUserRequest = () => async (dispatch,getState) => {
 
 
 
-export const updateProfile = (username, firstname, lastname, email, phonenumber,pro_pic,cover_pic, password,) => async (dispatch,getState) => {
+export const updateProfile = (username, firstname, lastname, email, phonenumber, pro_pic, cover_pic, password,) => async (dispatch, getState) => {
     try {
 
         dispatch({
@@ -278,9 +329,9 @@ export const updateProfile = (username, firstname, lastname, email, phonenumber,
         }
 
         const { data } = await axios.patch('/updateprofile/',
-            { 'username': username, 'firstname': firstname, 'lastname': lastname, 'password': password, 'email': email, 'phonenumber': phonenumber,'pro_pic':pro_pic,'cover_pic':cover_pic,'password':password }, config
+            { 'username': username, 'firstname': firstname, 'lastname': lastname, 'password': password, 'email': email, 'phonenumber': phonenumber, 'pro_pic': pro_pic, 'cover_pic': cover_pic, 'password': password }, config
         )
-       console.log(data,'...................')
+        console.log(data, '...................')
         dispatch({
             type: USER_UPDATE_PROFILE_SUCCESS,
         })
@@ -295,7 +346,7 @@ export const updateProfile = (username, firstname, lastname, email, phonenumber,
 }
 
 
-export const addPost = (post_desc,image,video) => async (dispatch,getState) => {
+export const addPost = (post_desc, image, video) => async (dispatch, getState) => {
     try {
 
         dispatch({
@@ -313,7 +364,7 @@ export const addPost = (post_desc,image,video) => async (dispatch,getState) => {
         }
 
         const { data } = await axios.post('addpost/',
-            {'post_desc':post_desc,'image':image,'video':video }, config
+            { 'post_desc': post_desc, 'image': image, 'video': video }, config
         )
 
         dispatch({
@@ -321,8 +372,8 @@ export const addPost = (post_desc,image,video) => async (dispatch,getState) => {
         })
 
         dispatch({
-            type:USER_FEED_ALL_POSTS_LIST_SUCCESS,
-            payload:data
+            type: USER_FEED_ALL_POSTS_LIST_SUCCESS,
+            payload: data
         })
 
 
@@ -356,10 +407,26 @@ export const allFeed = () => async (dispatch, getState) => {
         const { data } = await axios.get('allfeed/',
             config
         )
-
+        
+        console.log(data,'daaaaaaaaaaaaaattttttttttttttta')
         dispatch({
             type: USER_FEED_ALL_POSTS_LIST_SUCCESS,
-            payload: data
+            payload: data.allposts
+        })
+
+        dispatch({
+            type: ALL_USERS_REACTIONS,
+            payload: data.allreactions
+        })
+
+        dispatch({
+            type: ALL_USERS_COMMENTS,
+            payload: data.allcomments
+        })
+
+        dispatch({
+            type: ALL_USERS_COMMENTS_REPLY,
+            payload: data.allreplies
         })
 
 
@@ -375,190 +442,209 @@ export const allFeed = () => async (dispatch, getState) => {
 
 
 
-export const post_like = (id) => async (dispatch,getState) => {
+export const post_like = (id) => async (dispatch, getState) => {
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+        userLogin: { userInfo },
+    } = getState()
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
+    const config = {
+        headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${userInfo.token}`
         }
+    }
 
-        const { data } = await axios.patch('/user/like_post/',{'id':id}, config
-        )
+    const { data } = await axios.patch('/user/like_post/', { 'id': id }, config
+    )
 
-        dispatch({
-            type: USER_LIKED_POST,
-            
-        })
-        dispatch({
-            type:USER_FEED_ALL_POSTS_LIST_SUCCESS,
-            payload:data
-        })
+    dispatch({
+        type: USER_LIKED_POST,
+
+    })
+
+    dispatch({
+        type: USER_FEED_ALL_POSTS_LIST_SUCCESS,
+        payload: data.allposts
+    })
+
+    dispatch({
+        type: ALL_USERS_REACTIONS,
+        payload: data.allreactions
+    })
 }
 
 
-export const post_dislike = (id) => async (dispatch,getState) => {
+export const post_dislike = (id) => async (dispatch, getState) => {
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+        userLogin: { userInfo },
+    } = getState()
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
+    const config = {
+        headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${userInfo.token}`
         }
+    }
 
-        const { data } = await axios.patch('/user/dislike_post/',{'id':id}, config
-        )
+    const { data } = await axios.patch('/user/dislike_post/', { 'id': id }, config
+    )
 
-        dispatch({
-            type: USER_DISLIKED_POST,  
-        })
+    dispatch({
+        type: USER_DISLIKED_POST,
+    })
 
-        dispatch({
-            type:USER_FEED_ALL_POSTS_LIST_SUCCESS,
-            payload:data
-        })
+    dispatch({
+        type: USER_FEED_ALL_POSTS_LIST_SUCCESS,
+        payload: data.allposts
+    })
+    dispatch({
+        type: ALL_USERS_REACTIONS,
+        payload: data.allreactions
+    })
 }
 
-export const user_commented = (post_id,comment) => async (dispatch,getState) => {
+export const user_commented = (post_id, comment) => async (dispatch, getState) => {
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+        userLogin: { userInfo },
+    } = getState()
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
+    const config = {
+        headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${userInfo.token}`
         }
+    }
 
-        const { data } = await axios.put('/user/user_commented/',{'id':post_id,'comment':comment}, config
-        )
+    const { data } = await axios.post('/user/user_commented/', { 'post_id': post_id, 'comment': comment }, config
+    )
 
-        dispatch({
-            type: USER_COMMENTED,  
-        })
+    dispatch({
+        type: USER_COMMENTED,
+    })
 
-        dispatch({
-            type:USER_FEED_ALL_POSTS_LIST_SUCCESS,
-            payload:data
-        })
+    dispatch({
+        type: USER_FEED_ALL_POSTS_LIST_SUCCESS,
+        payload: data.allposts
+    })
+
+    dispatch({
+        type: ALL_USERS_COMMENTS,
+        payload: data.allcomments
+    })
 }
 
-export const user_comment_reply = (post_id,comment_id,comment) => async (dispatch,getState) => {
+export const user_comment_reply = (post_id, comment_id, comment) => async (dispatch, getState) => {
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+        userLogin: { userInfo },
+    } = getState()
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
+    const config = {
+        headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${userInfo.token}`
         }
+    }
 
-        const { data } = await axios.put('/user/user_comment_reply/',{'post_id':post_id,'comment_id':comment_id,'comment':comment}, config
-        )
+    const { data } = await axios.put('/user/user_comment_reply/', { 'post_id': post_id, 'comment_id': comment_id, 'comment': comment }, config
+    )
 
-        dispatch({
-            type: USER_COMMENT_REPLY,  
-        })
-        
-        dispatch({
-            type:USER_FEED_ALL_POSTS_LIST_SUCCESS,
-            payload:data
-        })
+    dispatch({
+        type: USER_COMMENT_REPLY,
+    })
+
+    dispatch({
+        type: USER_FEED_ALL_POSTS_LIST_SUCCESS,
+        payload: data.allposts
+    })
+    dispatch({
+        type: ALL_USERS_COMMENTS_REPLY,
+        payload: data.allreplies
+    })
 }
 
-export const follow_unfollow = (user_id) => async (dispatch,getState) => {
+export const follow_unfollow = (user_id) => async (dispatch, getState) => {
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+        userLogin: { userInfo },
+    } = getState()
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
+    const config = {
+        headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${userInfo.token}`
         }
+    }
 
-        const { data } = await axios.put('/user/follow_unfollow/',{'user_id':user_id,}, config
-        )
+    const { data } = await axios.put('/user/follow_unfollow/', { 'user_id': user_id, }, config
+    )
 
-        dispatch({
-            type: UNFOLLOW_FOLLOW_USER,  
-        })
+    dispatch({
+        type: UNFOLLOW_FOLLOW_USER,
+    })
 }
 
-export const send_connection = (user_id) => async (dispatch,getState) => {
+export const send_connection = (user_id) => async (dispatch, getState) => {
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+        userLogin: { userInfo },
+    } = getState()
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
+    const config = {
+        headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${userInfo.token}`
         }
+    }
 
-        const { data } = await axios.put('/send_connection/',{'user_id':user_id,}, config
-        )
+    const { data } = await axios.put('/send_connection/', { 'user_id': user_id, }, config
+    )
 
-        dispatch({
-            type: SEND_CONNECTION_REQUEST,  
-        })
+    dispatch({
+        type: SEND_CONNECTION_REQUEST,
+    })
 }
 
-export const reject_connection = (user_id) => async (dispatch,getState) => {
+export const reject_connection = (user_id) => async (dispatch, getState) => {
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+        userLogin: { userInfo },
+    } = getState()
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
+    const config = {
+        headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${userInfo.token}`
         }
+    }
 
-        const { data } = await axios.put('/user/reject_connection/',{'user_id':user_id,}, config
-        )
+    const { data } = await axios.put('/user/reject_connection/', { 'user_id': user_id, }, config
+    )
 
-        dispatch({
-            type: REJECT_CONNECTION_REQUEST,  
-        })
+    dispatch({
+        type: REJECT_CONNECTION_REQUEST,
+    })
 }
-export const accept_connection = (user_id) => async (dispatch,getState) => {
+export const accept_connection = (user_id) => async (dispatch, getState) => {
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+        userLogin: { userInfo },
+    } = getState()
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
+    const config = {
+        headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${userInfo.token}`
         }
+    }
 
-        const { data } = await axios.put('/user/accept_connection/',{'user_id':user_id,}, config
-        )
+    const { data } = await axios.put('/user/accept_connection/', { 'user_id': user_id, }, config
+    )
 
-        dispatch({
-            type: REJECT_CONNECTION_REQUEST,  
-        })
+    dispatch({
+        type: REJECT_CONNECTION_REQUEST,
+    })
 }

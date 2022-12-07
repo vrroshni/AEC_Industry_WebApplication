@@ -29,13 +29,14 @@ class Report_Post(models.Model):
 
 
 class Post_Reaction(models.Model):
-    TYPES=(
+    TYPES=( 
         ('LIKE','LIKE'),
         ('DISLIKE','DISLIKE'),
             )
     post=models.ForeignKey(Post,related_name='post_reaction',on_delete=models.CASCADE,null=True)
     type=models.CharField(max_length=100, null=True,choices=TYPES)
     user=models.ForeignKey(Account,related_name='post_reaction_user',on_delete=models.CASCADE,null=True)
+    reacted_at=models.DateTimeField(auto_now_add=True,null=True)
 
 
 class Post_Comment(models.Model):

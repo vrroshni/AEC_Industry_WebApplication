@@ -44,7 +44,11 @@ import {
     UNFOLLOW_FOLLOW_USER,
     SEND_CONNECTION_REQUEST,
     REJECT_CONNECTION_REQUEST,
-    USER_NETWORK_RESET
+    USER_NETWORK_RESET,
+
+    ALL_USERS_REACTIONS,
+    ALL_USERS_COMMENTS,
+    ALL_USERS_COMMENTS_REPLY
 
 } from '../constants/userConstants'
 
@@ -155,10 +159,10 @@ export const postAddReducer = (state = {}, action) => {
             return { loading: true }
 
         case USER_ADD_POST_SUCCESS:
-            return { loading: false, addedpost: action.payload, added: true }
+            return { loading: false }
 
         case USER_ADD_POST_FAIL:
-            return { loading: false, error: action.payload, added: false }
+            return { loading: false, error: action.payload }
 
         case USER_ADD_POST_RESET:
             return {}
@@ -179,6 +183,8 @@ export const FeedReducer = (state = { posts: [] }, action) => {
             return {
                 loading: false,
                 posts: action.payload,
+                
+
             }
 
         case USER_FEED_ALL_POSTS_LIST_FAIL:
@@ -188,6 +194,44 @@ export const FeedReducer = (state = { posts: [] }, action) => {
             return state
     }
 }
+
+
+export const allUserReactionsReducer = (state = { reactions:[]}, action) => {
+    switch (action.type) {
+        case ALL_USERS_REACTIONS:
+            return {
+                reactions: action.payload
+            }
+
+        default:
+            return state
+    }
+}
+export const allcommentsReducer = (state = { comments:[]}, action) => {
+    switch (action.type) {
+       
+        case ALL_USERS_COMMENTS:
+            return {
+                comments: action.payload
+            }
+
+        default:
+            return state
+    }
+}
+export const allcommentsreplyReducer = (state = {comment_reply:[] }, action) => {
+    switch (action.type) {
+        case ALL_USERS_COMMENTS_REPLY:
+            return {
+                comment_reply: action.payload
+            }
+
+        default:
+            return state
+    }
+}
+
+
 
 export const postInteractionReducer = (state = {}, action) => {
     switch (action.type) {
@@ -218,6 +262,7 @@ export const postInteractionReducer = (state = {}, action) => {
             return state
     }
 }
+
 
 export const networkReducer = (state = {}, action) => {
     switch (action.type) {

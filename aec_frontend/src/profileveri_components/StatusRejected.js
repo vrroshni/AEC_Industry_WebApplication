@@ -7,14 +7,16 @@ function StatusRejected() {
         <div class="authincation-content">
           <div class="row no-gutters">
             <div class="col-xl-12">
-              <div class="auth-form">
-                <div class="text-center mb-3">
-                  <a href="index.html"><img src="images/logo-full.png" alt=""/></a>
-                </div>
-                <h4 class="text-center mb-4">Your Profile is Rejected</h4>
-                
-                <div class="new-account mt-3">
-                  <p>Don't have an account? <a class="text-primary" href="./page-register.html">Sign up</a></p>
+              <div class="auth-form" style={{ background: "#ed0202" }}>
+                <div class="card text-white  text-center" style={{ background: "#ed0202", border: "none", borderRadius: "0" }} >
+                  <div class="card-body mb-0 pb-3">
+                  <span class="me-3">
+                      <i class="flaticon-381-diamond" style={{fontSize:"70px"}}></i>
+                    </span>
+                    <p class="card-text fs-4">Your Account is rejected due to  lack of some clarifications. <br /> Sorry for your Inconvenience</p> <br />
+                    <a class=" btn bg-white text-danger btn-card">Request Again
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -22,8 +24,8 @@ function StatusRejected() {
         </div>
       </div>
     </div>
-   
-    
+
+
   )
 }
 

@@ -7,6 +7,7 @@ from .views  import *
 urlpatterns = [
         path('like_post/', like_post, name='like_post'),
         path('dislike_post/', dislike_post, name='dislike_post'),
+        path('user_commented/', user_commented, name='user_commented'),
         path('follow_unfollow/', follow_unfollow, name='follow_unfollow'),
         path('send_connection/', send_connection, name='send_connection'),
         path('accept_connection/', accept_connection, name='accept_connection'),

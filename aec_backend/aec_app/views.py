@@ -13,10 +13,12 @@ from django.contrib.auth.hashers import make_password
 # Create your views here.
 @api_view(['GET'])
 def index(request):
-    routes = [
-        "HELLO"
-    ]
-    return Response(routes)
+    all_comments=Post_Comment.objects.all().order_by('-created_at')     
+    posts=Post.objects.all().order_by('-posted_at')
+    allcomments_serializer=PostCommentSerializer(all_comments,many=True)
+    serializer=PostSerializer(posts,many=True)
+    if allcomments_serializer.is_valid:
+        return Response({'allcomments':allcomments_serializer.data},status=status.HTTP_201_CREATED)
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -47,7 +49,6 @@ class MyTokenObtainPairView(TokenObtainPairView):
 @api_view(['POST'])
 def registerUser(request):
     data = request.data
-    print(data)
     try:
         if Account.objects.filter(username=data['username']).exists():
             message = {'detail': 'User with this username already exists'}
@@ -65,17 +66,17 @@ def registerUser(request):
         )
         return Response(status=status.HTTP_201_CREATED)
     except:
-        message = {'detail': "error"}
+        message = {'detail': "Your Profile is not registered"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 @api_view(['POST'])
 def profileVerification(request):
     data = request.data
-    print(data)
     try:
-        user = Account.objects.get(id=data['user'])
-        profile = ProfileVerification.objects.create(
+        user=Account.objects.get(id=data['user'])
+        profile=ProfileVerification.objects.create(
             user=user,
             location=data['location'],
             experience=data['experience'],
@@ -89,11 +90,10 @@ def profileVerification(request):
             verif_send_status=True,
             role=data['role']
         )
-        print(profile)
-        serializer = ProfileVerificationSerializer(profile, many=False)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        serializer=ProfileVerificationSerializer(profile,many=False)
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
     except:
-        message = {'detail': "Something went wrong"}
+        message ={'detail':"Something went wrong"} 
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -157,7 +157,6 @@ def updateUserProfile(request):
 @permission_classes([IsAuthenticated])
 def addPost(request):
     user = request.user
-    
     data = request.data
     try:
         post=Post()
@@ -182,13 +181,21 @@ def addPost(request):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def allFeed(request):
-
     try:
+        all_reactions=Post_Reaction.objects.all().order_by('-reacted_at')     
+        all_comments=Post_Comment.objects.all().order_by('-created_at') 
+        all_reply_comments=Post_Comment_Reply.objects.all().order_by('-created_at')     
         posts=Post.objects.all().order_by('-posted_at')
+        
+        reaction_serializer=PostReactionSerializer(all_reactions,many=True)
+        replycomment_serializer=PostComment_Reply_Serializer(all_reply_comments,many=True)
+        allcomments_serializer=PostCommentSerializer(all_comments,many=True)
         serializer=PostSerializer(posts,many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+       
+        return Response({'allposts':serializer.data,'allreactions':reaction_serializer.data,'allcomments':allcomments_serializer.data,'allreplies':replycomment_serializer.data},status=status.HTTP_201_CREATED)
+        
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)

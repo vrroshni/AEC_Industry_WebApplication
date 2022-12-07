@@ -1,11 +1,17 @@
 import React from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+
 
 
 
 function AdminRoute() {
+    
+    const userLogin = useSelector(state => state.userLogin)
+    const {  userInfo} = userLogin
+
     return (
-        !user.is_superuser ? <Navigate to="/restricted"/> : <Outlet />
+        !userInfo.is_superadmin ? <Navigate to="/restricted"/> : <Outlet />
     )
 }
 
