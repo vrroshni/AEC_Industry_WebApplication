@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { listUsers, statuschange } from '../actions/adminActions'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
+import Swal from 'sweetalert2'
 
 
 
@@ -14,17 +15,29 @@ function Allusers() {
     const allUsersInfo = useSelector(state => state.allUsers)
     const { loading, error, users } = allUsersInfo
 
-    const statusInfo = useSelector(state => state.statusChanger)
-    const { blocked } = statusInfo
 
     const blockhandler=(id)=>{
-        dispatch(statuschange(id))
-        .then(() => {
-            setReload(!reload)
-        })
-    }
+        Swal.fire({
+            title: 'Are you sure you want to do this action?',
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonText: "OK",
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: "Cancel",
+            icon: 'warning'
+        }
+        ).then((result) => {
+            if (result.isConfirmed) {
   
-
+                dispatch(statuschange(id))
+                dispatch(listUsers())
+  
+            } 
+  
+        })
+        
+    }
     useEffect(() => {
         dispatch(listUsers())
     }, [reload])
@@ -35,10 +48,11 @@ function Allusers() {
                 (<>
                     <div className="row page-titles">
                         <ol className="breadcrumb">
-                            <li className="breadcrumb-item active"><a href="/">ALL USERS</a></li>
-                            <li className="breadcrumb-item"><a href="/">Usermanagement</a></li>
+                            <li className="breadcrumb-item active"><a >ALL USERS</a></li>
+                            <li className="breadcrumb-item"><a >Usermanagement</a></li>
                         </ol>
                     </div>
+
                     <div className="row">
                         <div className="col-lg-12">
                             <div className="card">
@@ -62,7 +76,9 @@ function Allusers() {
                                             </thead>
 
                                             <tbody>
-                                                {users.map((user, id) => {
+                                            {loading && <Loader />}
+
+                                                {users?.map((user, id) => {
                                                     return (
                                                         <tr key={id}>
                                                             <td><strong>{id + 1}</strong></td>
@@ -78,7 +94,7 @@ function Allusers() {
                                                             </td>
                                                             <td>{user.is_active === true ? <span className="badge light badge-success">Active</span> : <span className="badge light badge-danger">InActive</span>}</td>
                                                             <td>
-                                                                {user.is_active === true ? <span onClick={blockhandler(user.id)} className="btn btn-xs  btn-danger">Block</span> : <span onClick={blockhandler(user.id)} className="btn btn-xs btn-success">Unblock</span>}
+                                                                {user.is_active === true ? <span onClick={()=>blockhandler(user.id)} className="btn btn-xs  btn-danger">Block</span> : <span onClick={()=>blockhandler(user.id)} className="btn btn-xs btn-success">Unblock</span>}
                                                             </td>
                                                         </tr>
                                                     )

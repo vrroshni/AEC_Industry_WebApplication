@@ -26,29 +26,32 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        
+
         <Route path='/' element={<Common />}>
           <Route index element={<Home />} />
-          <Route element={<PrivateRoute/>}>
-          <Route path='feed/' element={<Feed />} />
-          <Route path='profile_verification/' element={<ProfileVerification />} />
-          <Route path='profile' element={<UserProfile />} />
+          <Route element={<PrivateRoute />}>
+            <Route path='feed/' element={<Feed />} />
+            <Route path='profile_verification/' element={<ProfileVerification />} />
+            <Route path='profile' element={<UserProfile />} />
           </Route>
           <Route path='*' element={<Error />} />
         </Route>
-        
+
 
         <Route path='login' element={<Login />} />
         <Route path='register' element={<Register />} />
-        <Route path="/restricted" element={<Restricted/>}/>
+        <Route path="/restricted" element={<Restricted />} />
+        <Route path='allusers/' element={<Allusers />} />
+
+
 
         <Route element={<AdminRoute />}>
           <Route path='admin/' element={<AdminCommon />}>
             <Route index element={<AdminDashboard />} />
-            <Route path='allusers/' element={<Allusers />} />
+
             <Route path='allposts/' element={<Allposts />} />
             <Route path='profileverification_requests/' element={<Profileverifi_Requests />} />
-            <Route path='allposts/' element={<UserProfile />} />
+            {/* <Route path='allposts/' element={<UserProfile />} /> */}
           </Route>
         </Route>
 

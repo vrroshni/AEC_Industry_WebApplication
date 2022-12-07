@@ -53,6 +53,9 @@ import {
     ALL_USERS_COMMENTS_REPLY
 
 } from '../constants/userConstants'
+import storage from 'redux-persist/lib/storage'
+import { persistor } from '../index';
+
 
 
 
@@ -107,7 +110,14 @@ export const login = (username, password) => async (dispatch) => {
 
 
 export const logout = () => (dispatch) => {
+    localStorage. clear()
     localStorage.removeItem('userInfo')
+    localStorage.removeItem('persist:root')
+    storage.removeItem('persist:root')
+    persistor.pause();
+    persistor.flush().then(() => {
+      return persistor.purge();
+    });
     dispatch({ type: USER_LOGOUT })
     toast.success(' You have logged out succesfully!', {
         position: "top-right",
@@ -119,6 +129,7 @@ export const logout = () => (dispatch) => {
         progress: undefined,
         theme: "colored",
     })
+    window.location.reload()
 }
 
 export const registeruser = (username, firstname, lastname, email, phonenumber, password,) => async (dispatch) => {
@@ -141,6 +152,16 @@ export const registeruser = (username, firstname, lastname, email, phonenumber, 
 
         dispatch({
             type: USER_REGISTER_SUCCESS,
+        })
+        toast.success(' You have registered succesfully!', {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
         })
 
 

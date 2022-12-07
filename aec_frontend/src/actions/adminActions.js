@@ -18,6 +18,8 @@ import {
     ALL_POSTS_LIST_FAIL,
 
 } from '../constants/adminConstants'
+import { toast } from 'react-toastify'
+
 
 /* ---------------------------- Listing all users --------------------------- */
 export const listUsers = () => async (dispatch, getState) => {
@@ -76,6 +78,16 @@ export const statuschange = (id) => async (dispatch, getState) => {
 
     dispatch({
         type: USER_STATUS_CHANGE,
+    })
+    toast.success(' Action is performed', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
     })
 
 
@@ -139,7 +151,16 @@ export const profile_verified = (id) => async (dispatch, getState) => {
     dispatch({
         type: USER_PROFILEVERIFIED_SUCCESS,
     })
-
+    toast.success(' Yiu have verified a profile!', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+    })
 
 }
 
@@ -161,6 +182,16 @@ export const profile_rejected = (id) => async (dispatch, getState) => {
 
     dispatch({
         type: USER_PROFILEREJECTED_SUCCESS,
+    })
+    toast.success(' You have rejected a profile ', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
     })
 
 

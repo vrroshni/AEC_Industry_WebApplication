@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { list_profile_verification, profile_rejected, profile_verified } from '../actions/adminActions'
+import Swal from 'sweetalert2'
 
 
 function Profileverifi_Requests() {
@@ -44,7 +45,7 @@ function Profileverifi_Requests() {
                       </tr>
                     </thead>
                     <tbody id="orders">
-                      {requests.map((request, id) => {
+                      {requests?.map((request, id) => {
                         return (
                           <tr className="btn-reveal-trigger" key={id}>
                             <td >{id + 1}
@@ -77,14 +78,56 @@ function Profileverifi_Requests() {
                             </td>
                             <td >
                               <button onClick={() => {
-                                dispatch(profile_verified(request.id))
-                                  .then(() => {
-                                    setReload(!reload)
-                                  })
+                                Swal.fire({
+                                  title: 'Are you sure you want to verify this profile?',
+                                  showConfirmButton: true,
+                                  showCancelButton: true,
+                                  confirmButtonText: "OK",
+                                  confirmButtonColor: '#3085d6',
+                                  cancelButtonColor: '#d33',
+                                  cancelButtonText: "Cancel",
+                                  icon: 'warning'
+                              }
+                              ).then((result) => {
+                                  if (result.isConfirmed) {
+                                    dispatch(profile_verified(request.id))
+                                    .then(() => {
+                                      setReload(!reload)
+                                    })
+                        
+                                  } 
+                        
+                              })
+
+
+                               
                               }} className="btn btn-xs btn-success">VERIFY</button>
                             </td>
                             <td >
                               <button onClick={() => {
+                                        Swal.fire({
+                                          title: 'Are you sure you want to reject this profile?',
+                                          showConfirmButton: true,
+                                          showCancelButton: true,
+                                          confirmButtonText: "OK",
+                                          confirmButtonColor: '#3085d6',
+                                          cancelButtonColor: '#d33',
+                                          cancelButtonText: "Cancel",
+                                          icon: 'warning'
+                                      }
+                                      ).then((result) => {
+                                          if (result.isConfirmed) {
+                                
+                                            dispatch(profile_rejected(request.id))
+                                            .then(() => {
+                                              setReload(!reload)
+                                            })
+                                
+                                          } 
+                                
+                                      })
+                                
+
                                 dispatch(profile_rejected(request.id))
                                   .then(() => {
                                     setReload(!reload)
@@ -100,7 +143,7 @@ function Profileverifi_Requests() {
             </div>
           </div>
         </div> </> :
-      <div className="row page-titles text-center">
+      <div className="row page-titles text-center mt-5">
         <ol className="breadcrumb">
           <li className="breadcrumb-item active"><h1>NO PROFILE VERIFICATION REQUESTS AVAILABLE</h1> </li>
         </ol>
