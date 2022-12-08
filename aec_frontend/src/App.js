@@ -41,17 +41,14 @@ function App() {
         <Route path='login' element={<Login />} />
         <Route path='register' element={<Register />} />
         <Route path="/restricted" element={<Restricted />} />
-        <Route path='allusers/' element={<Allusers />} />
-
 
 
         <Route element={<AdminRoute />}>
           <Route path='admin/' element={<AdminCommon />}>
             <Route index element={<AdminDashboard />} />
-
+            <Route path='allusers/' element={<Allusers/>} />
             <Route path='allposts/' element={<Allposts />} />
             <Route path='profileverification_requests/' element={<Profileverifi_Requests />} />
-            {/* <Route path='allposts/' element={<UserProfile />} /> */}
           </Route>
         </Route>
 

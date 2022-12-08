@@ -6,6 +6,7 @@ from rest_framework_simplejwt.views import (
 )
 urlpatterns = [
     path('',index),
+    #JWT
     path('login/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('tokenrefresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
@@ -18,7 +19,4 @@ urlpatterns = [
     path('addpost/', addPost, name='addpost'),
     path('allfeed/', allFeed, name='allfeed'),
     
-
-
-
 ]

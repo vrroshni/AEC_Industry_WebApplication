@@ -153,7 +153,7 @@ function AdminNavbar() {
                                     <span className="nav-text">All Users</span>
                                 </a>
                                     <ul aria-expanded="false">
-                                        <li><a onClick={() => navigate('/allusers/')} >All Users</a></li>
+                                        <li><a onClick={() => navigate('allusers/')} >All Users</a></li>
                                     </ul>
                                 </li>
                                 <li><a className="has-arrow ai-icon" aria-expanded="false">

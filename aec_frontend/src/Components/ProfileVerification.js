@@ -337,6 +337,7 @@ function ProfileVerification() {
                                                     <div className="input-group mb-3">
                                                         <div className="form-file">
                                                             <input
+                                                            accept="image/*"
                                                                 control={control}
                                                                 type="file"
                                                                 className="form-file-input form-control"
@@ -390,6 +391,7 @@ function ProfileVerification() {
                                                     <div className="input-group mb-3">
                                                         <div className="form-file">
                                                             <input
+                                                            accept="application/pdf"
                                                                 control={control}
                                                                 type="file"
                                                                 className="form-file-input form-control"
@@ -432,6 +434,7 @@ function ProfileVerification() {
                                                     <div className="input-group mb-3">
                                                         <div className="form-file">
                                                             <input
+                                                            accept="application/pdf"
                                                                 control={control}
                                                                 type="file"
                                                                 className="form-file-input form-control"
