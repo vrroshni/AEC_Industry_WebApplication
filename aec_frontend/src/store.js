@@ -14,7 +14,8 @@ import {
     postInteractionReducer,
     allUserReactionsReducer,
     allcommentsReducer,
-    allcommentsreplyReducer
+    allcommentsreplyReducer,
+    toPremiumReducer
 } from './reducers/userReducer'
 
 import {
@@ -48,6 +49,7 @@ const reducers = combineReducers({
     allreactions:allUserReactionsReducer,
     allcomments:allcommentsReducer,
     allreplies:allcommentsreplyReducer,
+    topremium:toPremiumReducer,
 
 
 

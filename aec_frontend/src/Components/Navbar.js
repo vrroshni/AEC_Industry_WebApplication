@@ -5,15 +5,12 @@ import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
 
 
-
-
 function Navbar() {
 
     const userInfo = useSelector(state => state.getUserProfile)
     const { fullUserProfileInfo } = userInfo
     const dispatch = useDispatch()
-    const navigate = useNavigate()
-
+    const navigate = useNavigate()    
 
     useEffect(() => {
         if (!fullUserProfileInfo) {
@@ -22,7 +19,6 @@ function Navbar() {
         }
 
     }, [])
-
 
     const logoutHandler = () => {
         Swal.fire({

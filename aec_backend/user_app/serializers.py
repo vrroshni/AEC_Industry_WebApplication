@@ -3,37 +3,38 @@ from .models import *
 from aec_app.models import *
 from rest_framework_simplejwt.tokens import RefreshToken
 
-
-# class AccountSerializer(serializers.ModelSerializer):
-
-#     class Meta:
-#         model=Account
-#         fields=['i','username','first_name','last_name','email','phone_number','password']
-#         extra_kwargs = {'password': {'write_only': True}}
-#     is_active=serializers.BooleanField(default=True)
-#     is_client=serializers.BooleanField(default=True)
-#     def create(self, validated_data):
-#         user = Account.objects.create(
-#             username=validated_data["username"],
-#             email=validated_data["email"],
-#             first_name=validated_data["first_name"],
-#             last_name=validated_data["last_name"],
-#             phone_number=validated_data["phone_number"],
-#             last_name=validated_data["last_name"],
-#         )
-#         user.set_password(validated_data["password"])
-#         user.save()
-#         return user
- 
-
-
-class ProfileSerializer(serializers.ModelSerializer):
+class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model=Account
         fields='__all__'
 
+class NetworkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Network
+        fields='__all__'
+        
+class ProjectsSerializer(serializers.ModelSerializer):
+    rated_user=AccountSerializer(read_only=True)
+    class Meta:
+        model=Projects
+        fields='__all__'
 
-
+class ProfileSerializer(serializers.ModelSerializer):
+    user_network=serializers.SerializerMethodField(read_only=True)
+    user_project=serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model=Account
+        fields='__all__'
+        
+    def get_user_network(self, obj):
+        items = obj.user_network.all()
+        serializer = NetworkSerializer(items, many=True)
+        return serializer.data
+    
+    def get_user_project(self, obj):
+        items = obj.user_project.all()
+        serializer = ProjectsSerializer(items, many=True)
+        return serializer.data
 
 class ProfileSerializerWithToken(ProfileSerializer):
     token=serializers.SerializerMethodField(read_only=True)
@@ -44,23 +45,13 @@ class ProfileSerializerWithToken(ProfileSerializer):
         token=RefreshToken.for_user(obj)
         return str(token.access_token)
 
-
 class ProfileVerificationSerializer(serializers.ModelSerializer):
     user=ProfileSerializer(read_only=True)
-    
     class Meta:
         model=ProfileVerification
         fields='__all__'
     
-
-
-# class PostSerializer(serializers.ModelSerializer):
-#     user_post=ProfileSerializer(read_only=True)
-#     class Meta:
-#         model=Post
-#         fields='__all__'
 class PostReactionSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = Post_Reaction
         fields = "__all__"
@@ -69,14 +60,34 @@ class PostCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post_Comment
         fields = "__all__"
+        
 class PostComment_Reply_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Post_Comment_Reply
         fields = "__all__"
 
-
 class PostSerializer(serializers.ModelSerializer):    
     user=ProfileSerializer(read_only=True)
+    post_reaction=serializers.SerializerMethodField(read_only=True)
+    post_comment=serializers.SerializerMethodField(read_only=True)
+    # post_comment_reply=serializers.SerializerMethodField(read_only=True)
     class Meta:
         model=Post
         fields='__all__'
+        
+    def get_post_reaction(self, obj):
+        items = obj.post_reaction.all()
+        serializer = PostReactionSerializer(items, many=True)
+        return serializer.data
+    
+    def get_post_comment(self, obj):
+        items = obj.post_comment.all()
+        serializer = PostCommentSerializer(items, many=True)
+        return serializer.data
+    
+    # def get_post_comment_reply(self, obj):
+    #     items = obj.post_comment_reply.all()
+    #     serializer = PostComment_Reply_Serializer(items, many=True)
+    #     return serializer.data
+
+    

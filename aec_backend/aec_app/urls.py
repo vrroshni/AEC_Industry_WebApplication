@@ -4,6 +4,7 @@ from .views  import *
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
+from django.views.decorators.csrf import csrf_exempt
 urlpatterns = [
     path('',index),
     #JWT
@@ -13,9 +14,13 @@ urlpatterns = [
     #UserProfile
     path('register/', registerUser, name='register'),
     path('profile/', getUserProfile, name='profile'),
+    path('updateprofile/', updateUserProfile, name='updateprofile'),
+    
     path('userrequest/', getUserRequest, name='userrequest'),
     path('profileverification/', profileVerification, name='profileverification'),
-    path('updateprofile/', updateUserProfile, name='updateprofile'),
+    path('topremium/', toPremiumMember, name='topremium'),
+    path('create-checkout-session/<price>/', csrf_exempt(CreateCheckOutSession.as_view()), name='checkout_session'),    
+    
     path('addpost/', addPost, name='addpost'),
     path('allfeed/', allFeed, name='allfeed'),
     

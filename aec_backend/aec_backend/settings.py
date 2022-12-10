@@ -193,3 +193,8 @@ CORS_ALLOW_ALL_ORIGINS:True
 
 MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+
+
+
+STRIPE_SECRET_KEY='sk_test_51MDAkSSGGWhWYaNwOef46UptWUpv33GdCYOMny3zd11VygHMLHI1regfJW4Ti2IpzUYDDYt1D7doEiVD6f9J0Jmy00e0x9pndC'
+SITE_URL='http://localhost:3000/'

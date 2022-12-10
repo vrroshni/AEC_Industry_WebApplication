@@ -50,7 +50,13 @@ import {
 
     ALL_USERS_REACTIONS,
     ALL_USERS_COMMENTS,
-    ALL_USERS_COMMENTS_REPLY
+    ALL_USERS_COMMENTS_REPLY,
+
+    TO_PREMIUM_REQUEST,
+    TO_PREMIUM_SUCCESS,
+    TO_PREMIUM_FAILED,
+    TO_PREMIUM_RESET,
+    
 
 } from '../constants/userConstants'
 import storage from 'redux-persist/lib/storage'
@@ -175,50 +181,6 @@ export const registeruser = (username, firstname, lastname, email, phonenumber, 
 }
 
 
-// export const profileverification = ( role, location, experience, description, dob, website, image, cv_pdf, certipdf) => async (dispatch,getState) => {
-//     try {
-
-//         dispatch({
-//             type: USER_PROFILEVERIFY_REQUEST
-//         })
-//         const {
-//             userLogin: { userInfo },
-//         } = getState()
-
-//         const config = {
-//             headers: {
-//                 'Content-type': 'multipart/form-data',
-//                 Authorization: `Bearer ${userInfo.token}`
-//             }
-//         }
-//         console.log(image,'immmmmmmmmmmmmm',cv_pdf,'cvvvvvvvvvv',certipdf,'certiiiiiiiiiii')
-//         console.log('here............................')
-
-//         // const { data } = await axios.get('/profile/', config
-//         // )
-//         // ,{ 'role': role, 'location': location, 'experience': experience, 'certificate': certi_pdf, 'cv': cv_pdf, 'description': description, 'id_proof': id_image, 'website': website, 'dob': dob }
-//         // ,{ 'role': role, 'location': location, 'experience': experience, 'description': description,'website': website, 'dob': dob }
-//         const { data } = await axios.post("profileverification/",{ 'role': role, 'location': location, 'experience': experience, 'description': description,'website': website, 'dob': dob },config)
-//         console.log("kooooooooooooooooooooooooo")
-
-//         dispatch({
-//             type: USER_PROFILEVERIFY_SUCCESS,
-//             payload: data
-//         })
-
-       
-
-
-//     } catch (error) {
-//         dispatch({
-//             type: USER_PROFILEVERIFY_FAIL,
-//             payload: error.response && error.response.data.detail ?
-//                 error.response.data.detail : error.message,
-//         })
-//     }
-// }
-
-
 
 export const profileverification = (user,role,location,experience,description,dob,website,id_image,cv_pdf,certi_pdf) => async (dispatch) => {
     try {
@@ -250,6 +212,47 @@ export const profileverification = (user,role,location,experience,description,do
         })
     }
 }
+
+export const topremium = (premium_amount) => async (dispatch, getState) => {
+    try {
+
+        dispatch({
+            type: TO_PREMIUM_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'multipart/form-data',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.patch(' /topremium/',{"premium_amount":premium_amount}, config
+        )
+        console.log(data, '...................')
+        dispatch({
+            type: TO_PREMIUM_SUCCESS,
+        })
+
+    } catch (error) {
+        dispatch({
+            type: TO_PREMIUM_FAILED,
+            payload: error.response && error.response.data.detail ?
+                error.response.data.detail : error.message,
+        })
+
+        dispatch({
+            type: TO_PREMIUM_RESET,
+        })
+    }
+}
+
+
+
 
 
 
@@ -291,6 +294,7 @@ export const getUserProfile = () => async (dispatch, getState) => {
         })
     }
 }
+
 
 export const getUserRequest = () => async (dispatch, getState) => {
 
@@ -432,23 +436,10 @@ export const allFeed = () => async (dispatch, getState) => {
         console.log(data,'daaaaaaaaaaaaaattttttttttttttta')
         dispatch({
             type: USER_FEED_ALL_POSTS_LIST_SUCCESS,
-            payload: data.allposts
+            payload: data
         })
 
-        dispatch({
-            type: ALL_USERS_REACTIONS,
-            payload: data.allreactions
-        })
-
-        dispatch({
-            type: ALL_USERS_COMMENTS,
-            payload: data.allcomments
-        })
-
-        dispatch({
-            type: ALL_USERS_COMMENTS_REPLY,
-            payload: data.allreplies
-        })
+      
 
 
     } catch (error) {
@@ -489,10 +480,7 @@ export const post_like = (id) => async (dispatch, getState) => {
         payload: data.allposts
     })
 
-    dispatch({
-        type: ALL_USERS_REACTIONS,
-        payload: data.allreactions
-    })
+ 
 }
 
 
@@ -520,10 +508,7 @@ export const post_dislike = (id) => async (dispatch, getState) => {
         type: USER_FEED_ALL_POSTS_LIST_SUCCESS,
         payload: data.allposts
     })
-    dispatch({
-        type: ALL_USERS_REACTIONS,
-        payload: data.allreactions
-    })
+ 
 }
 
 export const user_commented = (post_id, comment) => async (dispatch, getState) => {
@@ -551,10 +536,6 @@ export const user_commented = (post_id, comment) => async (dispatch, getState) =
         payload: data.allposts
     })
 
-    dispatch({
-        type: ALL_USERS_COMMENTS,
-        payload: data.allcomments
-    })
 }
 
 export const user_comment_reply = (post_id, comment_id, comment) => async (dispatch, getState) => {
@@ -649,6 +630,7 @@ export const reject_connection = (user_id) => async (dispatch, getState) => {
         type: REJECT_CONNECTION_REQUEST,
     })
 }
+
 export const accept_connection = (user_id) => async (dispatch, getState) => {
 
     const {

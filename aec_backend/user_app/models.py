@@ -109,12 +109,13 @@ class Account(AbstractBaseUser):
 
 
 class ProfileVerification(models.Model):
-    user=models.ForeignKey(Account,related_name='user',on_delete=models.CASCADE)
+    user=models.ForeignKey(Account,related_name='user',on_delete=models.CASCADE,null=True)
     date=models.DateField(auto_now_add=True,null=True)
     location=models.CharField(max_length=50,null=True)
     description=models.CharField(max_length=500,null=True)
     portfolio_website=models.CharField(max_length=50,null=True)
     experience=models.IntegerField(default=0)
+    premium_amount=models.IntegerField(default=0,null=True)
     date_of_birth=models.DateField(null=True)
     paid_at=models.DateField(null=True)
     role=models.CharField(max_length=50,null=True)

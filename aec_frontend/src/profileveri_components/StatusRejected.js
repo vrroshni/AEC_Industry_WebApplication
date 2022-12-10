@@ -7,8 +7,8 @@ function StatusRejected() {
         <div class="authincation-content">
           <div class="row no-gutters">
             <div class="col-xl-12">
-              <div class="auth-form" style={{ background: "#ed0202" }}>
-                <div class="card text-white  text-center" style={{ background: "#ed0202", border: "none", borderRadius: "0" }} >
+              <div class="auth-form bg-danger">
+                <div class="card text-white bg-danger text-center" style={{ border: "none", borderRadius: "0" }} >
                   <div class="card-body mb-0 pb-3">
                   <span class="me-3">
                       <i class="flaticon-381-diamond" style={{fontSize:"70px"}}></i>

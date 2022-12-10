@@ -9,6 +9,7 @@ from .serializers import*
 
 
 # Create your views here.
+
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def like_post(request):
@@ -36,12 +37,10 @@ def like_post(request):
             like_filter.delete()
             post.likes=post.likes-1
             post.save()
-    all_reactions=Post_Reaction.objects.all().order_by('-reacted_at')     
     posts=Post.objects.all().order_by('-posted_at')
-    reaction_serializer=PostReactionSerializer(all_reactions,many=True)
     serializer=PostSerializer(posts,many=True)
-    if serializer.is_valid and reaction_serializer.is_valid:
-        return Response({'allposts':serializer.data,'allreactions':reaction_serializer.data},status=status.HTTP_201_CREATED)
+    if serializer.is_valid :
+        return Response({'allposts':serializer.data},status=status.HTTP_201_CREATED)
             
             
 @api_view(['PATCH'])
@@ -70,12 +69,10 @@ def dislike_post(request):
             dislike_filter.delete()
             post.dislikes=post.dislikes-1
             post.save()
-    all_reactions=Post_Reaction.objects.all().order_by('-reacted_at')     
     posts=Post.objects.all().order_by('-posted_at')
-    reaction_serializer=PostReactionSerializer(all_reactions,many=True)
     serializer=PostSerializer(posts,many=True)
-    if serializer.is_valid and reaction_serializer.is_valid:
-        return Response({'allposts':serializer.data,'allreactions':reaction_serializer.data},status=status.HTTP_201_CREATED)
+    if serializer.is_valid :
+        return Response({'allposts':serializer.data},status=status.HTTP_201_CREATED)
 
 
 
@@ -115,13 +112,10 @@ def user_commented(request):
     post.save()
     new_comment=Post_Comment.objects.create(user=user,post=post,comment_desc=data['comment'])
     new_comment.save()
-    all_comments=Post_Comment.objects.all().order_by('-created_at')     
     posts=Post.objects.all().order_by('-posted_at')
-    allcomments_serializer=PostCommentSerializer(all_comments,many=True)
-    
     serializer=PostSerializer(posts,many=True)
-    if serializer.is_valid and allcomments_serializer.is_valid:
-        return Response({'allposts':serializer.data,'allcomments':allcomments_serializer.data},status=status.HTTP_201_CREATED)
+    if serializer.is_valid :
+        return Response({'allposts':serializer.data},status=status.HTTP_201_CREATED)
 
 
 
@@ -137,12 +131,10 @@ def user_reply_commented(request):
     comment=Post_Comment.objects.get(id=data['comment_id'])
     new_comment_reply=Post_Comment_Reply.objects.create(user=user,post=post,post_comment=comment,reply_comment_desc=data['comment'])
     new_comment_reply.save()
-    all_reply_comments=Post_Comment_Reply.objects.all().order_by('-created_at')     
     posts=Post.objects.all().order_by('-posted_at')
-    replycomment_serializer=PostComment_Reply_Serializer(all_reply_comments,many=True)
     serializer=PostSerializer(posts,many=True)
-    if serializer.is_valid and replycomment_serializer.is_valid:
-        return Response({'allposts':serializer.data,'allreplies':replycomment_serializer.data},status=status.HTTP_201_CREATED)
+    if serializer.is_valid :
+        return Response({'allposts':serializer.data},status=status.HTTP_201_CREATED)
  
  
     

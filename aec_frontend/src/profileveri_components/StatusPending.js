@@ -10,8 +10,8 @@ function StatusPending() {
         <div class="authincation-content">
           <div class="row no-gutters">
             <div class="col-xl-12">
-              <div class="auth-form" style={{ background: "#ffe520" }}>
-                <div class="card text-white  text-center" style={{ background: "#ffe520", border: "none", borderRadius: "0" }} >
+              <div class="auth-form bg-warning" >
+                <div class="card text-white bg-warning  text-center" style={{  border: "none", borderRadius: "0" }} >
                   <div class="card-body mb-0 pb-3">
                     <span class="me-3">
                       <i class="ms-1 fa fa-redo" style={{ fontSize: "70px" }}></i>

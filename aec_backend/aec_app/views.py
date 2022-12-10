@@ -8,17 +8,20 @@ from .models import *
 from user_app.serializers import *
 from rest_framework import status
 from django.contrib.auth.hashers import make_password
+from datetime import datetime
+import stripe
+from django.shortcuts import redirect
+from django.conf import settings
+from rest_framework.views import APIView
 
 
 # Create your views here.
 @api_view(['GET'])
 def index(request):
-    all_comments=Post_Comment.objects.all().order_by('-created_at')     
-    posts=Post.objects.all().order_by('-posted_at')
-    allcomments_serializer=PostCommentSerializer(all_comments,many=True)
-    serializer=PostSerializer(posts,many=True)
-    if allcomments_serializer.is_valid:
-        return Response({'allcomments':allcomments_serializer.data},status=status.HTTP_201_CREATED)
+    posts = Post.objects.all().order_by('-posted_at')
+    serializer = PostSerializer(posts, many=True)
+    if serializer.is_valid:
+        return Response({'allposts': serializer.data}, status=status.HTTP_200_OK)
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -70,13 +73,12 @@ def registerUser(request):
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 @api_view(['POST'])
 def profileVerification(request):
     data = request.data
     try:
-        user=Account.objects.get(id=data['user'])
-        profile=ProfileVerification.objects.create(
+        user = Account.objects.get(id=data['user'])
+        profile = ProfileVerification.objects.create(
             user=user,
             location=data['location'],
             experience=data['experience'],
@@ -90,11 +92,25 @@ def profileVerification(request):
             verif_send_status=True,
             role=data['role']
         )
-        serializer=ProfileVerificationSerializer(profile,many=False)
-        return Response(serializer.data,status=status.HTTP_201_CREATED)
+        serializer = ProfileVerificationSerializer(profile, many=False)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     except:
-        message ={'detail':"Something went wrong"} 
+        message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def toPremiumMember(request):
+    user = request.user
+    data = request.data
+    verified_profile = ProfileVerification.objects.get(user=user)
+    verified_profile.premium_amount = data['premium_amount']
+    verified_profile.paid_at = datetime.now()
+    verified_profile.is_premium = True
+    verified_profile.save()
+    print(verified_profile, 'vvvvvvvvvv')
+    return Response(status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -110,13 +126,12 @@ def getUserProfile(request):
 def getUserRequest(request):
     user = request.user
     try:
-        data=ProfileVerification.objects.get(user=user.id)
+        data = ProfileVerification.objects.get(user=user.id)
         serializer = ProfileVerificationSerializer(data, many=False)
         return Response(serializer.data)
     except:
         message = {'detail': "Currently no requests"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 @api_view(['PATCH'])
@@ -132,7 +147,6 @@ def updateUserProfile(request):
         if Account.objects.exclude(id=user.id).filter(email=data['email']).exists():
             message = {'detail': 'User with this email already exists'}
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
 
         user.first_name = data['firstname']
         user.last_name = data['lastname']
@@ -152,15 +166,15 @@ def updateUserProfile(request):
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
-    
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addPost(request):
     user = request.user
     data = request.data
     try:
-        post=Post()
-        post.user=user
+        post = Post()
+        post.user = user
         if data['post_desc'] != '':
             post.post_desc = data['post_desc']
         if data['image'] != '':
@@ -168,34 +182,120 @@ def addPost(request):
         if data['video'] != '':
             post.post_content_video = data['video']
         post.save()
-        posts=Post.objects.all().order_by('-posted_at')
-        serializer=PostSerializer(posts,many=True)
-        if serializer.is_valid:
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_201_CREATED)
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-
-
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def allFeed(request):
     try:
-        all_reactions=Post_Reaction.objects.all().order_by('-reacted_at')     
-        all_comments=Post_Comment.objects.all().order_by('-created_at') 
-        all_reply_comments=Post_Comment_Reply.objects.all().order_by('-created_at')     
-        posts=Post.objects.all().order_by('-posted_at')
-        
-        reaction_serializer=PostReactionSerializer(all_reactions,many=True)
-        replycomment_serializer=PostComment_Reply_Serializer(all_reply_comments,many=True)
-        allcomments_serializer=PostCommentSerializer(all_comments,many=True)
-        serializer=PostSerializer(posts,many=True)
-       
-        return Response({'allposts':serializer.data,'allreactions':reaction_serializer.data,'allcomments':allcomments_serializer.data,'allreplies':replycomment_serializer.data},status=status.HTTP_201_CREATED)
-        
+        posts = Post.objects.all().order_by('-posted_at')
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class CreateStripeCheckOutSession(APIView):
+#     def post(self,request,*args,**kwargs):
+#         data=request.data
+#         try:
+
+
+
+
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def create_checkout_session(request):
+#     user = request.user
+#     data = request.data
+#     try:
+#         verified_profile = ProfileVerification.objects.get(user=user)
+#         checkout_session = stripe.checkout.Session.create(
+#             line_items=[
+#                 {
+#                     # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+#                     'price_data': {
+#                         'currency': 'usd',
+#                         'unit_amount': int(data['premium_amount']) * 100,
+#                         'product_data':{
+#                             'name': "Premium Membership",
+#                         }
+#                     },
+#                     'quantity': 1,
+#                 },
+#             ],
+#             mode='payment',
+#             success_url=settings.SITE_URL + '?success=true',
+#             cancel_url=settings.SITE_URL + '?canceled=true',
+
+#         )
+#         verified_profile.premium_amount = data['premium_amount']
+#         verified_profile.paid_at = datetime.now()
+#         verified_profile.is_premium = True
+#         verified_profile.save()
+#         print(checkout_session.url, 'rullllllll')
+#         return HttpResponseRedirect(checkout_session.url)
+#     except:
+#         return Response(
+#             {'error': 'Something went wrong when creating stripe checkout session'},
+#             status=status.HTTP_500_INTERNAL_SERVER_ERROR
+#         )
+
+
+# @app.route('/create-checkout-session', methods=['POST'])
+# def create_checkout_session():
+#     try:
+#         checkout_session = stripe.checkout.Session.create(
+#             line_items=[
+#                 {
+#                     # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+#                     'price': '{{PRICE_ID}}',
+#                     'quantity': 1,
+#                 }
+#             ],
+#             mode='payment',
+#             success_url=YOUR_DOMAIN + '?success=true',
+#             cancel_url=YOUR_DOMAIN + '?canceled=true',
+#         )
+#     except Exception as e:
+#         return str(e)
+
+#     return redirect(checkout_session.url, code=303)
+
+# if __name__ == '__main__':
+#     app.run(port=4242)
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+class CreateCheckOutSession(APIView):
+    def post(self, request, *args, **kwargs):
+        price = self.kwargs["price"]
+        try:
+            checkout_session = stripe.checkout.Session.create(
+            line_items=[
+                {
+                    # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                    'price_data': {
+                        'currency': 'usd',
+                        'unit_amount': int(price) * 100,
+                        'product_data':{
+                            'name': "Premium Membership",
+                        }
+                    },
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url=settings.SITE_URL + 'payment/?success=true&price='+price,
+            cancel_url=settings.SITE_URL + 'payment/?canceled=true',
+
+        )  
+            return redirect(checkout_session.url)
+        except Exception as e:
+            return Response({'msg': 'something went wrong while creating stripe session', 'error': str(e)}, status=500)

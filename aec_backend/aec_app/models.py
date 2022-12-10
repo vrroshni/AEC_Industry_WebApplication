@@ -25,8 +25,6 @@ class Report_Post(models.Model):
     post=models.ForeignKey(Post,related_name='reported_post',on_delete=models.CASCADE,null=True)
     report_reason=models.CharField(max_length=200,null=True)
     reported_at=models.DateTimeField(auto_now_add=True)
-    
-
 
 class Post_Reaction(models.Model):
     TYPES=( 
@@ -37,7 +35,6 @@ class Post_Reaction(models.Model):
     type=models.CharField(max_length=100, null=True,choices=TYPES)
     user=models.ForeignKey(Account,related_name='post_reaction_user',on_delete=models.CASCADE,null=True)
     reacted_at=models.DateTimeField(auto_now_add=True,null=True)
-
 
 class Post_Comment(models.Model):
     

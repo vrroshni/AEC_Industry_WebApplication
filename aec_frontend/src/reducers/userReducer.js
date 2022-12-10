@@ -48,7 +48,13 @@ import {
 
     ALL_USERS_REACTIONS,
     ALL_USERS_COMMENTS,
-    ALL_USERS_COMMENTS_REPLY
+    ALL_USERS_COMMENTS_REPLY,
+
+    TO_PREMIUM_REQUEST,
+    TO_PREMIUM_SUCCESS,
+    TO_PREMIUM_FAILED,
+    TO_PREMIUM_RESET,
+
 
 } from '../constants/userConstants'
 
@@ -132,6 +138,24 @@ export const profileverificationReducer = (state = {}, action) => {
 
 
 
+export const toPremiumReducer = (state = {}, action) => {
+    switch (action.type) {
+        case TO_PREMIUM_REQUEST:
+            return { loading: true }
+
+        case TO_PREMIUM_SUCCESS:
+            return { loading: false, successpayment: true }
+
+        case TO_PREMIUM_FAILED:
+            return { loading: false, error: action.payload}
+
+        case TO_PREMIUM_RESET:
+            return {}
+
+        default:
+            return state;
+    }
+}
 export const updateUserProfileReducer = (state = {}, action) => {
     switch (action.type) {
         case USER_UPDATE_PROFILE_REQUEST:
