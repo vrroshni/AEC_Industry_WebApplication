@@ -46,10 +46,6 @@ import {
     REJECT_CONNECTION_REQUEST,
     USER_NETWORK_RESET,
 
-    ALL_USERS_REACTIONS,
-    ALL_USERS_COMMENTS,
-    ALL_USERS_COMMENTS_REPLY,
-
     TO_PREMIUM_REQUEST,
     TO_PREMIUM_SUCCESS,
     TO_PREMIUM_FAILED,
@@ -220,40 +216,6 @@ export const FeedReducer = (state = { posts: [] }, action) => {
 }
 
 
-export const allUserReactionsReducer = (state = { reactions:[]}, action) => {
-    switch (action.type) {
-        case ALL_USERS_REACTIONS:
-            return {
-                reactions: action.payload
-            }
-
-        default:
-            return state
-    }
-}
-export const allcommentsReducer = (state = { comments:[]}, action) => {
-    switch (action.type) {
-       
-        case ALL_USERS_COMMENTS:
-            return {
-                comments: action.payload
-            }
-
-        default:
-            return state
-    }
-}
-export const allcommentsreplyReducer = (state = {comment_reply:[] }, action) => {
-    switch (action.type) {
-        case ALL_USERS_COMMENTS_REPLY:
-            return {
-                comment_reply: action.payload
-            }
-
-        default:
-            return state
-    }
-}
 
 
 

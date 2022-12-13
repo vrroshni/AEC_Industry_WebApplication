@@ -356,9 +356,23 @@ export const updateProfile = (username, firstname, lastname, email, phonenumber,
         const { data } = await axios.patch('/updateprofile/',
             { 'username': username, 'firstname': firstname, 'lastname': lastname, 'password': password, 'email': email, 'phonenumber': phonenumber, 'pro_pic': pro_pic, 'cover_pic': cover_pic, 'password': password }, config
         )
-        console.log(data, '...................')
         dispatch({
             type: USER_UPDATE_PROFILE_SUCCESS,
+        })
+        dispatch({
+            type: USER_PROFILE_SUCCESS,
+            payload: data
+
+        })
+        toast.success(' Profile details are updated Succesffully!', {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
         })
 
     } catch (error) {
@@ -433,7 +447,6 @@ export const allFeed = () => async (dispatch, getState) => {
             config
         )
         
-        console.log(data,'daaaaaaaaaaaaaattttttttttttttta')
         dispatch({
             type: USER_FEED_ALL_POSTS_LIST_SUCCESS,
             payload: data
@@ -562,10 +575,7 @@ export const user_comment_reply = (post_id, comment_id, comment) => async (dispa
         type: USER_FEED_ALL_POSTS_LIST_SUCCESS,
         payload: data.allposts
     })
-    dispatch({
-        type: ALL_USERS_COMMENTS_REPLY,
-        payload: data.allreplies
-    })
+   
 }
 
 export const follow_unfollow = (user_id) => async (dispatch, getState) => {

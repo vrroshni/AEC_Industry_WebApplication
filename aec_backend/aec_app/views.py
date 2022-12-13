@@ -99,6 +99,38 @@ def profileVerification(request):
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+class CreateCheckOutSession(APIView):
+    def post(self, request, *args, **kwargs):
+        price = self.kwargs["price"]
+        try:
+            checkout_session = stripe.checkout.Session.create(
+            line_items=[
+                {
+                    # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                    'price_data': {
+                        'currency': 'usd',
+                        'unit_amount': int(price) * 100,
+                        'product_data':{
+                            'name': "Premium Membership",
+                        }
+                    },
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url=settings.SITE_URL + 'payment/?success=true&price='+price,
+            cancel_url=settings.SITE_URL + 'payment/?canceled=true',
+
+        )  
+            return redirect(checkout_session.url)
+        except Exception as e:
+            return Response({'msg': 'something went wrong while creating stripe session', 'error': str(e)}, status=500)
+
+
+
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def toPremiumMember(request):
@@ -139,7 +171,6 @@ def getUserRequest(request):
 def updateUserProfile(request):
     user = request.user
     try:
-        serializer = ProfileSerializerWithToken(user, many=False)
         data = request.data
         if Account.objects.exclude(id=user.id).filter(username=data['username']).exists():
             message = {'detail': 'User with this username already exists'}
@@ -160,7 +191,7 @@ def updateUserProfile(request):
         if data['cover_pic'] != '':
             user.cover_pic = data['cover_pic']
         user.save()
-
+        serializer = ProfileSerializerWithToken(user, many=False)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     except:
         message = {'detail': "Something went wrong"}
@@ -200,102 +231,3 @@ def allFeed(request):
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
-
-# class CreateStripeCheckOutSession(APIView):
-#     def post(self,request,*args,**kwargs):
-#         data=request.data
-#         try:
-
-
-
-
-# @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
-# def create_checkout_session(request):
-#     user = request.user
-#     data = request.data
-#     try:
-#         verified_profile = ProfileVerification.objects.get(user=user)
-#         checkout_session = stripe.checkout.Session.create(
-#             line_items=[
-#                 {
-#                     # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-#                     'price_data': {
-#                         'currency': 'usd',
-#                         'unit_amount': int(data['premium_amount']) * 100,
-#                         'product_data':{
-#                             'name': "Premium Membership",
-#                         }
-#                     },
-#                     'quantity': 1,
-#                 },
-#             ],
-#             mode='payment',
-#             success_url=settings.SITE_URL + '?success=true',
-#             cancel_url=settings.SITE_URL + '?canceled=true',
-
-#         )
-#         verified_profile.premium_amount = data['premium_amount']
-#         verified_profile.paid_at = datetime.now()
-#         verified_profile.is_premium = True
-#         verified_profile.save()
-#         print(checkout_session.url, 'rullllllll')
-#         return HttpResponseRedirect(checkout_session.url)
-#     except:
-#         return Response(
-#             {'error': 'Something went wrong when creating stripe checkout session'},
-#             status=status.HTTP_500_INTERNAL_SERVER_ERROR
-#         )
-
-
-# @app.route('/create-checkout-session', methods=['POST'])
-# def create_checkout_session():
-#     try:
-#         checkout_session = stripe.checkout.Session.create(
-#             line_items=[
-#                 {
-#                     # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-#                     'price': '{{PRICE_ID}}',
-#                     'quantity': 1,
-#                 }
-#             ],
-#             mode='payment',
-#             success_url=YOUR_DOMAIN + '?success=true',
-#             cancel_url=YOUR_DOMAIN + '?canceled=true',
-#         )
-#     except Exception as e:
-#         return str(e)
-
-#     return redirect(checkout_session.url, code=303)
-
-# if __name__ == '__main__':
-#     app.run(port=4242)
-
-stripe.api_key = settings.STRIPE_SECRET_KEY
-
-class CreateCheckOutSession(APIView):
-    def post(self, request, *args, **kwargs):
-        price = self.kwargs["price"]
-        try:
-            checkout_session = stripe.checkout.Session.create(
-            line_items=[
-                {
-                    # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                    'price_data': {
-                        'currency': 'usd',
-                        'unit_amount': int(price) * 100,
-                        'product_data':{
-                            'name': "Premium Membership",
-                        }
-                    },
-                    'quantity': 1,
-                },
-            ],
-            mode='payment',
-            success_url=settings.SITE_URL + 'payment/?success=true&price='+price,
-            cancel_url=settings.SITE_URL + 'payment/?canceled=true',
-
-        )  
-            return redirect(checkout_session.url)
-        except Exception as e:
-            return Response({'msg': 'something went wrong while creating stripe session', 'error': str(e)}, status=500)

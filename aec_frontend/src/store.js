@@ -12,16 +12,14 @@ import {
     postAddReducer,
     networkReducer,
     postInteractionReducer,
-    allUserReactionsReducer,
-    allcommentsReducer,
-    allcommentsreplyReducer,
     toPremiumReducer
 } from './reducers/userReducer'
 
 import {
     allUserListReducer,
     statusChangeReducer,
-    allProfileRequestsReducer
+    allProfileRequestsReducer,
+    allPostListReducer
 } from './reducers/adminReducer'
 
 
@@ -46,9 +44,6 @@ const reducers = combineReducers({
     updateUserprofile: updateUserProfileReducer,
     addPost: postAddReducer,
     allposts: FeedReducer,
-    allreactions:allUserReactionsReducer,
-    allcomments:allcommentsReducer,
-    allreplies:allcommentsreplyReducer,
     topremium:toPremiumReducer,
 
 
@@ -56,7 +51,10 @@ const reducers = combineReducers({
     allUsers: allUserListReducer,
     statusChanger: statusChangeReducer,
     allProfRequests: allProfileRequestsReducer,
+    allPosts:allPostListReducer,
 
+
+    
     postInteraction:postInteractionReducer,
     network:networkReducer,
 

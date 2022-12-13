@@ -16,6 +16,8 @@ import {
     ALL_POSTS_LIST_SUCCESS,
     ALL_POSTS_LIST_FAIL,
 
+    CHANGE_REPORT_STATUS,
+
 
 
 
@@ -42,10 +44,20 @@ export const allUserListReducer = (state = { users: [] }, action) => {
 }
 
 
-export const statusChangeReducer = (state = { done: null }, action) => {
+export const statusChangeReducer = (state = { }, action) => {
     switch (action.type) {
 
         case USER_STATUS_CHANGE:
+            return { done: true }
+
+        default:
+            return state
+    }
+}
+export const changeReportStatusReducer = (state = { }, action) => {
+    switch (action.type) {
+
+        case CHANGE_REPORT_STATUS:
             return { done: true }
 
         default:
@@ -82,3 +94,24 @@ export const allProfileRequestsReducer = (state = { requests: [] }, action) => {
             return state
     }
 }
+
+
+export const allPostListReducer = (state = { allposts: [] }, action) => {
+    switch (action.type) {
+        case ALL_POSTS_LIST_REQUEST:
+            return { loading: true, allposts: [] }
+
+        case ALL_POSTS_LIST_SUCCESS:
+            return {
+                loading: false,
+                allposts: action.payload,
+            }
+
+        case ALL_POSTS_LIST_FAIL:
+            return { loading: false, error: action.payload }
+
+        default:
+            return state
+    }
+}
+

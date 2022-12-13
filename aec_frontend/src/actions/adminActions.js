@@ -17,6 +17,8 @@ import {
     ALL_POSTS_LIST_SUCCESS,
     ALL_POSTS_LIST_FAIL,
 
+    CHANGE_REPORT_STATUS,
+
 } from '../constants/adminConstants'
 import { toast } from 'react-toastify'
 
@@ -184,6 +186,78 @@ export const profile_rejected = (id) => async (dispatch, getState) => {
         type: USER_PROFILEREJECTED_SUCCESS,
     })
     toast.success(' You have rejected a profile ', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+    })
+
+
+}
+
+
+export const listPosts = () => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: ALL_POSTS_LIST_REQUEST
+        })
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.get('/aecadmin/allPosts/',
+            config
+        )
+
+        dispatch({
+            type: ALL_POSTS_LIST_SUCCESS,
+            payload: data
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: ALL_POSTS_LIST_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+
+export const changeReportStatus = (id) => async (dispatch, getState) => {
+
+    const {
+        userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+        headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${userInfo.token}`
+        }
+    }
+
+    const { data } = await axios.put('/aecadmin/changeReportStatus/', { "id": id },
+        config
+    )
+
+    dispatch({
+        type: CHANGE_REPORT_STATUS,
+    })
+    toast.success(' Action is performed', {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: true,

@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import Accordion from 'react-bootstrap/Accordion';
 import Message from '../Message'
 import Loader from '../Loader'
+import Bluetick from './Bluetick';
 
 const mystyle = {
     background: "var(--primary)",
@@ -35,10 +36,6 @@ function Feed() {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
-
-
-
-
 
     const ImagehandleChange = (e) => {
         setfronterror('')
@@ -104,7 +101,7 @@ function Feed() {
         dispatch(user_commented(e.target.post.value, comment))
         setComment('')
         setPosterror('')
-       
+
 
     }
     return (
@@ -263,8 +260,6 @@ function Feed() {
                         </div>
                     </div>
                     <div className="col-xl-12">
-
-
                         <div className="card">
                             {loading && <Loader />}
                             {posts?.length !== 0 ? posts?.map((post, id) => (
@@ -276,12 +271,11 @@ function Feed() {
                                         <ul className="mb-2 post-meta " >
                                             <div className="profile-photo d-flex flex-wrap" >
                                                 <img src={post.user.pro_pic} className="img-fluid rounded-circle me-1" style={{ width: "30px", height: "30px" }} alt="" />
-                                                <li className="post-author me-3 mt-1 " >By {post.user.full_name}</li>
+                                                <li className="post-author   mt-1 " >By {post.user.full_name} </li>{post.user.is_verified &&<Bluetick />}
                                                 <li className="post-date me-3 mt-1"><i className="fas fa-calendar-week me-2"></i>{dayjs(post.posted_at).format("d MMM YYYY")}</li>
                                                 <li className="post-comment mt-1"><i className="far fa-comments me-2"></i> {post.comments}</li>
 
                                             </div>
-
                                         </ul>
                                         <Carousel>
                                             {post.post_content_img && <Carousel.Item>
@@ -304,29 +298,41 @@ function Feed() {
                                             </Carousel.Item>}
 
                                         </Carousel>
-
-
                                         {post.post_desc && <h4 className='py-4'>{post.post_desc}</h4>}
                                         <div className="comment-respond d-flex flex-column" id="respond">
                                             <div className='d-flex '>
-                                                <SlLike className="ms-3" onClick={() => user_like(post.id)} style={{
-                                                    height: " 4em",
-                                                    width: "2em",
-                                                    color: "black"
-                                                }} />
+                                                {
+                                                    post.post_reaction.some(e => e.type === 'LIKE' && e.user === fullUserProfileInfo.id) ?
+                                                        <SlLike className="ms-3" onClick={() => user_like(post.id)} style={{
+                                                            height: " 4em",
+                                                            width: "2em",
+                                                            color: "#1362fc"
+                                                        }} /> :
+                                                        <SlLike className="ms-3" onClick={() => user_like(post.id)} style={{
+                                                            height: " 4em",
+                                                            width: "2em",
+                                                            color: "black"
+                                                        }} />
+                                                }
 
                                                 <p className='mt-4 ms-3'>
                                                     {post.likes}
                                                 </p>
-
-                                                <SlDislike className="ms-3" onClick={() => user_dislike(post.id)} style={{
-                                                    height: " 4em",
-                                                    width: "2em",
-                                                    color: "black"
-                                                }} />
-
+                                                {
+                                                    post.post_reaction.some(e => e.type === 'DISLIKE' && e.user === fullUserProfileInfo.id) ?
+                                                        <SlDislike className="ms-3" onClick={() => user_dislike(post.id)} style={{
+                                                            height: " 4em",
+                                                            width: "2em",
+                                                            color: "#1362fc"
+                                                        }} /> :
+                                                        <SlDislike className="ms-3" onClick={() => user_dislike(post.id)} style={{
+                                                            height: " 4em",
+                                                            width: "2em",
+                                                            color: "black"
+                                                        }} />
+                                                }
                                                 <p className='mt-4 ms-3'>
-                                                    {post.dislikes} 
+                                                    {post.dislikes}
                                                 </p>
                                                 <GoCommentDiscussion className='ms-3' style={{
                                                     height: " 4em",
@@ -338,10 +344,8 @@ function Feed() {
                                                     {post.comments}
                                                 </p>
                                             </div>
-
                                             <Accordion>
                                                 <Accordion.Item eventKey="0" style={{ marginBottom: " 1.25rem" }}>
-
                                                     <Accordion.Header style={{ padding: "0", border: "none" }}>Post a Comment<i className="far fa-comments ms-2"></i></Accordion.Header>
                                                     <Accordion.Body>
                                                         <form onSubmit={CommentSubmitHandler}>
@@ -375,16 +379,11 @@ function Feed() {
 
                                                         ))}
 
-
-
                                                     </Accordion.Body>
                                                 </Accordion.Item>
                                             </Accordion>
                                         </div>
-
                                     </div>
-
-
                                 </div>
                             )) :
                                 null

@@ -19,22 +19,10 @@ def allusers(request):
     try:
         allusers=Account.objects.all()
         serializer=ProfileSerializer(allusers,many=True)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def allProfileVerificationRequests(request):
-#     try:
-#         allrequests=ProfileVerification.objects.all()
-#         serializer=ProfileVerificationSerializer(allrequests,many=True)
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
-#     except:
-#         message = {'detail': "Something went wrong"}
-#         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -60,7 +48,7 @@ def statusChange(request):
         else:
             user.is_active=True
             user.save()
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_200_OK)
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
@@ -68,15 +56,22 @@ def statusChange(request):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def profileVerified(request):
-    data=request.data
-    try:
+        data=request.data
+    
+    
         userrequest=ProfileVerification.objects.get(id=data['id'])
         userrequest.is_verified=True
         userrequest.save()
+        
+        user=Account.objects.get(id=userrequest.user.id)
+        user.is_verified=True
+        user.save()
+        
         return Response(status=status.HTTP_200_OK)
-    except:
-        message = {'detail': "Something went wrong"}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    # except:
+    #     message = {'detail': "Something went wrong"}
+    #     return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 @api_view(['PUT'])
@@ -93,5 +88,31 @@ def profileRejected(request):
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def allPosts(request):
+    try:
+        allposts=Post.objects.all().order_by('-posted_at')
+        serializer=PostSerializer(allposts,many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def changeReportStatus(request):
+    data=request.data
+    try:
+        post=Post.objects.get(id=data['id'])
+        if post.reported_status:
+            post.reported_status=False
+            post.save()
+        else:
+            post.reported_status=True
+            post.save()
+        return Response(status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)

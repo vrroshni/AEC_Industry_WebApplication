@@ -2,7 +2,7 @@ import Feed from './components/UserSide/Feed';
 import Login from './components/Accounts/Login';
 import ProfileVerification from './components/UserSide/ProfileVerification';
 import Register from './components/Accounts/Register';
-import UserProfile from './components/UserSide/UserProfile';
+import UserProfile from './components/Profiles/UserProfile';
 import { Routes, Route } from 'react-router-dom'
 import Common from './components/UserSide/Common'
 import Home from './components/UserSide/Home';
