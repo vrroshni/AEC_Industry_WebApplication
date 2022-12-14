@@ -12,7 +12,8 @@ import {
     postAddReducer,
     networkReducer,
     postInteractionReducer,
-    toPremiumReducer
+    toPremiumReducer,
+    SuggestionReducer
 } from './reducers/userReducer'
 
 import {
@@ -45,6 +46,7 @@ const reducers = combineReducers({
     addPost: postAddReducer,
     allposts: FeedReducer,
     topremium:toPremiumReducer,
+    suggestion:SuggestionReducer,
 
 
 

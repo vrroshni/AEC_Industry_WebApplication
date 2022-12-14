@@ -76,7 +76,7 @@ def dislike_post(request):
 
 
 
-@api_view(['POST'])
+@api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def follow_unfollow(request):
     user=request.user
@@ -139,7 +139,7 @@ def user_reply_commented(request):
  
     
 
-@api_view(['POST'])
+@api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def send_connection(request):
     user=request.user

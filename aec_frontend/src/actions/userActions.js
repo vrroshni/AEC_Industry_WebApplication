@@ -31,6 +31,7 @@ import {
     USER_FEED_ALL_POSTS_LIST_REQUEST,
     USER_FEED_ALL_POSTS_LIST_SUCCESS,
     USER_FEED_ALL_POSTS_LIST_FAIL,
+    USER_ALL_SUGGESTIONS,
 
     USER_PROFILEREQUEST_INDIVIDUAL_VIEW,
     USER_PROFILEREQUEST_INDIVIDUAL_FAILED,
@@ -48,15 +49,12 @@ import {
     REJECT_CONNECTION_REQUEST,
     USER_NETWORK_RESET,
 
-    ALL_USERS_REACTIONS,
-    ALL_USERS_COMMENTS,
-    ALL_USERS_COMMENTS_REPLY,
 
     TO_PREMIUM_REQUEST,
     TO_PREMIUM_SUCCESS,
     TO_PREMIUM_FAILED,
     TO_PREMIUM_RESET,
-    
+
 
 } from '../constants/userConstants'
 import storage from 'redux-persist/lib/storage'
@@ -116,13 +114,13 @@ export const login = (username, password) => async (dispatch) => {
 
 
 export const logout = () => (dispatch) => {
-    localStorage. clear()
+    localStorage.clear()
     localStorage.removeItem('userInfo')
     localStorage.removeItem('persist:root')
     storage.removeItem('persist:root')
     persistor.pause();
     persistor.flush().then(() => {
-      return persistor.purge();
+        return persistor.purge();
     });
     dispatch({ type: USER_LOGOUT })
     toast.success(' You have logged out succesfully!', {
@@ -182,7 +180,7 @@ export const registeruser = (username, firstname, lastname, email, phonenumber, 
 
 
 
-export const profileverification = (user,role,location,experience,description,dob,website,id_image,cv_pdf,certi_pdf) => async (dispatch) => {
+export const profileverification = (user, role, location, experience, description, dob, website, id_image, cv_pdf, certi_pdf) => async (dispatch) => {
     try {
 
         dispatch({
@@ -195,7 +193,7 @@ export const profileverification = (user,role,location,experience,description,do
             }
         }
         const { data } = await axios.post('profileverification/',
-            { 'user': user,'role':role, 'location': location,'experience':experience,'website':website,'description':description,'dob':dob,'certificate':certi_pdf,'cv':cv_pdf,'id_proof':id_image }, config
+            { 'user': user, 'role': role, 'location': location, 'experience': experience, 'website': website, 'description': description, 'dob': dob, 'certificate': certi_pdf, 'cv': cv_pdf, 'id_proof': id_image }, config
         )
 
         dispatch({
@@ -231,7 +229,7 @@ export const topremium = (premium_amount) => async (dispatch, getState) => {
             }
         }
 
-        const { data } = await axios.patch(' /topremium/',{"premium_amount":premium_amount}, config
+        const { data } = await axios.patch(' /topremium/', { "premium_amount": premium_amount }, config
         )
         console.log(data, '...................')
         dispatch({
@@ -432,6 +430,7 @@ export const allFeed = () => async (dispatch, getState) => {
         dispatch({
             type: USER_FEED_ALL_POSTS_LIST_REQUEST
         })
+
         const {
             userLogin: { userInfo },
         } = getState()
@@ -446,15 +445,16 @@ export const allFeed = () => async (dispatch, getState) => {
         const { data } = await axios.get('allfeed/',
             config
         )
-        
+
         dispatch({
             type: USER_FEED_ALL_POSTS_LIST_SUCCESS,
-            payload: data
+            payload: data.allposts
         })
 
-      
-
-
+        dispatch({
+            type: USER_ALL_SUGGESTIONS,
+            payload: data.suggestions
+        })
     } catch (error) {
         dispatch({
             type: USER_FEED_ALL_POSTS_LIST_FAIL,
@@ -493,7 +493,7 @@ export const post_like = (id) => async (dispatch, getState) => {
         payload: data.allposts
     })
 
- 
+
 }
 
 
@@ -521,7 +521,7 @@ export const post_dislike = (id) => async (dispatch, getState) => {
         type: USER_FEED_ALL_POSTS_LIST_SUCCESS,
         payload: data.allposts
     })
- 
+
 }
 
 export const user_commented = (post_id, comment) => async (dispatch, getState) => {
@@ -575,7 +575,7 @@ export const user_comment_reply = (post_id, comment_id, comment) => async (dispa
         type: USER_FEED_ALL_POSTS_LIST_SUCCESS,
         payload: data.allposts
     })
-   
+
 }
 
 export const follow_unfollow = (user_id) => async (dispatch, getState) => {
@@ -597,6 +597,8 @@ export const follow_unfollow = (user_id) => async (dispatch, getState) => {
     dispatch({
         type: UNFOLLOW_FOLLOW_USER,
     })
+    
+    allFeed()
 }
 
 export const send_connection = (user_id) => async (dispatch, getState) => {
@@ -612,7 +614,7 @@ export const send_connection = (user_id) => async (dispatch, getState) => {
         }
     }
 
-    const { data } = await axios.put('/send_connection/', { 'user_id': user_id, }, config
+    const { data } = await axios.put('/user/send_connection/', { 'user_id': user_id, }, config
     )
 
     dispatch({

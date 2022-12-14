@@ -223,9 +223,15 @@ def addPost(request):
 @permission_classes([IsAuthenticated])
 def allFeed(request):
     try:
+        user=request.user
+        #user suggestions
+        allusers=Account.objects.all()
+        userserializer=AccountSerializer(allusers,many=True)
+        
+        #post suggestions
         posts = Post.objects.all().order_by('-posted_at')
         serializer = PostSerializer(posts, many=True)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response({'allposts':serializer.data,'suggestions':userserializer.data}, status=status.HTTP_201_CREATED)
 
     except:
         message = {'detail': "Something went wrong"}

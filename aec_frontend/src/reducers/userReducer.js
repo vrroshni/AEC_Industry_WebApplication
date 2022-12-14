@@ -30,6 +30,8 @@ import {
     USER_FEED_ALL_POSTS_LIST_REQUEST,
     USER_FEED_ALL_POSTS_LIST_SUCCESS,
     USER_FEED_ALL_POSTS_LIST_FAIL,
+    
+    USER_ALL_SUGGESTIONS,
 
     USER_PROFILEREQUEST_INDIVIDUAL_VIEW,
     USER_PROFILEREQUEST_INDIVIDUAL_FAILED,
@@ -194,7 +196,7 @@ export const postAddReducer = (state = {}, action) => {
 
 
 
-export const FeedReducer = (state = { posts: [] }, action) => {
+export const FeedReducer = (state = { posts: []}, action) => {
     switch (action.type) {
         case USER_FEED_ALL_POSTS_LIST_REQUEST:
             return { loading: true, posts: [] }
@@ -209,6 +211,16 @@ export const FeedReducer = (state = { posts: [] }, action) => {
 
         case USER_FEED_ALL_POSTS_LIST_FAIL:
             return { loading: false, error: action.payload }
+
+        default:
+            return state
+    }
+}
+export const SuggestionReducer = (state = { suggestions: []}, action) => {
+    switch (action.type) {
+
+        case USER_ALL_SUGGESTIONS:
+            return { suggestions:action.payload }
 
         default:
             return state

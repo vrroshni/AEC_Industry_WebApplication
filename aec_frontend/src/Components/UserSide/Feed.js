@@ -5,7 +5,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 import { GoCommentDiscussion } from 'react-icons/go';
 import { SlLike, SlDislike } from 'react-icons/sl';
-import { addPost, allFeed, post_like, post_dislike, user_commented } from '../../actions/userActions'
+import { addPost, allFeed, post_like, post_dislike, user_commented,follow_unfollow ,send_connection} from '../../actions/userActions'
 import { USER_ADD_POST_RESET } from '../../constants/userConstants'
 import './css/feed.css'
 import dayjs from "dayjs";
@@ -53,8 +53,12 @@ function Feed() {
     const AllpostsInfo = useSelector(state => state.allposts)
     const { posts } = AllpostsInfo
 
+    const Suggestions = useSelector(state => state.suggestion)
+    const { suggestions } = Suggestions
+
     const addedPost = useSelector(state => state.addPost)
     const { loading } = addedPost
+    console.log(suggestions, 'kkkkkkkkk')
 
 
     const submitHandler = (e) => {
@@ -78,6 +82,14 @@ function Feed() {
 
     const user_like = (id) => {
         dispatch(post_like(id))
+
+    }
+    const Follow_unfollow = (id) => {
+        dispatch(follow_unfollow(id))
+
+    }
+    const Send_connection = (id) => {
+        dispatch(send_connection(id))
 
     }
 
@@ -179,7 +191,6 @@ function Feed() {
                                                             <textarea name="post_desc" id="textarea" cols="30" rows="5" className="form-control bg-transparent" placeholder="Please type what you want...." value={post_desc} onChange={(e) => {
                                                                 setfronterror('')
                                                                 setPost_desc(e.target.value)
-                                                                console.log(post_desc)
                                                             }}></textarea>
                                                             <a className="btn btn-primary light me-2 px-3" data-bs-toggle="modal" data-bs-target="#cameraModal"><i className="fa fa-camera m-0"></i> </a>
                                                             <a className="btn btn-primary light me-2 px-3" data-bs-toggle="modal" data-bs-target="#videomodal"><BsFillCameraVideoFill /></a>
@@ -271,7 +282,7 @@ function Feed() {
                                         <ul className="mb-2 post-meta " >
                                             <div className="profile-photo d-flex flex-wrap" >
                                                 <img src={post.user.pro_pic} className="img-fluid rounded-circle me-1" style={{ width: "30px", height: "30px" }} alt="" />
-                                                <li className="post-author   mt-1 " >By {post.user.full_name} </li>{post.user.is_verified &&<Bluetick />}
+                                                <li className="post-author   mt-1 " >By {post.user.full_name} </li>{post.user.is_verified && <Bluetick />}
                                                 <li className="post-date me-3 mt-1"><i className="fas fa-calendar-week me-2"></i>{dayjs(post.posted_at).format("d MMM YYYY")}</li>
                                                 <li className="post-comment mt-1"><i className="far fa-comments me-2"></i> {post.comments}</li>
 
@@ -400,28 +411,32 @@ function Feed() {
                     <div className="card">
                         <div className="card-body">
                             <div className="profile-news">
-                                <h5 className="text-primary d-inline">Our Latest News</h5>
-                                <div className="media pt-3 pb-3">
-                                    <img src="innap/images/profile/5.jpg" alt="image" className="me-3 rounded" width="75" />
-                                    <div className="media-body">
-                                        <h5 className="m-b-5"><a href="post-details.html" className="text-black">Collection of textile samples</a></h5>
-                                        <p className="mb-0">I shared this on my fb wall a few months back, and I thought.</p>
-                                    </div>
-                                </div>
-                                <div className="media pt-3 pb-3">
-                                    <img src="innap/images/profile/6.jpg" alt="image" className="me-3 rounded" width="75" />
-                                    <div className="media-body">
-                                        <h5 className="m-b-5"><a href="post-details.html" className="text-black">Collection of textile samples</a></h5>
-                                        <p className="mb-0">I shared this on my fb wall a few months back, and I thought.</p>
-                                    </div>
-                                </div>
-                                <div className="media pt-3 pb-3">
-                                    <img src="innap/images/profile/7.jpg" alt="image" className="me-3 rounded" width="75" />
-                                    <div className="media-body">
-                                        <h5 className="m-b-5"><a href="post-details.html" className="text-black">Collection of textile samples</a></h5>
-                                        <p className="mb-0">I shared this on my fb wall a few months back, and I thought.</p>
-                                    </div>
-                                </div>
+                                <h5 className="text-primary d-inline">You may Know</h5>
+                                {suggestions?.map((user, id) => {
+                                    return (
+                                        <div className="media pt-3 pb-3">
+                                            <img src={user.pro_pic} alt="image" className="me-3 rounded" width="50" />
+                                            <div className="media-body">
+                                                <div >
+                                                    <a href="#">
+                                                        {user.full_name} <br />
+                                                        <span className="text-primary">@{user.username}</span>
+                                                        {user.role!=='CLIENT' ? null : <span> | {user.status}</span>}
+                                                    </a>
+
+                                                </div>
+                                                <div>
+                                                    <button  onClick={()=>Follow_unfollow(user.id)} className='btn btn-info btn-xs'>follow</button>
+                                                    <button onClick={()=>Send_connection(user.id)} className='btn btn-primary ms-2 btn-xs'>Connect</button>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+
+
+
                             </div>
                         </div>
                     </div>

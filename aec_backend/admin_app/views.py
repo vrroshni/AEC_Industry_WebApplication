@@ -65,6 +65,7 @@ def profileVerified(request):
         
         user=Account.objects.get(id=userrequest.user.id)
         user.is_verified=True
+        user.status=userrequest.role
         user.save()
         
         return Response(status=status.HTTP_200_OK)
