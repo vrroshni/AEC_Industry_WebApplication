@@ -117,3 +117,66 @@ def changeReportStatus(request):
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def allClientRequirements(request):
+    try:
+        requests=Client_Requests.objects.filter(status='PENDING')
+        requestsSerializer=Client_RequestSerializer(requests,many=True)
+        return Response(requestsSerializer.data,status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    
+    
+        
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def requirementShared(request):
+        data=request.data
+        try:
+            requests=Client_Requests.objects.get(id=data['id'])
+            profiles=ProfileVerification.objects.filter(is_premium=True,role=requests.role,experience=requests.experience,location=requests.location)
+            if profiles:
+                for x in profiles:
+                    share=Proposals_Admin()
+                    share.proposal_from=requests.request_from
+                    share.proposal=requests
+                    share.eligible=x.user
+                    share.save()
+                    requests.status='SHARED'
+                    requests.save()
+                message = {'detail': "Proosal is Shared to Respective Profiles"}
+                return Response(message, status=status.HTTP_201_CREATED)
+            else:
+              requests.status='REJECTED'
+              requests.save()
+              message = {'detail': "No Matching profiles Found,So it is rejected"}
+              return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        
+        except:
+            message = {'detail': "Something went wrong"}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def requirementRejected(request):
+    data=request.data
+    try:
+        requests=Client_Requests.objects.get(id=data['id'])
+        requests.status='REJECTED'
+        requests.save()
+        return Response(status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)

@@ -5,7 +5,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 import { GoCommentDiscussion } from 'react-icons/go';
 import { SlLike, SlDislike } from 'react-icons/sl';
-import { addPost, allFeed, post_like, post_dislike, user_commented,follow_unfollow ,send_connection,suggestionslist,getUserProfile} from '../../actions/userActions'
+import { addPost, allFeed, post_like, post_dislike, user_commented, follow_unfollow, send_connection, suggestionslist, getUserProfile } from '../../actions/userActions'
 import { USER_ADD_POST_RESET } from '../../constants/userConstants'
 import './css/feed.css'
 import dayjs from "dayjs";
@@ -85,14 +85,14 @@ function Feed() {
 
     }
     const Follow_unfollow = (id) => {
-        dispatch(follow_unfollow(id)).then(()=>{
+        dispatch(follow_unfollow(id)).then(() => {
 
             dispatch(suggestionslist())
 
         })
     }
     const Send_connection = (id) => {
-        dispatch(send_connection(id)).then(()=>{
+        dispatch(send_connection(id)).then(() => {
 
             dispatch(suggestionslist())
 
@@ -287,8 +287,10 @@ function Feed() {
                                     <div className="post-details">
                                         <ul className="mb-2 post-meta " >
                                             <div className="profile-photo d-flex flex-wrap" >
-                                                <img src={post.user.pro_pic} className="img-fluid rounded-circle me-1" style={{ width: "30px", height: "30px" }} alt="" onClick={() => { navigate(`/profile/${post.user.id}`)}} />
-                                                <li className="post-author   mt-1 " onClick={() => { navigate(`/profile/${post.user.id}`)}} >By {post.user.full_name} </li>{post.user.is_verified && <Bluetick />}
+                                                {(post.user.id == fullUserProfileInfo.id) ?
+                                                    <img src={post.user.pro_pic} className="img-fluid rounded-circle me-1" style={{ width: "30px", height: "30px" }} alt="" onClick={() => { navigate('/profile') }} /> :
+                                                    <img src={post.user.pro_pic} className="img-fluid rounded-circle me-1" style={{ width: "30px", height: "30px" }} alt="" onClick={() => { navigate(`/profile/${post.user.id}`) }} />}
+                                                <li className="post-author   mt-1 " onClick={() => { navigate(`/profile/${post.user.id}`) }} >By {post.user.full_name} </li>{post.user.is_verified && <Bluetick />}
                                                 <li className="post-date me-3 mt-1"><i className="fas fa-calendar-week me-2"></i>{dayjs(post.posted_at).format("d MMM YYYY")}</li>
                                                 <li className="post-comment mt-1"><i className="far fa-comments me-2"></i> {post.comments}</li>
 
@@ -385,11 +387,11 @@ function Feed() {
 
                                                         </form>
                                                         {(post.post_comment).map(comment => (
-                                                            <div class="d-flex justify-content-start mb-3">
-                                                                <div class="img_cont_msg">
-                                                                    <img src={comment.user.pro_pic} class="rounded-circle user_img_msg" alt="" style={{ width: "30px", height: "30px" }} />
+                                                            <div className="d-flex justify-content-start mb-3">
+                                                                <div className="img_cont_msg">
+                                                                    <img src={comment.user.pro_pic} className="rounded-circle user_img_msg" alt="" style={{ width: "30px", height: "30px" }} />
                                                                 </div>
-                                                                <div class="msg_cotainer" style={mystyle} >
+                                                                <div className="msg_cotainer" style={mystyle} >
                                                                     {comment.comment_desc}
                                                                 </div>
                                                             </div>
@@ -427,13 +429,13 @@ function Feed() {
                                                     <a href="#">
                                                         {user.full_name} <br />
                                                         <span className="text-primary">@{user.username}</span>
-                                                        {user.role!=='CLIENT' ? null : <span> | {user.status}</span>}
+                                                        {user.role !== 'CLIENT' ? null : <span> | {user.status}</span>}
                                                     </a>
 
                                                 </div>
                                                 <div className='mt-1'>
-                                                    <button  onClick={()=>Follow_unfollow(user.id)} className='btn btn-info btn-xs'>follow</button>
-                                                    <button onClick={()=>Send_connection(user.id)} className='btn btn-primary ms-2 btn-xs'>Connect</button>
+                                                    <button onClick={() => Follow_unfollow(user.id)} className='btn btn-info btn-xs'>follow</button>
+                                                    <button onClick={() => Send_connection(user.id)} className='btn btn-primary ms-2 btn-xs'>Connect</button>
 
                                                 </div>
                                             </div>

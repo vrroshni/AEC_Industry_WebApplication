@@ -55,7 +55,40 @@ class Post_Comment_Reply(models.Model):
     updated_at=models.DateTimeField(auto_now_add=True)
     is_edited= models.BooleanField(default=False)
 
+class Client_Requests(models.Model):
+    STATUS=( 
+        ('PENDING','PENDING'),
+        ('SHARED','SHARED'),
+        ('REJECTED','REJECTED'),        
+        ('COMPLETED','COMPLETED'),        
+            )
+    request_from=models.ForeignKey(Account,related_name='request_from',on_delete=models.CASCADE,null=True)
+    status=models.CharField(max_length=100, null=True,choices=STATUS,default='PENDING')
+    role=models.CharField(max_length=50,null=True)
 
+    location=models.CharField(max_length=50,null=True)
+    requirementdetails=models.CharField(max_length=500,null=True)
+    experience=models.IntegerField(default=0)
+    related=models.CharField(max_length=50,null=True)
+    
+    created_at=models.DateTimeField(auto_now_add=True)
+    is_acceptedbyUser= models.BooleanField(default=False)
+
+
+class Proposals_Admin(models.Model):
+    STATUS=( 
+        ('PENDING','PENDING'),
+        ('ACCEPTED','ACCEPTED'),
+        ('PROPOSAL_SENT','PROPOSAL_SENT'),
+        ('REJECTED_USER','REJECTED_USER'),        
+        ('ACCEPTED_USER','ACCEPTED_USER'),        
+        ('COMPLETED','COMPLETED'),        
+            )
+    proposal_from=models.ForeignKey(Account,related_name='owner',on_delete=models.CASCADE,null=True)
+    proposal=models.ForeignKey(Client_Requests,related_name='proposal',on_delete=models.CASCADE,null=True)
+    eligible=models.ForeignKey(Account,related_name='eligible',on_delete=models.CASCADE,null=True)
+    status=models.CharField(max_length=100, null=True,choices=STATUS,default='PENDING')
+    
 
 
 

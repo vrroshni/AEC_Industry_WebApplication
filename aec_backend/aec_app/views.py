@@ -269,3 +269,31 @@ def suggestions(request):
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def connectUs(request):
+    data=request.data
+    try:
+        requests=NewClient_RequestSerializer(data=data,many=False)
+        if requests.is_valid():
+            requests.save()
+            return Response(200)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def connectUsRequests(request):
+    user=request.user
+    try:
+        requests=Client_Requests.objects.filter(request_from=user)
+        requestsSerializer=Client_RequestSerializer(requests,many=True)
+        return Response(requestsSerializer.data,status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+   

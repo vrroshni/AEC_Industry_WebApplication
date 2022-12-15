@@ -9,7 +9,10 @@ function Profileverifi_Requests() {
   const dispatch = useDispatch()
 
   const profileRequestListInfo = useSelector(state => state.allProfRequests)
-  const { loading, error, requests, verified, rejected } = profileRequestListInfo
+  const { loading, error, requests } = profileRequestListInfo
+
+  const ProfileAction = useSelector(state => state.profilerequestaction)
+  const { verified, rejected } = ProfileAction
 
   useEffect(() => {
     dispatch(list_profile_verification())

@@ -130,12 +130,14 @@ function UserProfile() {
 											</div>
 											<div className="dropdown ms-auto d-flex">
 												<div className="profile-email px-2 pt-2" onClick={() => navigate('/profile_verification')}>
-													{!fullUserProfileInfo.is_verified && <p className="text-dark mb-0">Want to become a part of <span className="text-primary">Together</span>?</p>}
+													{!fullUserProfileInfo.is_verified  && <p className="text-dark mb-0">Want to become a part of <span className="text-primary">Together</span>?</p>}
 												</div>
 												<a href="#" className="btn btn-primary light sharp" data-bs-toggle="dropdown" aria-expanded="true"><i className="fa fa-plus text-primary"></i></a>
 												<ul className="dropdown-menu dropdown-menu-end">
 													{(prof_request?.is_verified && !prof_request?.is_premium) && <li className="dropdown-item"><i className="fa fa-user-circle text-primary me-2"></i> Premium Membership</li>}
-													{prof_request?.is_premium &&  <li className="dropdown-item"><i className="fa fa-user-circle text-primary me-2"></i>Dashboard</li>}
+													{prof_request?.is_premium &&  <li className="dropdown-item"><i className="fa fa-user-circle text-primary me-2"></i>Proposals Dashboard</li>}
+													<li className="dropdown-item" onClick={()=>navigate('/requests')}><i className="fa fa-user-circle text-primary me-2"></i>Requests Dashboard</li>
+
 												</ul>
 											</div>
 										</div>

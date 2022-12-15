@@ -14,14 +14,19 @@ import {
     postInteractionReducer,
     toPremiumReducer,
     SuggestionReducer,
-    getOtherUserProfileReducer
+    getOtherUserProfileReducer,
+    userConnectUsReducer,
+    userConnectUsRequestReducer
 } from './reducers/userReducer'
 
 import {
     allUserListReducer,
     statusChangeReducer,
     allProfileRequestsReducer,
-    allPostListReducer
+    allPostListReducer,
+    ProfileRequestActionReducer,
+    ClientRequirementActionReducer,
+    allClientRequiremntListReducer
 } from './reducers/adminReducer'
 
 
@@ -49,6 +54,8 @@ const reducers = combineReducers({
     topremium:toPremiumReducer,
     suggestion:SuggestionReducer,
     othersprofile:getOtherUserProfileReducer,
+    connectUs:userConnectUsReducer,
+    allConnectrequest:userConnectUsRequestReducer,
 
 
 
@@ -56,6 +63,9 @@ const reducers = combineReducers({
     statusChanger: statusChangeReducer,
     allProfRequests: allProfileRequestsReducer,
     allPosts:allPostListReducer,
+    profilerequestaction:ProfileRequestActionReducer,
+    allClientRequirements:allClientRequiremntListReducer,
+    clientRequirementAction:ClientRequirementActionReducer,
 
 
     

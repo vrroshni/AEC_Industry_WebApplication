@@ -59,6 +59,15 @@ import {
     OTHER_USER_PROFILE_SUCCESS,
     OTHER_USER_PROFILE_FAIL,
 
+    USER_CONNECT_US_REQUEST,
+    USER_CONNECT_US_SUCCESS,
+    USER_CONNECT_US_FAIL,
+
+    USER_CONNECT_LIST_ALL_REQUEST,
+    USER_CONNECT_LIST_ALL_SUCCESS,
+    USER_CONNECT_LIST_ALL_FAIL,
+    USER_CONNECT_LIST_ALL_RESET
+
 
 } from '../constants/userConstants'
 import storage from 'redux-persist/lib/storage'
@@ -209,6 +218,39 @@ export const profileverification = (user, role, location, experience, descriptio
     } catch (error) {
         dispatch({
             type: USER_PROFILEVERIFY_FAIL,
+            payload: error.response && error.response.data.detail ?
+                error.response.data.detail : error.message,
+        })
+    }
+}
+
+export const connectUs = (role, location,requirementdetails, experience,related) => async (dispatch,getState) => {
+    try {
+
+        dispatch({
+            type: USER_CONNECT_US_REQUEST
+        })
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+        const { data } = await axios.post('connectus/',{'request_from':userInfo.id,'role':role,'location':location,'requirementdetails':requirementdetails,'experience':experience,'related':related},config)
+
+        dispatch({
+            type: USER_CONNECT_US_SUCCESS,
+            payload: data
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: USER_CONNECT_US_FAIL,
             payload: error.response && error.response.data.detail ?
                 error.response.data.detail : error.message,
         })
@@ -368,6 +410,44 @@ export const getUserRequest = () => async (dispatch, getState) => {
         })
     }
 }
+export const getUserAllConnectUsRequest = () => async (dispatch, getState) => {
+
+    try {
+
+        dispatch({
+            type: USER_CONNECT_LIST_ALL_REQUEST,
+           
+
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.get('connectusrequests/', config
+        )
+
+        dispatch({
+            type: USER_CONNECT_LIST_ALL_SUCCESS,
+            payload: data
+
+        })
+
+    } catch (error) {
+        dispatch({
+            type: USER_CONNECT_LIST_ALL_FAIL,
+            payload: error.response && error.response.data.detail ?
+                error.response.data.detail : error.message,
+        })
+    }
+}
 
 
 
@@ -492,7 +572,7 @@ export const allFeed = () => async (dispatch, getState) => {
             payload: data.allposts
         })
 
-      
+
     } catch (error) {
         dispatch({
             type: USER_FEED_ALL_POSTS_LIST_FAIL,
@@ -555,7 +635,7 @@ export const suggestionslist = () => async (dispatch, getState) => {
         payload: data
     })
 
-    
+
 
 
 }
@@ -666,9 +746,9 @@ export const follow_unfollow = (user_id) => async (dispatch, getState) => {
         payload: data
 
     })
-    
 
-   
+
+
 }
 
 export const send_connection = (user_id) => async (dispatch, getState) => {

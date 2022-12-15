@@ -13,5 +13,10 @@ urlpatterns = [
    path('allPosts/',allPosts,name='allPosts'),
    path('changeReportStatus/',changeReportStatus,name='changeReportStatus'),
    
+   
+   path('allclient_requirements/',allClientRequirements,name='allClientRequirements'),
+   path('requirement_rejected/',requirementRejected,name='requirementRejected'),
+   path('requirement_shared/',requirementShared,name='requirementShared'),
+   
 
 ]

@@ -172,6 +172,14 @@ function AdminNavbar() {
                                         <li><a onClick={() => navigate('allposts/')} >All posts </a></li>
                                     </ul>
                                 </li>
+                                <li><a className="has-arrow ai-icon" aria-expanded="false">
+                                    <i className="flaticon-041-graph"></i>
+                                    <span className="nav-text">Client Requirements</span>
+                                </a>
+                                    <ul aria-expanded="false">
+                                        <li><a onClick={() => navigate('clientrequirements/')} >All Requirements </a></li>
+                                    </ul>
+                                </li>
                             </ul>
                         </>
                     }

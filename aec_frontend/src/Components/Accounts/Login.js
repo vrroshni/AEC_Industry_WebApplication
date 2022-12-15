@@ -5,8 +5,6 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom'
 import Message from '../Message'
 import Loader from '../Loader'
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 
 
@@ -96,7 +94,6 @@ function Login() {
                                             <div className="new-account mt-3">
                                                 <p>Don't have an account? <a className="text-primary" onClick={() => navigate('/register')} >Sign up</a></p>
                                             </div>
-                                            <ToastContainer />
                                            
                                         </div>
                                     </div>

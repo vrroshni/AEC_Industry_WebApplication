@@ -26,4 +26,7 @@ urlpatterns = [
     path('allfeed/', allFeed, name='allfeed'),
     path('suggestions/', suggestions, name='suggestions'),
     
+    path('connectus/', connectUs, name='connectus'),
+    path('connectusrequests/', connectUsRequests, name='connectUsRequests'),
+    
 ]

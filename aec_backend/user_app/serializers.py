@@ -102,3 +102,14 @@ class PostComment_Reply_Serializer(serializers.ModelSerializer):
         model = Post_Comment_Reply
         fields = "__all__"
 
+class NewClient_RequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Client_Requests
+        fields='__all__'
+        
+
+class Client_RequestSerializer(serializers.ModelSerializer):
+    request_from=AccountSerializer(read_only=True)
+    class Meta:
+        model = Client_Requests
+        fields = "__all__"

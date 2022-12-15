@@ -16,6 +16,15 @@ import {
     ALL_POSTS_LIST_SUCCESS,
     ALL_POSTS_LIST_FAIL,
 
+    ALL_CLIENT_REQUIREMENTS_REQUEST,
+    ALL_CLIENT_REQUIREMENTS_SUCCESS,
+    ALL_CLIENT_REQUIREMENTS_FAIL,
+
+    USER_CLIENT_REQUIREMNT_SHARED_SUCCESS,
+    USER__CLIENT_REQUIREMNT_REJECTED,
+
+
+
     CHANGE_REPORT_STATUS,
 
 
@@ -54,16 +63,7 @@ export const statusChangeReducer = (state = { }, action) => {
             return state
     }
 }
-export const changeReportStatusReducer = (state = { }, action) => {
-    switch (action.type) {
 
-        case CHANGE_REPORT_STATUS:
-            return { done: true }
-
-        default:
-            return state
-    }
-}
 
 
 
@@ -81,11 +81,7 @@ export const allProfileRequestsReducer = (state = { requests: [] }, action) => {
         case ALL_PROFILEVERIFICATIONS_LIST_FAIL:
             return { loading: false, error: action.payload }
 
-        case USER_PROFILEVERIFIED_SUCCESS:
-            return { verified:true }
-
-        case USER_PROFILEREJECTED_SUCCESS:
-            return {rejected:true }
+       
         
         
         
@@ -95,6 +91,19 @@ export const allProfileRequestsReducer = (state = { requests: [] }, action) => {
     }
 }
 
+export const ProfileRequestActionReducer = (state = { }, action) => {
+    switch (action.type) {
+
+        case USER_PROFILEVERIFIED_SUCCESS:
+            return { verified:true }
+
+        case USER_PROFILEREJECTED_SUCCESS:
+            return {rejected:true }
+
+        default:
+            return state
+    }
+}
 
 export const allPostListReducer = (state = { allposts: [] }, action) => {
     switch (action.type) {
@@ -115,3 +124,48 @@ export const allPostListReducer = (state = { allposts: [] }, action) => {
     }
 }
 
+
+export const changeReportStatusReducer = (state = { }, action) => {
+    switch (action.type) {
+
+        case CHANGE_REPORT_STATUS:
+            return { done: true }
+
+        default:
+            return state
+    }
+}
+
+
+export const allClientRequiremntListReducer = (state = { requirements: [] }, action) => {
+    switch (action.type) {
+        case ALL_CLIENT_REQUIREMENTS_REQUEST:
+            return { loading: true, requirements: [] }
+
+        case ALL_CLIENT_REQUIREMENTS_SUCCESS:
+            return {
+                loading: false,
+                requirements: action.payload,
+            }
+
+        case ALL_CLIENT_REQUIREMENTS_FAIL:
+            return { loading: false, error: action.payload }
+
+        default:
+            return state
+    }
+}
+
+export const ClientRequirementActionReducer = (state = { }, action) => {
+    switch (action.type) {
+
+        case USER_CLIENT_REQUIREMNT_SHARED_SUCCESS:
+            return { shared:true }
+
+        case USER__CLIENT_REQUIREMNT_REJECTED:
+            return {rejected:true }
+            
+        default:
+            return state
+    }
+}

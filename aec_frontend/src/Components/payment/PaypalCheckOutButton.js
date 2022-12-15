@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { PayPalButtons } from '@paypal/react-paypal-js'
 import { useDispatch, useSelector } from 'react-redux'
 import { topremium } from '../../actions/userActions'
+import { useNavigate } from 'react-router-dom'
 
 
 
@@ -10,11 +11,13 @@ const PaypalCheckOutButton = (props) => {
   const [paidFor, setPaidFor] = useState(false);
   const [error, setError] = useState(null);
 
+  const Navigate=useNavigate()
+
   const { price } = props
   const dispatch = useDispatch()
 
   const successPaymentHandler = (price) => {
-    dispatch(topremium(price))
+    dispatch(topremium(price)).then(()=>Navigate('/success'))
 
 
     //success
@@ -23,15 +26,9 @@ const PaypalCheckOutButton = (props) => {
     // if response is error
     // alert("Your payment
   }
-  if (paidFor) {
-    // Display success message, modal or redirect user to success page
-    alert("Thank you for your purchase!");
-  }
 
-  if (error) {
-    // Display error message, modal or redirect user to error page
-    alert(error);
-  }
+
+
 
   
   return (
@@ -62,7 +59,8 @@ const PaypalCheckOutButton = (props) => {
       }}
       
       onCancel={() => {
-        // Display cancel message, modal or redirect user to cancel page or back to cart
+        Navigate('/cancelled')
+
       }}
 
       onError={(err) => {

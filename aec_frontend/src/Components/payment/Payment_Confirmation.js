@@ -18,49 +18,49 @@ function Payment_Confirmation() {
     return (
 
 
-        <div class="row justify-content-center h-100 align-items-center d-flex flex-column">
-            <div class="col-xl-6">
-                <div class="card">
-                    <div class="card-body text-center">
+        <div className="row justify-content-center h-100 align-items-center d-flex flex-column">
+            <div className="col-xl-6">
+                <div className="card">
+                    <div className="card-body text-center">
 
-                        <div class="bootstrap-carousel">
-                            <div data-bs-ride="carousel" class="carousel slide" id="carouselExampleCaptions">
-                                <div class="carousel-indicators">
-                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="" aria-label="Slide 1"></button>
-                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2" class="active" aria-current="true"></button>
-                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3" class=""></button>
+                        <div className="bootstrap-carousel">
+                            <div data-bs-ride="carousel" className="carousel slide" id="carouselExampleCaptions">
+                                <div className="carousel-indicators">
+                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" className="" aria-label="Slide 1"></button>
+                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2" className="active" aria-current="true"></button>
+                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3" className=""></button>
                                 </div>
-                                <div class="carousel-inner">
-                                    <div class="carousel-item">
-                                        <img class="d-block w-100" src="/innap/images/big/img5.jpg" alt="" />
-                                        <div class="carousel-caption d-none d-md-block" style={{ background: "none" }}>
+                                <div className="carousel-inner">
+                                    <div className="carousel-item">
+                                        <img className="d-block w-100" src="/innap/images/big/img5.jpg" alt="" />
+                                        <div className="carousel-caption d-none d-md-block" style={{ background: "none" }}>
                                             <h5>First slide label</h5>
                                             <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
                                         </div>
                                     </div>
-                                    <div class="carousel-item active">
-                                        <img alt="" class="d-block w-100" src="/innap/images/big/img6.jpg" />
-                                        <div class="carousel-caption d-none d-md-block" style={{ background: "none" }}>
+                                    <div className="carousel-item active">
+                                        <img alt="" className="d-block w-100" src="/innap/images/big/img6.jpg" />
+                                        <div className="carousel-caption d-none d-md-block" style={{ background: "none" }}>
                                             <h5>Second slide label</h5>
                                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                                         </div>
                                     </div>
-                                    <div class="carousel-item">
-                                        <img alt="" class="d-block w-100" src="/innap/images/big/img7.jpg" />
-                                        <div class="carousel-caption d-none d-md-block" style={{ background: "none" }}>
+                                    <div className="carousel-item">
+                                        <img alt="" className="d-block w-100" src="/innap/images/big/img7.jpg" />
+                                        <div className="carousel-caption d-none d-md-block" style={{ background: "none" }}>
                                             <h5>Third slide label</h5>
                                             <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.
                                             </p>
                                         </div>
                                     </div>
                                 </div>
-                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Previous</span>
+                                <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                                    <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span className="visually-hidden">Previous</span>
                                 </button>
-                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Next</span>
+                                <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                                    <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span className="visually-hidden">Next</span>
                                 </button>
                             </div>
                         </div>

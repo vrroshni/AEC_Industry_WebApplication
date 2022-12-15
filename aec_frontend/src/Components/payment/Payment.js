@@ -37,80 +37,80 @@ function Payment() {
                     <div className="card text-center" style={{ padding: "0" }}>
 
                         <div className="card-body" style={{ padding: "0" }}>
-                            <section class="pricing-section" style={{ padding: "0" }}>
-                                <div class="container">
-                                    <div class="sec-title text-center mt-1" style={{ marginBottom: "0" }}>
-                                        <span class="title">Get plan</span>
+                            <section className="pricing-section" style={{ padding: "0" }}>
+                                <div className="container">
+                                    <div className="sec-title text-center mt-1" style={{ marginBottom: "0" }}>
+                                        <span className="title">Get plan</span>
                                         <h2>Choose a Plan</h2>
                                     </div>
 
-                                    <div class="outer-box">
-                                        <div class="row">
-                                            <div class="pricing-block col-lg-4 col-md-6 col-sm-12 wow fadeInUp">
-                                                <div class="inner-box">
-                                                    <div class="icon-box">
-                                                        <div class="icon-outer"><i class="fas fa-paper-plane"></i></div>
+                                    <div className="outer-box">
+                                        <div className="row">
+                                            <div className="pricing-block col-lg-4 col-md-6 col-sm-12 wow fadeInUp">
+                                                <div className="inner-box">
+                                                    <div className="icon-box">
+                                                        <div className="icon-outer"><i className="fas fa-paper-plane"></i></div>
                                                     </div>
-                                                    <div class="price-box">
-                                                        <div class="title"> Day Pass</div>
-                                                        <h4 class="price">$35.99</h4>
+                                                    <div className="price-box">
+                                                        <div className="title"> Day Pass</div>
+                                                        <h4 className="price">$35.99</h4>
                                                     </div>
-                                                    <ul class="features">
-                                                        <li class="true">Conference plans</li>
-                                                        <li class="true">Free Lunch And Coffee</li>
+                                                    <ul className="features">
+                                                        <li className="true">Conference plans</li>
+                                                        <li className="true">Free Lunch And Coffee</li>
 
                                                     </ul>
-                                                    <div class="btn-box">
+                                                    <div className="btn-box">
                                                         <a onClick={() => {
                                                            
                                                             Navigate(`/paymentconfirmation/${buy1}`)
-                                                        }} class="theme-btn">BUY plan</a>
+                                                        }} className="theme-btn">BUY plan</a>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div class="pricing-block col-lg-4 col-md-6 col-sm-12 wow fadeInUp" data-wow-delay="400ms">
-                                                <div class="inner-box">
-                                                    <div class="icon-box">
-                                                        <div class="icon-outer"><i class="fas fa-gem"></i></div>
+                                            <div className="pricing-block col-lg-4 col-md-6 col-sm-12 wow fadeInUp" data-wow-delay="400ms">
+                                                <div className="inner-box">
+                                                    <div className="icon-box">
+                                                        <div className="icon-outer"><i className="fas fa-gem"></i></div>
                                                     </div>
-                                                    <div class="price-box">
-                                                        <div class="title">Full Pass</div>
-                                                        <h4 class="price">$99.99</h4>
+                                                    <div className="price-box">
+                                                        <div className="title">Full Pass</div>
+                                                        <h4 className="price">$99.99</h4>
                                                     </div>
-                                                    <ul class="features">
-                                                        <li class="true">Conference plans</li>
-                                                        <li class="true">Free Lunch And Coffee</li>
+                                                    <ul className="features">
+                                                        <li className="true">Conference plans</li>
+                                                        <li className="true">Free Lunch And Coffee</li>
 
                                                     </ul>
-                                                    <div class="btn-box">
+                                                    <div className="btn-box">
                                                         <a onClick={() => {
                                                             
                                                             Navigate(`/paymentconfirmation/${buy2}`)
-                                                        }} class="theme-btn">BUY plan</a>
+                                                        }} className="theme-btn">BUY plan</a>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div class="pricing-block col-lg-4 col-md-6 col-sm-12 wow fadeInUp" data-wow-delay="800ms">
-                                                <div class="inner-box">
-                                                    <div class="icon-box">
-                                                        <div class="icon-outer"><i class="fas fa-rocket"></i></div>
+                                            <div className="pricing-block col-lg-4 col-md-6 col-sm-12 wow fadeInUp" data-wow-delay="800ms">
+                                                <div className="inner-box">
+                                                    <div className="icon-box">
+                                                        <div className="icon-outer"><i className="fas fa-rocket"></i></div>
                                                     </div>
-                                                    <div class="price-box">
-                                                        <div class="title">Group Pass</div>
-                                                        <h4 class="price">$199.99</h4>
+                                                    <div className="price-box">
+                                                        <div className="title">Group Pass</div>
+                                                        <h4 className="price">$199.99</h4>
                                                     </div>
-                                                    <ul class="features">
-                                                        <li class="true">Conference plans</li>
-                                                        <li class="true">Free Lunch And Coffee</li>
+                                                    <ul className="features">
+                                                        <li className="true">Conference plans</li>
+                                                        <li className="true">Free Lunch And Coffee</li>
 
                                                     </ul>
-                                                    <div class="btn-box">
+                                                    <div className="btn-box">
                                                         <a onClick={() => {
                                                             
                                                             Navigate(`/paymentconfirmation/${buy3}`)
-                                                        }} class="theme-btn">BUY plan</a>
+                                                        }} className="theme-btn">BUY plan</a>
                                                     </div>
                                                 </div>
                                             </div>

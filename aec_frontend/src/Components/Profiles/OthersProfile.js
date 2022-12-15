@@ -44,6 +44,7 @@ function OthersProfile() {
     }
     const Follow_unfollow = (id) => {
         dispatch(follow_unfollow(id))
+		dispatch(getOtherUserProfile(user_id))
 
     }
     const Send_connection = (id) => {
@@ -117,9 +118,8 @@ function OthersProfile() {
 										<p>Email</p>
 									</div>
 									<div className="dropdown ms-auto d-flex">
-										<div className="profile-email px-2 pt-2" onClick={() => navigate('/profile_verification')}>
-											<button className='btn btn-primary btn-xs'>follow</button>
-											<button className='btn btn-primary btn-xs'>follow</button>
+										<div className="profile-email px-2 pt-2" >
+											<button className='btn btn-primary btn-xs' onClick={() => Follow_unfollow(otheruser.id)} >{otheruser?.user_network?.some(e => e.followed_at === fullUserProfileInfo.id)? "Unfollow" : "follow" }</button>
 										</div>
 										{/* <a href="#" className="btn btn-primary light sharp" data-bs-toggle="dropdown" aria-expanded="true"><i className="fa fa-plus text-primary"></i></a>
 											<ul className="dropdown-menu dropdown-menu-end">
@@ -314,11 +314,11 @@ function OthersProfile() {
 
 												</form>
 												{(post.post_comment).map(comment => (
-													<div class="d-flex justify-content-start mb-3">
-														<div class="img_cont_msg">
-															<img src={comment.user.pro_pic} class="rounded-circle user_img_msg" alt="" style={{ width: "30px", height: "30px" }} />
+													<div className="d-flex justify-content-start mb-3">
+														<div className="img_cont_msg">
+															<img src={comment.user.pro_pic} className="rounded-circle user_img_msg" alt="" style={{ width: "30px", height: "30px" }} />
 														</div>
-														<div class="msg_cotainer" style={mystyle} >
+														<div className="msg_cotainer" style={mystyle} >
 															{comment.comment_desc}
 														</div>
 													</div>

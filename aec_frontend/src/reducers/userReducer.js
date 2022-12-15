@@ -58,7 +58,16 @@ import {
     TO_PREMIUM_FAILED,
     TO_PREMIUM_RESET,
 
-    
+    USER_CONNECT_US_REQUEST,
+    USER_CONNECT_US_SUCCESS,
+    USER_CONNECT_US_FAIL,
+    USER_CONNECT_US_RESET,
+
+
+    USER_CONNECT_LIST_ALL_REQUEST,
+    USER_CONNECT_LIST_ALL_SUCCESS,
+    USER_CONNECT_LIST_ALL_FAIL,
+    USER_CONNECT_LIST_ALL_RESET
 
 
 } from '../constants/userConstants'
@@ -140,6 +149,27 @@ export const profileverificationReducer = (state = {}, action) => {
             return state;
     }
 }
+
+export const userConnectUsReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_CONNECT_US_REQUEST:
+            return { loading: true }
+
+        case USER_CONNECT_US_SUCCESS:
+            return { loading: false, connect: action.payload, status: true }
+
+        case USER_CONNECT_US_FAIL:
+            return { loading: false, error: action.payload }
+
+        case USER_CONNECT_US_RESET:
+            return {  }
+        
+        default:
+            return state;
+    }
+}
+
+
 
 
 
@@ -224,6 +254,29 @@ export const FeedReducer = (state = { posts: []}, action) => {
             return state
     }
 }
+
+export const userConnectUsRequestReducer = (state = { requests: []}, action) => {
+    switch (action.type) {
+        case USER_CONNECT_LIST_ALL_REQUEST:
+            return { loading: true, requests: [] }
+
+        case USER_CONNECT_LIST_ALL_SUCCESS:
+            return {
+                loading: false,
+                requests: action.payload,
+                
+
+            }
+
+        case USER_CONNECT_LIST_ALL_FAIL:
+            return { loading: false, error: action.payload }
+
+        default:
+            return state
+    }
+}
+
+
 export const SuggestionReducer = (state = { suggestions: []}, action) => {
     switch (action.type) {
 

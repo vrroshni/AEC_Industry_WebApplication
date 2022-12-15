@@ -23,6 +23,9 @@ import Payment_Confirmation from './components/payment/Payment_Confirmation';
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import Success from './components/payment/Success';
 import Cancelled from './components/payment/Cancelled';
+import Connect from './components/UserSide/Connect';
+import ClientDashboard from './components/Dahboard/ClientDashboard'
+import ClientRequirements from './components/Admin/ClientRequirements';
 
 function App() {
 
@@ -44,7 +47,7 @@ function App() {
               <Route path='/paymentconfirmation/:price' element={<Payment_Confirmation />} />
               <Route path='/success' element={<Success/>} />
               <Route path='/cancelled' element={<Cancelled/>} />
-
+              <Route path='/requests' element={<ClientDashboard/>} />
             </Route>
             
           </Route>
@@ -54,6 +57,8 @@ function App() {
           <Route path='register' element={<Register />} />
           <Route path="/restricted" element={<Restricted />} />
 
+          <Route path="/connectUs" element={<Connect/>} />
+
 
           <Route element={<AdminRoute />}>
             <Route path='admin/' element={<AdminCommon />}>
@@ -61,6 +66,7 @@ function App() {
               <Route path='allusers/' element={<Allusers />} />
               <Route path='allposts/' element={<Allposts />} />
               <Route path='profileverification_requests/' element={<Profileverifi_Requests />} />
+              <Route path='clientrequirements/' element={<ClientRequirements/>} />
             </Route>
           </Route>
 

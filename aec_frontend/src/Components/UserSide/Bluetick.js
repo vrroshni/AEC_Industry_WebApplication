@@ -4,8 +4,8 @@ import './css/bluetick.css'
 function Bluetick() {
     return (
 
-        <div class="circle me-3 ms-1">
-            <div class="checkmark"></div>
+        <div className="circle me-3 ms-1">
+            <div className="checkmark"></div>
         </div>
 
     )
