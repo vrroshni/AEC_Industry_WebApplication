@@ -14,6 +14,7 @@ urlpatterns = [
     #UserProfile
     path('register/', registerUser, name='register'),
     path('profile/', getUserProfile, name='profile'),
+    path('otheruserprofile/', otherUserProfile, name='otheruserprofile'),
     path('updateprofile/', updateUserProfile, name='updateprofile'),
     
     path('userrequest/', getUserRequest, name='userrequest'),
@@ -23,5 +24,6 @@ urlpatterns = [
     
     path('addpost/', addPost, name='addpost'),
     path('allfeed/', allFeed, name='allfeed'),
+    path('suggestions/', suggestions, name='suggestions'),
     
 ]

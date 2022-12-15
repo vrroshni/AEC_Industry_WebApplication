@@ -13,6 +13,7 @@ import stripe
 from django.shortcuts import redirect
 from django.conf import settings
 from rest_framework.views import APIView
+import random
 
 
 # Create your views here.
@@ -141,7 +142,6 @@ def toPremiumMember(request):
     verified_profile.paid_at = datetime.now()
     verified_profile.is_premium = True
     verified_profile.save()
-    print(verified_profile, 'vvvvvvvvvv')
     return Response(status=status.HTTP_200_OK)
 
 
@@ -149,6 +149,16 @@ def toPremiumMember(request):
 @permission_classes([IsAuthenticated])
 def getUserProfile(request):
     user = request.user
+    serializer = ProfileSerializer(user, many=False)    
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def otherUserProfile(request):
+    data = request.data
+    print(data)
+    user=Account.objects.get(id=data['id'])
     serializer = ProfileSerializer(user, many=False)
     return Response(serializer.data)
 
@@ -224,14 +234,36 @@ def addPost(request):
 def allFeed(request):
     try:
         user=request.user
-        #user suggestions
-        allusers=Account.objects.all()
-        userserializer=AccountSerializer(allusers,many=True)
-        
         #post suggestions
         posts = Post.objects.all().order_by('-posted_at')
         serializer = PostSerializer(posts, many=True)
-        return Response({'allposts':serializer.data,'suggestions':userserializer.data}, status=status.HTTP_201_CREATED)
+        return Response({'allposts':serializer.data}, status=status.HTTP_201_CREATED)
+
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def suggestions(request):
+    try:
+        user=request.user
+        
+        #user suggestions
+        user_following=Network.objects.filter(followed_by=user)
+        allusers=Account.objects.exclude(id=user.id).all()
+        user_followings_list=[]
+        
+        
+        for x in user_following:
+            user_list=Account.objects.get(id=x.followed_to.id)
+            user_followings_list.append(user_list)
+        
+        new_suggestion_list=[x for x in list(allusers) if (x not in list(user_followings_list))]
+        random.shuffle(new_suggestion_list)
+        userserializer=AccountSerializer(new_suggestion_list,many=True)
+        return Response(userserializer.data, status=status.HTTP_201_CREATED)
 
     except:
         message = {'detail': "Something went wrong"}

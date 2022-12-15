@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux'
-import { getUserProfile, updateProfile } from '../../actions/userActions'
+import { getUserProfile, updateProfile, getUserRequest } from '../../actions/userActions'
 import { useNavigate } from 'react-router-dom'
 import Message from '../Message'
 import Loader from '../Loader'
 
 
 function UserProfile() {
+
 	const [reload, setReload] = useState(false)
 	const { register, handleSubmit, control, watch, formState: { errors } } = useForm({
 		mode: "onChange"
@@ -67,11 +68,19 @@ function UserProfile() {
 	const updateprofileinfo = useSelector(state => state.updateUserprofile)
 	const { loading, result, updateerror } = updateprofileinfo
 
-	useEffect(() => {
 
+	const Profileinfo = useSelector((state) => state.userProfileVerification);
+	let { fullProfileInfo, error, status, prof_request, prof_request_error } = Profileinfo;
+
+
+	useEffect(() => {
+		
 		if (result) {
 			dispatch(getUserProfile())
 		}
+		
+		dispatch(getUserRequest())
+
 	}, [reload])
 
 	const submitHandler = (e) => {
@@ -85,6 +94,9 @@ function UserProfile() {
 	const [phonenumber, setPhonenumber] = useState(fullUserProfileInfo?.phone_number)
 	const [pro_pic, setPro_pic] = useState('');
 	const [cover_pic, setCover_pic] = useState('');
+
+
+	console.log(fullUserProfileInfo, 'proffffffffffffffffff')
 	return (
 		<>
 			{fullUserProfileInfo && (
@@ -118,15 +130,13 @@ function UserProfile() {
 											</div>
 											<div className="dropdown ms-auto d-flex">
 												<div className="profile-email px-2 pt-2" onClick={() => navigate('/profile_verification')}>
-													<p className="text-dark mb-0">Want to become a part of <span className="text-primary">Together</span>?</p>
+													{!fullUserProfileInfo.is_verified && <p className="text-dark mb-0">Want to become a part of <span className="text-primary">Together</span>?</p>}
 												</div>
-												{/* <a href="#" className="btn btn-primary light sharp" data-bs-toggle="dropdown" aria-expanded="true"><i className="fa fa-plus text-primary"></i></a>
-											<ul className="dropdown-menu dropdown-menu-end">
-												<li className="dropdown-item"><i className="fa fa-user-circle text-primary me-2"></i> Become</li>
-												<li className="dropdown-item"><i className="fa fa-users text-primary me-2"></i> Add to btn-close friends</li>
-												<li className="dropdown-item"><i className="fa fa-plus text-primary me-2"></i> Add to group</li>
-												<li className="dropdown-item"><i className="fa fa-ban text-primary me-2"></i> Block</li>
-											</ul> */}
+												<a href="#" className="btn btn-primary light sharp" data-bs-toggle="dropdown" aria-expanded="true"><i className="fa fa-plus text-primary"></i></a>
+												<ul className="dropdown-menu dropdown-menu-end">
+													{(prof_request?.is_verified && !prof_request?.is_premium) && <li className="dropdown-item"><i className="fa fa-user-circle text-primary me-2"></i> Premium Membership</li>}
+													{prof_request?.is_premium &&  <li className="dropdown-item"><i className="fa fa-user-circle text-primary me-2"></i>Dashboard</li>}
+												</ul>
 											</div>
 										</div>
 									</div>

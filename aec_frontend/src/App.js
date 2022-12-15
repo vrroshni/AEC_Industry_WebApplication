@@ -3,6 +3,7 @@ import Login from './components/Accounts/Login';
 import ProfileVerification from './components/UserSide/ProfileVerification';
 import Register from './components/Accounts/Register';
 import UserProfile from './components/Profiles/UserProfile';
+import OthersProfile from './components/Profiles/OthersProfile';
 import { Routes, Route } from 'react-router-dom'
 import Common from './components/UserSide/Common'
 import Home from './components/UserSide/Home';
@@ -38,11 +39,11 @@ function App() {
               <Route path='feed/' element={<Feed />} />
               <Route path='profile_verification/' element={<ProfileVerification />} />
               <Route path='profile' element={<UserProfile />} />
+              <Route path='profile/:user_id' element={<OthersProfile/>} />
               <Route path='payment' element={<Payment />} />
               <Route path='/paymentconfirmation/:price' element={<Payment_Confirmation />} />
               <Route path='/success' element={<Success/>} />
               <Route path='/cancelled' element={<Cancelled/>} />
-              <Route path='/paymentconfirmation/:price' element={<Payment_Confirmation />} />
 
             </Route>
             

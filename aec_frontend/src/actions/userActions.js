@@ -55,6 +55,10 @@ import {
     TO_PREMIUM_FAILED,
     TO_PREMIUM_RESET,
 
+    OTHER_USER_PROFILE_REQUEST,
+    OTHER_USER_PROFILE_SUCCESS,
+    OTHER_USER_PROFILE_FAIL,
+
 
 } from '../constants/userConstants'
 import storage from 'redux-persist/lib/storage'
@@ -293,6 +297,43 @@ export const getUserProfile = () => async (dispatch, getState) => {
     }
 }
 
+export const getOtherUserProfile = (user_id) => async (dispatch, getState) => {
+    console.log(user_id, 'iddddddddddddddd')
+    try {
+
+        dispatch({
+            type: OTHER_USER_PROFILE_REQUEST
+        })
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+        console.log(user_id, 'iddddddddddddddd')
+
+        const { data } = await axios.post('/otheruserprofile/', { "id": user_id }, config)
+
+        dispatch({
+            type: OTHER_USER_PROFILE_SUCCESS,
+            payload: data
+
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: OTHER_USER_PROFILE_FAIL,
+            payload: error.response && error.response.data.detail ?
+                error.response.data.detail : error.message,
+        })
+    }
+}
+
 
 export const getUserRequest = () => async (dispatch, getState) => {
 
@@ -451,10 +492,7 @@ export const allFeed = () => async (dispatch, getState) => {
             payload: data.allposts
         })
 
-        dispatch({
-            type: USER_ALL_SUGGESTIONS,
-            payload: data.suggestions
-        })
+      
     } catch (error) {
         dispatch({
             type: USER_FEED_ALL_POSTS_LIST_FAIL,
@@ -492,6 +530,32 @@ export const post_like = (id) => async (dispatch, getState) => {
         type: USER_FEED_ALL_POSTS_LIST_SUCCESS,
         payload: data.allposts
     })
+
+
+}
+
+export const suggestionslist = () => async (dispatch, getState) => {
+
+    const {
+        userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+        headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${userInfo.token}`
+        }
+    }
+
+    const { data } = await axios.get('/suggestions/', config
+    )
+
+    dispatch({
+        type: USER_ALL_SUGGESTIONS,
+        payload: data
+    })
+
+    
 
 
 }
@@ -597,8 +661,14 @@ export const follow_unfollow = (user_id) => async (dispatch, getState) => {
     dispatch({
         type: UNFOLLOW_FOLLOW_USER,
     })
+    dispatch({
+        type: USER_PROFILE_SUCCESS,
+        payload: data
+
+    })
     
-    allFeed()
+
+   
 }
 
 export const send_connection = (user_id) => async (dispatch, getState) => {

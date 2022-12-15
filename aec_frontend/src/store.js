@@ -13,7 +13,8 @@ import {
     networkReducer,
     postInteractionReducer,
     toPremiumReducer,
-    SuggestionReducer
+    SuggestionReducer,
+    getOtherUserProfileReducer
 } from './reducers/userReducer'
 
 import {
@@ -47,6 +48,7 @@ const reducers = combineReducers({
     allposts: FeedReducer,
     topremium:toPremiumReducer,
     suggestion:SuggestionReducer,
+    othersprofile:getOtherUserProfileReducer,
 
 
 

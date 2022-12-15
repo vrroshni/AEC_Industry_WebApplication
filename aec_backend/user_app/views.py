@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from aec_app.models import *
 from .serializers import*
+from django.shortcuts import redirect
 
 
 
@@ -22,7 +23,6 @@ def like_post(request):
         new_like.save()
         post.likes=post.likes+1
         post.save()
-        
     else:
         dislike_filter=Post_Reaction.objects.filter(user=user,post=post,type='DISLIKE').first()
         if dislike_filter:
@@ -98,7 +98,8 @@ def follow_unfollow(request):
         user.save()
         follower.save()
         new_follower.save()
-    return Response(status=status.HTTP_200_OK)
+    serializer = ProfileSerializer(user, many=False)    
+    return Response(serializer.data)
 
  
     

@@ -5,7 +5,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 import { GoCommentDiscussion } from 'react-icons/go';
 import { SlLike, SlDislike } from 'react-icons/sl';
-import { addPost, allFeed, post_like, post_dislike, user_commented,follow_unfollow ,send_connection} from '../../actions/userActions'
+import { addPost, allFeed, post_like, post_dislike, user_commented,follow_unfollow ,send_connection,suggestionslist,getUserProfile} from '../../actions/userActions'
 import { USER_ADD_POST_RESET } from '../../constants/userConstants'
 import './css/feed.css'
 import dayjs from "dayjs";
@@ -85,11 +85,18 @@ function Feed() {
 
     }
     const Follow_unfollow = (id) => {
-        dispatch(follow_unfollow(id))
+        dispatch(follow_unfollow(id)).then(()=>{
 
+            dispatch(suggestionslist())
+
+        })
     }
     const Send_connection = (id) => {
-        dispatch(send_connection(id))
+        dispatch(send_connection(id)).then(()=>{
+
+            dispatch(suggestionslist())
+
+        })
 
     }
 
@@ -100,6 +107,7 @@ function Feed() {
 
     useEffect(() => {
         dispatch(allFeed())
+        dispatch(suggestionslist())
     }, [reload])
 
     const CommentSubmitHandler = (e) => {
@@ -113,8 +121,6 @@ function Feed() {
         dispatch(user_commented(e.target.post.value, comment))
         setComment('')
         setPosterror('')
-
-
     }
     return (
         <div className="row">
@@ -126,14 +132,14 @@ function Feed() {
                                 <div className="photo-content">
                                     <div className="cover-photo rounded" style={{ minHeight: "10.625rem", backgroundImage: `url(${fullUserProfileInfo?.cover_pic})` }}></div>
                                 </div>
-                                <div className="profile-info">
+                                <div className="profile-info" >
                                     <div className="profile-photo">
-                                        <img src={fullUserProfileInfo.pro_pic} className="img-fluid rounded-circle" style={{ minHeight: " 6rem", minWidth: "6rem" }} alt="" />
+                                        <img src={fullUserProfileInfo?.pro_pic} className="img-fluid rounded-circle" style={{ minHeight: " 6rem", minWidth: "6rem" }} alt="" />
                                     </div>
                                     <div className="profile-details">
                                         <div className="profile-name px-3 pt-2">
-                                            <h4 className="text-primary mb-0">{fullUserProfileInfo.full_name}</h4>
-                                            <p>@{fullUserProfileInfo.username}</p>
+                                            <h4 className="text-primary mb-0">{fullUserProfileInfo?.full_name}</h4>
+                                            <p>@{fullUserProfileInfo?.username}</p>
 
                                         </div>
                                     </div>
@@ -148,14 +154,14 @@ function Feed() {
                                     <div className="text-center">
                                         <div className="row">
                                             <div className="col">
-                                                <h3 className="m-b-0">{fullUserProfileInfo.followers}</h3><span>Followers</span>
+                                                <h3 className="m-b-0">{fullUserProfileInfo?.followers}</h3><span>Followers</span>
                                             </div>
 
                                             <div className="col">
-                                                <h3 className="m-b-0">{fullUserProfileInfo.following}</h3><span>Followings</span>
+                                                <h3 className="m-b-0">{fullUserProfileInfo?.following}</h3><span>Followings</span>
                                             </div>
                                             <div className="col">
-                                                <h3 className="m-b-0">{fullUserProfileInfo.connections}</h3><span>Connections</span>
+                                                <h3 className="m-b-0">{fullUserProfileInfo?.connections}</h3><span>Connections</span>
                                             </div>
 
                                         </div>
@@ -281,8 +287,8 @@ function Feed() {
                                     <div className="post-details">
                                         <ul className="mb-2 post-meta " >
                                             <div className="profile-photo d-flex flex-wrap" >
-                                                <img src={post.user.pro_pic} className="img-fluid rounded-circle me-1" style={{ width: "30px", height: "30px" }} alt="" />
-                                                <li className="post-author   mt-1 " >By {post.user.full_name} </li>{post.user.is_verified && <Bluetick />}
+                                                <img src={post.user.pro_pic} className="img-fluid rounded-circle me-1" style={{ width: "30px", height: "30px" }} alt="" onClick={() => { navigate(`/profile/${post.user.id}`)}} />
+                                                <li className="post-author   mt-1 " onClick={() => { navigate(`/profile/${post.user.id}`)}} >By {post.user.full_name} </li>{post.user.is_verified && <Bluetick />}
                                                 <li className="post-date me-3 mt-1"><i className="fas fa-calendar-week me-2"></i>{dayjs(post.posted_at).format("d MMM YYYY")}</li>
                                                 <li className="post-comment mt-1"><i className="far fa-comments me-2"></i> {post.comments}</li>
 
@@ -425,7 +431,7 @@ function Feed() {
                                                     </a>
 
                                                 </div>
-                                                <div>
+                                                <div className='mt-1'>
                                                     <button  onClick={()=>Follow_unfollow(user.id)} className='btn btn-info btn-xs'>follow</button>
                                                     <button onClick={()=>Send_connection(user.id)} className='btn btn-primary ms-2 btn-xs'>Connect</button>
 

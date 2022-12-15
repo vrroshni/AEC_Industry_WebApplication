@@ -9,6 +9,7 @@ function Navbar() {
 
     const userInfo = useSelector(state => state.getUserProfile)
     const { fullUserProfileInfo } = userInfo
+    
     const dispatch = useDispatch()
     const navigate = useNavigate()    
 

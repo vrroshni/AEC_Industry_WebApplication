@@ -18,10 +18,13 @@ class ProjectsSerializer(serializers.ModelSerializer):
     class Meta:
         model=Projects
         fields='__all__'
+        
+
 
 class ProfileSerializer(serializers.ModelSerializer):
     user_network=serializers.SerializerMethodField(read_only=True)
     user_project=serializers.SerializerMethodField(read_only=True)
+    user_post=serializers.SerializerMethodField(read_only=True)
     class Meta:
         model=Account
         fields='__all__'
@@ -31,43 +34,17 @@ class ProfileSerializer(serializers.ModelSerializer):
         serializer = NetworkSerializer(items, many=True)
         return serializer.data
     
+    def get_user_post(self, obj):
+        items = obj.user_post.all()
+        serializer = PostSerializer(items, many=True)
+        return serializer.data
+    
     def get_user_project(self, obj):
         items = obj.user_project.all()
         serializer = ProjectsSerializer(items, many=True)
         return serializer.data
-
-class ProfileSerializerWithToken(ProfileSerializer):
-    token=serializers.SerializerMethodField(read_only=True)
-    class Meta:
-        model=Account
-        fields=['id','username','full_name','email','phone_number','followers','following','connections','is_client','is_superadmin','token','pro_pic','cover_pic']
-    def get_token(self,obj):
-        token=RefreshToken.for_user(obj)
-        return str(token.access_token)
-
-class ProfileVerificationSerializer(serializers.ModelSerializer):
-    user=ProfileSerializer(read_only=True)
-    class Meta:
-        model=ProfileVerification
-        fields='__all__'
-    
-class PostReactionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post_Reaction
-        fields = "__all__"
-class PostCommentSerializer(serializers.ModelSerializer):
-    user=ProfileSerializer(read_only=True)
-    class Meta:
-        model = Post_Comment
-        fields = "__all__"
-        
-class PostComment_Reply_Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post_Comment_Reply
-        fields = "__all__"
-
 class PostSerializer(serializers.ModelSerializer):    
-    user=ProfileSerializer(read_only=True)
+    user=AccountSerializer(read_only=True)
     post_reaction=serializers.SerializerMethodField(read_only=True)
     post_comment=serializers.SerializerMethodField(read_only=True)
     # post_comment_reply=serializers.SerializerMethodField(read_only=True)
@@ -91,3 +68,37 @@ class PostSerializer(serializers.ModelSerializer):
     #     return serializer.data
 
     
+class ProfileSerializerWithToken(ProfileSerializer):
+    token=serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model=Account
+        fields=['id','username','full_name','email','phone_number','followers','following','connections','is_client','is_superadmin','token','pro_pic','cover_pic']
+        
+    def get_token(self,obj):
+        token=RefreshToken.for_user(obj)
+        return str(token.access_token)
+
+class ProfileVerificationSerializer(serializers.ModelSerializer):
+    user=ProfileSerializer(read_only=True)
+    class Meta:
+        model=ProfileVerification
+        fields='__all__'
+        
+
+    
+class PostReactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post_Reaction
+        fields = "__all__"
+        
+class PostCommentSerializer(serializers.ModelSerializer):
+    user=ProfileSerializer(read_only=True)
+    class Meta:
+        model = Post_Comment
+        fields = "__all__"
+        
+class PostComment_Reply_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post_Comment_Reply
+        fields = "__all__"
+

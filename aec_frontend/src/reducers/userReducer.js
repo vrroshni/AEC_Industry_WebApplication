@@ -16,6 +16,11 @@ import {
     USER_PROFILE_SUCCESS,
     USER_PROFILE_FAIL,
 
+    OTHER_USER_PROFILE_REQUEST,
+    OTHER_USER_PROFILE_SUCCESS,
+    OTHER_USER_PROFILE_FAIL,
+    OTHER_USER_PROFILE_RESET,
+
     USER_UPDATE_PROFILE_REQUEST,
     USER_UPDATE_PROFILE_SUCCESS,
     USER_UPDATE_PROFILE_FAIL,
@@ -52,6 +57,8 @@ import {
     TO_PREMIUM_SUCCESS,
     TO_PREMIUM_FAILED,
     TO_PREMIUM_RESET,
+
+    
 
 
 } from '../constants/userConstants'
@@ -154,6 +161,7 @@ export const toPremiumReducer = (state = {}, action) => {
             return state;
     }
 }
+
 export const updateUserProfileReducer = (state = {}, action) => {
     switch (action.type) {
         case USER_UPDATE_PROFILE_REQUEST:
@@ -287,3 +295,20 @@ export const networkReducer = (state = {}, action) => {
     }
 }
 
+export const getOtherUserProfileReducer = (state = {}, action) => {
+    switch (action.type) {
+        case OTHER_USER_PROFILE_REQUEST:
+            return { loading: true }
+
+        case OTHER_USER_PROFILE_SUCCESS:
+            return { loading: false, otheruser: action.payload, status: true }
+
+        case OTHER_USER_PROFILE_FAIL:
+            return { loading: false, error: action.payload, status: false }
+
+            case OTHER_USER_PROFILE_RESET:
+                return {}
+        default:
+            return state;
+    }
+}
