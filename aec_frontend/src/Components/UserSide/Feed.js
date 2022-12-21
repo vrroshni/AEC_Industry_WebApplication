@@ -100,8 +100,18 @@ function Feed() {
 
     }
 
+    console.log(posts, 'ppppppppppp')
+
     const user_dislike = (id) => {
         dispatch(post_dislike(id))
+
+    }
+    const gotoProfile = (id) => {
+        console.log(id,fullUserProfileInfo.id,'proffffffff')
+        if (id === fullUserProfileInfo.id)
+            navigate('/profile')
+        else
+            navigate(`/profile/${id}`)
 
     }
 
@@ -287,10 +297,8 @@ function Feed() {
                                     <div className="post-details">
                                         <ul className="mb-2 post-meta " >
                                             <div className="profile-photo d-flex flex-wrap" >
-                                                {(post.user.id == fullUserProfileInfo.id) ?
-                                                    <img src={post.user.pro_pic} className="img-fluid rounded-circle me-1" style={{ width: "30px", height: "30px" }} alt="" onClick={() => { navigate('/profile') }} /> :
-                                                    <img src={post.user.pro_pic} className="img-fluid rounded-circle me-1" style={{ width: "30px", height: "30px" }} alt="" onClick={() => { navigate(`/profile/${post.user.id}`) }} />}
-                                                <li className="post-author   mt-1 " onClick={() => { navigate(`/profile/${post.user.id}`) }} >By {post.user.full_name} </li>{post.user.is_verified && <Bluetick />}
+                                                <img src={post.user.pro_pic} className="img-fluid rounded-circle me-1" style={{ width: "30px", height: "30px" }} alt="" onClick={() => gotoProfile(post.user.id)} />
+                                                <li className="post-author   mt-1 " onClick={() => gotoProfile(post.user.id)} >By {post.user.full_name} </li>{post.user.is_verified && <Bluetick />}
                                                 <li className="post-date me-3 mt-1"><i className="fas fa-calendar-week me-2"></i>{dayjs(post.posted_at).format("d MMM YYYY")}</li>
                                                 <li className="post-comment mt-1"><i className="far fa-comments me-2"></i> {post.comments}</li>
 

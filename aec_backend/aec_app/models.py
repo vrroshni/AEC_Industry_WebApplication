@@ -26,7 +26,7 @@ class Report_Post(models.Model):
     report_reason=models.CharField(max_length=200,null=True)
     reported_at=models.DateTimeField(auto_now_add=True)
 
-class Post_Reaction(models.Model):
+class Post_Reaction(models.Model):    
     TYPES=( 
         ('LIKE','LIKE'),
         ('DISLIKE','DISLIKE'),
@@ -37,7 +37,7 @@ class Post_Reaction(models.Model):
     reacted_at=models.DateTimeField(auto_now_add=True,null=True)
 
 class Post_Comment(models.Model):
-    
+        
     user=models.ForeignKey(Account,related_name='user_post_comment',on_delete=models.CASCADE,null=True)
     post=models.ForeignKey(Post,related_name='post_comment',on_delete=models.CASCADE,null=True)
     comment_desc=models.CharField(max_length=200,null=True)
@@ -65,7 +65,7 @@ class Client_Requests(models.Model):
     request_from=models.ForeignKey(Account,related_name='request_from',on_delete=models.CASCADE,null=True)
     status=models.CharField(max_length=100, null=True,choices=STATUS,default='PENDING')
     role=models.CharField(max_length=50,null=True)
-
+    
     location=models.CharField(max_length=50,null=True)
     requirementdetails=models.CharField(max_length=500,null=True)
     experience=models.IntegerField(default=0)
@@ -80,15 +80,25 @@ class Proposals_Admin(models.Model):
         ('PENDING','PENDING'),
         ('ACCEPTED','ACCEPTED'),
         ('PROPOSAL_SENT','PROPOSAL_SENT'),
-        ('REJECTED_USER','REJECTED_USER'),        
-        ('ACCEPTED_USER','ACCEPTED_USER'),        
         ('COMPLETED','COMPLETED'),        
             )
     proposal_from=models.ForeignKey(Account,related_name='owner',on_delete=models.CASCADE,null=True)
     proposal=models.ForeignKey(Client_Requests,related_name='proposal',on_delete=models.CASCADE,null=True)
     eligible=models.ForeignKey(Account,related_name='eligible',on_delete=models.CASCADE,null=True)
     status=models.CharField(max_length=100, null=True,choices=STATUS,default='PENDING')
+    is_accepted=models.BooleanField(null=True)
     
+class Aec_Proposals_User(models.Model):
+    
+    admin_proposal=models.ForeignKey(Proposals_Admin,related_name='proposal_admin',on_delete=models.CASCADE,null=True)
+    description=models.CharField(max_length=500,null=True)
+    proposal_content=models.FileField(upload_to='proposalcontent',null=True)
+    rate = models.IntegerField(default=0)
+    send_at=models.DateTimeField(auto_now_add=True)
+    is_accepted=models.BooleanField(default=False)
+
+
+
 
 
 

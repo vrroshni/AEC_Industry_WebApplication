@@ -28,5 +28,19 @@ urlpatterns = [
     
     path('connectus/', connectUs, name='connectus'),
     path('connectusrequests/', connectUsRequests, name='connectUsRequests'),
+    path('proposalbids/', proposalBids, name='proposalbids'),
+    
+    #Premium
+    path('adminproposals/', adminProposals, name='adminproposals'),
+    path('adminproposals_accepted/', adminProposalsAccepted, name='adminProposalsAccepted'),
+    path('adminproposals_rejected/', adminProposalsRejected, name='adminProposalsRejected'),
+    path('adminproposals_onprocess/', adminProposalsOnprocess, name='adminProposalsOnprocess'),
+    
+    #proposalactions
+    path('proposal_accepted/', proposal_accepted, name='proposal_accepted'),
+    path('proposal_rejected/', proposal_rejected, name='proposal_rejected'),
+    path('send_proposal/', send_proposal, name='send_proposal'),
+    path('proposal_completed/', proposal_completed, name='proposal_completed'),
+
     
 ]

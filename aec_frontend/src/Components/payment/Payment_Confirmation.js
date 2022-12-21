@@ -22,7 +22,6 @@ function Payment_Confirmation() {
             <div className="col-xl-6">
                 <div className="card">
                     <div className="card-body text-center">
-
                         <div className="bootstrap-carousel">
                             <div data-bs-ride="carousel" className="carousel slide" id="carouselExampleCaptions">
                                 <div className="carousel-indicators">

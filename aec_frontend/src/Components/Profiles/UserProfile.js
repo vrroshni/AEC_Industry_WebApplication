@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux'
 import { getUserProfile, updateProfile, getUserRequest } from '../../actions/userActions'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate,Link } from 'react-router-dom'
 import Message from '../Message'
 import Loader from '../Loader'
+import {USER_UPDATE_PROFILE_RESET} from '../../constants/userConstants'
 
 
 function UserProfile() {
@@ -78,7 +79,7 @@ function UserProfile() {
 		if (result) {
 			dispatch(getUserProfile())
 		}
-		
+		dispatch({type:USER_UPDATE_PROFILE_RESET})
 		dispatch(getUserRequest())
 
 	}, [reload])
@@ -96,7 +97,6 @@ function UserProfile() {
 	const [cover_pic, setCover_pic] = useState('');
 
 
-	console.log(fullUserProfileInfo, 'proffffffffffffffffff')
 	return (
 		<>
 			{fullUserProfileInfo && (
@@ -135,7 +135,7 @@ function UserProfile() {
 												<a href="#" className="btn btn-primary light sharp" data-bs-toggle="dropdown" aria-expanded="true"><i className="fa fa-plus text-primary"></i></a>
 												<ul className="dropdown-menu dropdown-menu-end">
 													{(prof_request?.is_verified && !prof_request?.is_premium) && <li className="dropdown-item"><i className="fa fa-user-circle text-primary me-2"></i> Premium Membership</li>}
-													{prof_request?.is_premium &&  <li className="dropdown-item"><i className="fa fa-user-circle text-primary me-2"></i>Proposals Dashboard</li>}
+													{prof_request?.is_premium &&  <li className="dropdown-item" onClick={()=>navigate('/proposals')}><i className="fa fa-user-circle text-primary me-2"></i>Proposals Dashboard</li>}
 													<li className="dropdown-item" onClick={()=>navigate('/requests')}><i className="fa fa-user-circle text-primary me-2"></i>Requests Dashboard</li>
 
 												</ul>

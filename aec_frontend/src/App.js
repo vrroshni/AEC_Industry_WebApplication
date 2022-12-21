@@ -24,8 +24,13 @@ import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import Success from './components/payment/Success';
 import Cancelled from './components/payment/Cancelled';
 import Connect from './components/UserSide/Connect';
-import ClientDashboard from './components/Dahboard/ClientDashboard'
+import ClientDashboard from './components/Dashboard/ClientDashboard'
 import ClientRequirements from './components/Admin/ClientRequirements';
+import RejectedProposals from './components/Dashboard/RejectedProposals'
+import AcceptedProposals from './components/Dashboard/AcceptedProposals'
+import OnProcess from './components/Dashboard/OnProcess'
+import PremiumDashboard from './components/Dashboard/PremiumDashboard'
+import Proposalbids from './components/Dashboard/Proposalbids';
 
 function App() {
 
@@ -48,6 +53,11 @@ function App() {
               <Route path='/success' element={<Success/>} />
               <Route path='/cancelled' element={<Cancelled/>} />
               <Route path='/requests' element={<ClientDashboard/>} />
+              <Route path='/proposals' element={<PremiumDashboard/>} />
+              <Route path='/acceptedproposals' element={<AcceptedProposals/>} />
+              <Route path='/rejectedproposals' element={<RejectedProposals/>} />
+              <Route path='/onprocess' element={<OnProcess/>} />
+              <Route path='/proposalbids' element={<Proposalbids/>} />
             </Route>
             
           </Route>

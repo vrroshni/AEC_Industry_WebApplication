@@ -9,13 +9,13 @@ import { persistStore } from 'redux-persist'
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-export let  persistor=persistStore(store)
+export let persistor = persistStore(store)
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Provider store={store}>
         <PersistGate persistor={persistor}>
-        <App />
+          <App />
         </PersistGate>
       </Provider>
     </BrowserRouter>

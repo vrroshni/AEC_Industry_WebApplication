@@ -130,8 +130,6 @@ class CreateCheckOutSession(APIView):
         except Exception as e:
             return Response({'msg': 'something went wrong while creating stripe session', 'error': str(e)}, status=500)
 
-
-
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def toPremiumMember(request):
@@ -142,7 +140,9 @@ def toPremiumMember(request):
     verified_profile.paid_at = datetime.now()
     verified_profile.is_premium = True
     verified_profile.save()
-    return Response(status=status.HTTP_200_OK)
+    serializer = ProfileSerializer(user, many=False)
+    return Response(serializer.data,status=status.HTTP_200_OK)
+
 
 
 @api_view(['GET'])
@@ -157,7 +157,6 @@ def getUserProfile(request):
 @permission_classes([IsAuthenticated])
 def otherUserProfile(request):
     data = request.data
-    print(data)
     user=Account.objects.get(id=data['id'])
     serializer = ProfileSerializer(user, many=False)
     return Response(serializer.data)
@@ -249,7 +248,6 @@ def allFeed(request):
 def suggestions(request):
     try:
         user=request.user
-        
         #user suggestions
         user_following=Network.objects.filter(followed_by=user)
         allusers=Account.objects.exclude(id=user.id).all()
@@ -283,6 +281,7 @@ def connectUs(request):
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def connectUsRequests(request):
@@ -294,6 +293,192 @@ def connectUsRequests(request):
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def proposalBids(request):
+    user=request.user
+    try:
+        proposalbids=Aec_Proposals_User.objects.filter(admin_proposal__proposal_from=user)
+        proposalbidsSerializer=Aec_Proposals_UserSerializer(proposalbids,many=True)
+        return Response(proposalbidsSerializer.data,status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def accept_proposalBids (request):
+    user=request.user
+    data = request.data
+    try:
+        proposal=Proposals_Admin.objects.get(id=data['id'],eligible=user)
+        proposal.status='ACCEPTED'
+        proposal.save()
+        return Response(status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
-   
+
+# ----------------------------- premiummembership ---------------------------- #
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def adminProposals (request):
+    user=request.user
+    try:
+        proposals=Proposals_Admin.objects.filter(eligible=user,status='PENDING')
+        proposalsSerializer=Proposals_AdminSerializer(proposals,many=True)
+        return Response(proposalsSerializer.data,status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def adminProposalsAccepted (request):
+    user=request.user
+    try:
+        proposals=Proposals_Admin.objects.filter(eligible=user,status='ACCEPTED')
+        proposalsSerializer=Proposals_AdminSerializer(proposals,many=True)
+        return Response(proposalsSerializer.data,status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def adminProposalsRejected (request):
+    user=request.user
+    try:
+        proposals=Proposals_Admin.objects.filter(eligible=user,is_accepted=False)
+        proposalsSerializer=Proposals_AdminSerializer(proposals,many=True)
+        return Response(proposalsSerializer.data,status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def adminProposalsOnprocess (request):
+    user=request.user
+    try:
+        proposals=Proposals_Admin.objects.filter(eligible=user,is_accepted=True)
+        proposalsSerializer=Proposals_AdminSerializer(proposals,many=True)
+        return Response(proposalsSerializer.data,status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def proposal_accepted (request):
+    user=request.user
+    data = request.data
+    try:
+        proposal=Proposals_Admin.objects.get(id=data['id'],eligible=user)
+        proposal.status='ACCEPTED'
+        proposal.save()
+        return Response(status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def proposal_rejected (request):
+    user=request.user
+    data = request.data
+    try:
+        proposal=Proposals_Admin.objects.get(id=data['id'],eligible=user)
+        proposal.delete()
+        return Response(status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def send_proposal (request):
+        user=request.user
+        data = request.data
+        print(data)
+        try:
+            proposals=Proposals_Admin.objects.get(id=data['admin_proposal'],eligible=user)
+            proposals.status='PROPOSAL_SENT'
+            proposals.save()
+            
+            proposal_to_client=Aec_Proposals_UserSerializer(data=data,many=False)
+            print(proposal_to_client)
+            if proposal_to_client.is_valid():
+                proposal_to_client.save()
+                
+            return Response(status=status.HTTP_200_OK)
+        except:
+            message = {'detail': "Something went wrong"}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def proposal_completed (request):
+    user=request.user
+    data = request.data
+
+    try:
+        proposal=Proposals_Admin.objects.get(id=data['admin_proposal'],eligible=user)
+        proposal.status="COMPLETED"
+        proposal.save()
+        return Response(status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def proposal_completed_publish (request):
+    user=request.user
+    data = request.data
+
+    try:
+        proposal=Proposals_Admin.objects.get(id=data['admin_proposal'],eligible=user)
+        proposal.status="COMPLETED"
+        proposal.save()
+        
+        newproject=Projects.objects.create(user=user,project_title=data['project_title'],project_desc=data['project_desc'],project_image=data['project_image'],project_status='COMPLETED',project_client=proposal.proposal_from)
+        newproject.save()
+        
+        return Response(status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def accept_by_client (request):
+    user=request.user
+    data = request.data
+    try:
+        proposal=Aec_Proposals_User.objects.get(id=data['id'])
+        proposal.is_accepted=True
+        proposal.save()
+        
+        admin_proposal=Proposals_Admin.objects.get(id=proposal.admin_proposal)
+        admin_proposal.is_accepted=True
+        admin_proposal.save()
+        return Response(status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+

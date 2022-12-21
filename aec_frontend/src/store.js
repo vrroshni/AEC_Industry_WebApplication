@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import {
+
     userLoginReducer,
     userRegisterReducer,
     profileverificationReducer,
@@ -16,7 +17,9 @@ import {
     SuggestionReducer,
     getOtherUserProfileReducer,
     userConnectUsReducer,
-    userConnectUsRequestReducer
+    userConnectUsRequestReducer,
+    userProposalbidsReducer
+
 } from './reducers/userReducer'
 
 import {
@@ -29,6 +32,16 @@ import {
     allClientRequiremntListReducer
 } from './reducers/adminReducer'
 
+
+import {
+
+    adminProposalReducer,
+    adminProposalAcceptedReducer,
+    adminProposalRejectedReducer,
+    adminProposalOnprocessReducer,
+    proposalActionsReducer
+
+} from './reducers/premiumReducer'
 
 
 import storage from 'redux-persist/lib/storage'
@@ -51,28 +64,31 @@ const reducers = combineReducers({
     updateUserprofile: updateUserProfileReducer,
     addPost: postAddReducer,
     allposts: FeedReducer,
-    topremium:toPremiumReducer,
-    suggestion:SuggestionReducer,
-    othersprofile:getOtherUserProfileReducer,
-    connectUs:userConnectUsReducer,
-    allConnectrequest:userConnectUsRequestReducer,
+    topremium: toPremiumReducer,
+    suggestion: SuggestionReducer,
+    othersprofile: getOtherUserProfileReducer,
+    connectUs: userConnectUsReducer,
+    allConnectrequest: userConnectUsRequestReducer,
+    proposalbids:userProposalbidsReducer,
 
 
 
     allUsers: allUserListReducer,
     statusChanger: statusChangeReducer,
     allProfRequests: allProfileRequestsReducer,
-    allPosts:allPostListReducer,
-    profilerequestaction:ProfileRequestActionReducer,
-    allClientRequirements:allClientRequiremntListReducer,
-    clientRequirementAction:ClientRequirementActionReducer,
-
-
+    allPosts: allPostListReducer,
+    profilerequestaction: ProfileRequestActionReducer,
+    allClientRequirements: allClientRequiremntListReducer,
+    clientRequirementAction: ClientRequirementActionReducer,
     
-    postInteraction:postInteractionReducer,
-    network:networkReducer,
+    postInteraction: postInteractionReducer,
+    network: networkReducer,
 
-
+    adminproposals: adminProposalReducer,
+    adminproposalsAccepted: adminProposalAcceptedReducer,
+    adminproposalsRejected: adminProposalRejectedReducer,
+    adminproposalsOnprocess: adminProposalOnprocessReducer,
+    proposalActions:proposalActionsReducer
 
 })
 

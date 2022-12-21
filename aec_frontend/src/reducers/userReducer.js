@@ -67,8 +67,10 @@ import {
     USER_CONNECT_LIST_ALL_REQUEST,
     USER_CONNECT_LIST_ALL_SUCCESS,
     USER_CONNECT_LIST_ALL_FAIL,
-    USER_CONNECT_LIST_ALL_RESET
-
+    USER_CONNECT_LIST_ALL_RESET,
+    USER_PROPOSAL_BIDS_ALL_REQUEST,
+    USER_PROPOSAL_BIDS_ALL_SUCCESS,
+    USER_PROPOSAL_BIDS_ALL_FAIL
 
 } from '../constants/userConstants'
 
@@ -269,6 +271,26 @@ export const userConnectUsRequestReducer = (state = { requests: []}, action) => 
             }
 
         case USER_CONNECT_LIST_ALL_FAIL:
+            return { loading: false, error: action.payload }
+
+        default:
+            return state
+    }
+}
+export const userProposalbidsReducer = (state = { proposals: []}, action) => {
+    switch (action.type) {
+        case USER_PROPOSAL_BIDS_ALL_REQUEST:
+            return { loading: true, proposals: [] }
+
+        case USER_PROPOSAL_BIDS_ALL_SUCCESS:
+            return {
+                loading: false,
+                proposals: action.payload,
+                
+
+            }
+
+        case USER_PROPOSAL_BIDS_ALL_FAIL:
             return { loading: false, error: action.payload }
 
         default:

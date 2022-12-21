@@ -72,7 +72,7 @@ class ProfileSerializerWithToken(ProfileSerializer):
     token=serializers.SerializerMethodField(read_only=True)
     class Meta:
         model=Account
-        fields=['id','username','full_name','email','phone_number','followers','following','connections','is_client','is_superadmin','token','pro_pic','cover_pic']
+        fields="__all__"
         
     def get_token(self,obj):
         token=RefreshToken.for_user(obj)
@@ -113,3 +113,19 @@ class Client_RequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client_Requests
         fields = "__all__"
+        
+        
+class Proposals_AdminSerializer(serializers.ModelSerializer):
+    proposal_from=AccountSerializer(read_only=True)
+    proposal=Client_RequestSerializer(read_only=True)
+    eligible=AccountSerializer(read_only=True)
+    class Meta:
+        model = Proposals_Admin
+        fields = "__all__"
+        
+        
+class Aec_Proposals_UserSerializer(serializers.ModelSerializer):
+    admin_proposal=Proposals_AdminSerializer(read_only=True)
+    class Meta:
+        model=Aec_Proposals_User
+        fields='__all__'

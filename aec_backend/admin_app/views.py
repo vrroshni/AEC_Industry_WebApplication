@@ -57,8 +57,6 @@ def statusChange(request):
 @permission_classes([IsAuthenticated])
 def profileVerified(request):
         data=request.data
-    
-    
         userrequest=ProfileVerification.objects.get(id=data['id'])
         userrequest.is_verified=True
         userrequest.save()
