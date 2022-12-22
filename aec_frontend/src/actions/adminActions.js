@@ -338,7 +338,9 @@ export const requirement_shared = (id) => async (dispatch, getState) => {
     dispatch({
         type: USER_CLIENT_REQUIREMNT_SHARED_SUCCESS,
     })
-    toast.success(data.meassge.detail, {
+
+    console.log(data.detail,'kkkkkkkkkkkkkkkkkkkkk')
+    toast.success(data.detail, {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: true,
@@ -370,7 +372,7 @@ export const requirement_rejected = (id) => async (dispatch, getState) => {
     dispatch({
         type: USER__CLIENT_REQUIREMNT_REJECTED,
     })
-    toast.success(' You have rejected a Proposal ', {
+    toast.danger(' You have rejected a Proposal ', {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: true,

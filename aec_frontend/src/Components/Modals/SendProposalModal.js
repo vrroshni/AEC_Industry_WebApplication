@@ -43,7 +43,7 @@ function SendProposalModal(props) {
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Modal title</h5>
+            <h5 class="modal-title">Send Proposal</h5>
             <button type="button" class="btn-close" onClick={() => props.handleModalClose()}>
             </button>
           </div>

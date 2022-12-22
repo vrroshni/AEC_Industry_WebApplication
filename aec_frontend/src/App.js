@@ -58,6 +58,7 @@ function App() {
               <Route path='/rejectedproposals' element={<RejectedProposals/>} />
               <Route path='/onprocess' element={<OnProcess/>} />
               <Route path='/proposalbids' element={<Proposalbids/>} />
+            
             </Route>
             
           </Route>

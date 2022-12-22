@@ -67,10 +67,19 @@ import {
     USER_CONNECT_LIST_ALL_SUCCESS,
     USER_CONNECT_LIST_ALL_FAIL,
     USER_CONNECT_LIST_ALL_RESET,
+
     USER_PROPOSAL_BIDS_ALL_REQUEST,
     USER_PROPOSAL_BIDS_ALL_SUCCESS,
-    USER_PROPOSAL_BIDS_ALL_FAIL
+    USER_PROPOSAL_BIDS_ALL_FAIL,
 
+    USER_ACCEPT_PROPOSAL_REQUEST,
+    USER_ACCEPT_PROPOSAL_BID,
+    USER_ACCEPT_PROPOSAL_BIDS_FAIL,
+    PROPOSAL_BID_RESET,
+
+
+    USER_REJECT_BID,
+    USER_REJECT_BID_ALL,
 
 
 } from '../constants/userConstants'
@@ -274,7 +283,7 @@ export const topremium = (premium_amount) => async (dispatch, getState) => {
 
         const config = {
             headers: {
-                'Content-type': 'multipart/form-data',
+                'Content-type': 'application/json',
                 Authorization: `Bearer ${userInfo.token}`
             }
         }
@@ -300,6 +309,85 @@ export const topremium = (premium_amount) => async (dispatch, getState) => {
 
         dispatch({
             type: TO_PREMIUM_RESET,
+        })
+    }
+}
+
+export const acceptbid = (id) => async (dispatch, getState) => {
+    try {
+
+        dispatch({
+            type: USER_ACCEPT_PROPOSAL_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.patch('/accept_proposalbid/', { "id": id }, config
+        )
+        dispatch({
+            type: USER_ACCEPT_PROPOSAL_BID,
+        })
+        
+        dispatch({
+            type: USER_ACCEPT_PROPOSAL_BIDS_FAIL,
+            payload:data
+        })
+
+    } catch (error) {
+        dispatch({
+            type: USER_ACCEPT_PROPOSAL_BIDS_FAIL,
+            payload: error.response && error.response.data.detail ?
+                error.response.data.detail : error.message,
+        })
+
+        dispatch({
+            type: PROPOSAL_BID_RESET,
+        })
+    }
+}
+
+export const rejecttbid = (id) => async (dispatch, getState) => {
+    try {
+
+       
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.patch('/reject_proposalbid/', { "id": id }, config
+        )
+        dispatch({
+            type: USER_REJECT_BID,
+        })
+        
+        
+
+    } catch (error) {
+        dispatch({
+            type: USER_ACCEPT_PROPOSAL_BIDS_FAIL,
+            payload: error.response && error.response.data.detail ?
+                error.response.data.detail : error.message,
+        })
+
+        dispatch({
+            type: PROPOSAL_BID_RESET,
         })
     }
 }

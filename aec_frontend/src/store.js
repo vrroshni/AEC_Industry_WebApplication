@@ -18,7 +18,8 @@ import {
     getOtherUserProfileReducer,
     userConnectUsReducer,
     userConnectUsRequestReducer,
-    userProposalbidsReducer
+    userProposalbidsReducer,
+    ProposalBidActionsReducer
 
 } from './reducers/userReducer'
 
@@ -70,6 +71,7 @@ const reducers = combineReducers({
     connectUs: userConnectUsReducer,
     allConnectrequest: userConnectUsRequestReducer,
     proposalbids:userProposalbidsReducer,
+    proposalbidsaction:ProposalBidActionsReducer,
 
 
 

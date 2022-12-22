@@ -105,7 +105,7 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class CreateCheckOutSession(APIView):
     def post(self, request, *args, **kwargs):
-        price = self.kwargs["price"]
+        price = request.POST.get('price')
         try:
             checkout_session = stripe.checkout.Session.create(
             line_items=[
@@ -124,6 +124,37 @@ class CreateCheckOutSession(APIView):
             mode='payment',
             success_url=settings.SITE_URL + 'payment/?success=true&price='+price,
             cancel_url=settings.SITE_URL + 'payment/?canceled=true',
+
+        )  
+            return redirect(checkout_session.url)
+        except Exception as e:
+            return Response({'msg': 'something went wrong while creating stripe session', 'error': str(e)}, status=500)
+        
+        
+class StripePaymentProposalBid(APIView):
+    def post(self, request, *args, **kwargs):
+        price = request.POST.get('price')
+        id = request.POST.get('id')
+        print(int(float(price)),'ppppppppppp')
+        price=int(float(price))
+        try:
+            checkout_session = stripe.checkout.Session.create(
+            line_items=[
+                {
+                    # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                    'price_data': {
+                        'currency': 'usd',
+                        'unit_amount': int(price) * 100,
+                        'product_data':{
+                            'name': "Accepting ProposalBid",
+                        }
+                    },
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url=settings.SITE_URL + 'proposalbids/?success=true&id='+id,
+            cancel_url=settings.SITE_URL + 'proposalbids/?canceled=true',
 
         )  
             return redirect(checkout_session.url)
@@ -233,6 +264,8 @@ def addPost(request):
 def allFeed(request):
     try:
         user=request.user
+        
+        
         #post suggestions
         posts = Post.objects.all().order_by('-posted_at')
         serializer = PostSerializer(posts, many=True)
@@ -248,6 +281,7 @@ def allFeed(request):
 def suggestions(request):
     try:
         user=request.user
+        
         #user suggestions
         user_following=Network.objects.filter(followed_by=user)
         allusers=Account.objects.exclude(id=user.id).all()
@@ -272,7 +306,11 @@ def suggestions(request):
 @permission_classes([IsAuthenticated])
 def connectUs(request):
     data=request.data
+    user=request.user
     try:
+        if Client_Requests.objects.filter(request_from=user,is_acceptedbyUser=False).first():
+            message = {'detail': "You already have a request pending!"}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
         requests=NewClient_RequestSerializer(data=data,many=False)
         if requests.is_valid():
             requests.save()
@@ -300,7 +338,7 @@ def connectUsRequests(request):
 def proposalBids(request):
     user=request.user
     try:
-        proposalbids=Aec_Proposals_User.objects.filter(admin_proposal__proposal_from=user)
+        proposalbids=Aec_Proposals_User.objects.filter(admin_proposal__proposal_from=user,is_accepted=False)
         proposalbidsSerializer=Aec_Proposals_UserSerializer(proposalbids,many=True)
         return Response(proposalbidsSerializer.data,status=status.HTTP_200_OK)
     except:
@@ -310,19 +348,58 @@ def proposalBids(request):
 
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
-def accept_proposalBids (request):
+def accept_proposalBid (request):
     user=request.user
     data = request.data
+    id=int(data['id'])
     try:
-        proposal=Proposals_Admin.objects.get(id=data['id'],eligible=user)
-        proposal.status='ACCEPTED'
+        acceptedbid=Aec_Proposals_User.objects.get(id=id)
+        acceptedbid.is_accepted=True
+        acceptedbid.save()
+        
+        proposal=Proposals_Admin.objects.get(id=acceptedbid.admin_proposal.id)
+        proposal.is_accepted=True
         proposal.save()
+        
+        leftproposals=Proposals_Admin.objects.exclude(id=acceptedbid.admin_proposal.id).filter(proposal=acceptedbid.admin_proposal.proposal.id)
+        if leftproposals:
+            for i in leftproposals:
+                i.is_accepted=False
+                i.status='REJECTED'
+                i.save()
+        
+        leftproposalbids=Aec_Proposals_User.objects.filter(admin_proposal__proposal_from=user,is_accepted=False)
+        if leftproposalbids:
+            for i in leftproposalbids:
+                i.delete()
+                
+        clientreq=Client_Requests.objects.get(id=proposal.proposal.id)
+        clientreq.is_acceptedbyUser=True
+        clientreq.status='COMPLETED'
+        clientreq.save()
+        
         return Response(status=status.HTTP_200_OK)
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def reject_proposalBid (request):
+    user=request.user
+    data = request.data
+    try:
+       acceptedbid=Aec_Proposals_User.objects.get(id=data['id'])
+       leftproposals=Proposals_Admin.objects.get(id=acceptedbid.admin_proposal)
+       leftproposals.is_accepted=False
+       leftproposals.status='REJECTED'
+       leftproposals.save()
+       acceptedbid.delete()
+       return Response(status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 # ----------------------------- premiummembership ---------------------------- #
 
@@ -352,12 +429,13 @@ def adminProposalsAccepted (request):
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
     
     
+    
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def adminProposalsRejected (request):
     user=request.user
     try:
-        proposals=Proposals_Admin.objects.filter(eligible=user,is_accepted=False)
+        proposals=Proposals_Admin.objects.filter(eligible=user,is_accepted=False,status='REJECTED')
         proposalsSerializer=Proposals_AdminSerializer(proposals,many=True)
         return Response(proposalsSerializer.data,status=status.HTTP_200_OK)
     except:
@@ -370,7 +448,7 @@ def adminProposalsRejected (request):
 def adminProposalsOnprocess (request):
     user=request.user
     try:
-        proposals=Proposals_Admin.objects.filter(eligible=user,is_accepted=True)
+        proposals=Proposals_Admin.objects.filter(eligible=user,is_accepted=True,status='PROPOSAL_SENT')
         proposalsSerializer=Proposals_AdminSerializer(proposals,many=True)
         return Response(proposalsSerializer.data,status=status.HTTP_200_OK)
     except:

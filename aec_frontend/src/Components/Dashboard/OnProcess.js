@@ -37,6 +37,7 @@ function OnProcess() {
                             <th><strong>PROPOSAL</strong></th>
                             <th><strong>DETAILS</strong></th>
                             <th><strong>STATUS</strong></th>
+                            <th><strong>ACTION</strong></th>
                           </tr>
                         </thead>
                         <tbody id="orders">
@@ -59,7 +60,11 @@ function OnProcess() {
                                   requested  at: <strong>{proposal.proposal.created_at.substring(0, 10)}</strong><br />
                                 </td>
                                 <td>
-                                  <button className="btn btn-xs  btn-info">{proposal.proposal.status}</button>
+                                  <button className="btn btn-xs  btn-info">{proposal.status}</button> <br />
+                                </td>
+                                <td>
+                                <button className="btn btn-xs   btn-primary">Completed</button>
+                                  <button className="btn btn-xs ms-2 btn-primary">Publish</button>
                                 </td>
                               </tr>
                             )

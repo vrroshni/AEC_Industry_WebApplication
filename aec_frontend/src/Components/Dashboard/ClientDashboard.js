@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { getUserAllConnectUsRequest } from '../../actions/userActions'
 import DashboardNavbar from './DashboardNavbar'
 
@@ -8,6 +9,7 @@ import DashboardNavbar from './DashboardNavbar'
 function ClientDashboard() {
   const [reload, setReload] = useState()
   const dispatch = useDispatch()
+  const Navigate=useNavigate()
 
 
 
@@ -23,6 +25,7 @@ function ClientDashboard() {
     <>
       {requests?.length !== 0 ?
         <>
+        <button className='btn btn-xs mt-2  btn-primary' onClick={()=>Navigate('/proposalbids')}>Proposal Bids</button>
           <div className="row">
             <div className="col-lg-12">
               <div className="card">
@@ -61,8 +64,10 @@ function ClientDashboard() {
 
                               </td>
                               <td>
-                                <button className="btn btn-xs  btn-info">{request.status}</button>
+                                <button className="btn btn-xs  btn-info">{request.status}</button> <br />
+                                {request.is_acceptedbyUser &&<button className="btn btn-xs mt-2  btn-primary">Message</button>}
                               </td>
+                             
 
 
                             </tr>

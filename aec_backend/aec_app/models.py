@@ -77,10 +77,13 @@ class Client_Requests(models.Model):
 
 class Proposals_Admin(models.Model):
     STATUS=( 
+            
         ('PENDING','PENDING'),
         ('ACCEPTED','ACCEPTED'),
         ('PROPOSAL_SENT','PROPOSAL_SENT'),
-        ('COMPLETED','COMPLETED'),        
+        ('REJECTED','REJECTED'),        
+        ('COMPLETED','COMPLETED'),
+                
             )
     proposal_from=models.ForeignKey(Account,related_name='owner',on_delete=models.CASCADE,null=True)
     proposal=models.ForeignKey(Client_Requests,related_name='proposal',on_delete=models.CASCADE,null=True)

@@ -140,9 +140,12 @@ def allClientRequirements(request):
 @permission_classes([IsAuthenticated])
 def requirementShared(request):
         data=request.data
+        print(data,'ddddddddddd')
         try:
             requests=Client_Requests.objects.get(id=data['id'])
+            print(requests,'rrrrrrrrrrrr')
             profiles=ProfileVerification.objects.filter(is_premium=True,role=requests.role,experience=requests.experience,location=requests.location)
+            print(profiles,'rrrrrrrrrrrrr')
             if profiles:
                 for x in profiles:
                     share=Proposals_Admin()
@@ -152,7 +155,7 @@ def requirementShared(request):
                     share.save()
                     requests.status='SHARED'
                     requests.save()
-                message = {'detail': "Proosal is Shared to Respective Profiles"}
+                message = {'detail': "Proposal is Shared to Respective Profiles"}
                 return Response(message, status=status.HTTP_201_CREATED)
             else:
               requests.status='REJECTED'
@@ -163,8 +166,6 @@ def requirementShared(request):
         except:
             message = {'detail': "Something went wrong"}
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])

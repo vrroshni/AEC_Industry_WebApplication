@@ -75,8 +75,8 @@ function Payment_Confirmation() {
                     <>
                     
                         {loading ? <SmallLoader /> : <PaypalCheckOutButton price={price} />}
-                        <form action={`/create-checkout-session/${price}/`} method='POST'>
-                            <input type="hidden" hidden name="userid" value={prof_request.user.id} />
+                        <form action={'/create-checkout-session/'} method='POST'>
+                            <input type="hidden" hidden name="price" value={price} />
                             {loading ? <SmallLoader /> : <Button type='submit' className='btn btn-primary btn-rounded fs-4' style={{ width: "100%", borderRadius: "24px" }}><strong>Pay with Card</strong></Button>}
                         </form>
                         </>

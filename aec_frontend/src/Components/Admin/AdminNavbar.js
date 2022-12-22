@@ -1,6 +1,6 @@
 import React,{ useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { logout } from '../../actions/userActions'
+import { logout,getUserProfile, allFeed } from '../../actions/userActions'
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
 
@@ -8,16 +8,22 @@ function AdminNavbar() {
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
 
+    const userdetails = useSelector(state => state.getUserProfile)
+    const { fullUserProfileInfo } = userdetails
+
+
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
 
-    // useEffect(() => {
-    //     if (userInfo) {
 
-    //     }
+    useEffect(() => {
+        if (!fullUserProfileInfo) {
+            dispatch(getUserProfile())
+            dispatch(allFeed())
+        }
 
-    // }, [])
+    }, [])
     const logoutHandler = () => {
         Swal.fire({
             title: 'Are you sure you want to Logout?',

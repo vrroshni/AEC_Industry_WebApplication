@@ -68,9 +68,19 @@ import {
     USER_CONNECT_LIST_ALL_SUCCESS,
     USER_CONNECT_LIST_ALL_FAIL,
     USER_CONNECT_LIST_ALL_RESET,
+
     USER_PROPOSAL_BIDS_ALL_REQUEST,
     USER_PROPOSAL_BIDS_ALL_SUCCESS,
-    USER_PROPOSAL_BIDS_ALL_FAIL
+    USER_PROPOSAL_BIDS_ALL_FAIL,
+
+     USER_ACCEPT_PROPOSAL_REQUEST,
+    USER_ACCEPT_PROPOSAL_BID,
+    USER_ACCEPT_PROPOSAL_BIDS_FAIL,
+    PROPOSAL_BID_RESET,
+
+
+    USER_REJECT_BID,
+    USER_REJECT_BID_ALL,
 
 } from '../constants/userConstants'
 
@@ -172,9 +182,6 @@ export const userConnectUsReducer = (state = {}, action) => {
 }
 
 
-
-
-
 export const toPremiumReducer = (state = {}, action) => {
     switch (action.type) {
         case TO_PREMIUM_REQUEST:
@@ -187,6 +194,30 @@ export const toPremiumReducer = (state = {}, action) => {
             return { loading: false, error: action.payload}
 
         case TO_PREMIUM_RESET:
+            return {}
+
+        default:
+            return state;
+    }
+}
+export const ProposalBidActionsReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_ACCEPT_PROPOSAL_REQUEST:
+            return { loading: true }
+
+        case USER_ACCEPT_PROPOSAL_BID:
+            return { loading: false,accep:true }
+
+        case USER_REJECT_BID:
+            return { loading: false, reject: true }
+
+        case USER_REJECT_BID_ALL:
+            return { loading: false, rejectall:true}
+
+        case USER_ACCEPT_PROPOSAL_BIDS_FAIL:
+            return { loading: false, error: action.payload}
+
+        case PROPOSAL_BID_RESET:
             return {}
 
         default:

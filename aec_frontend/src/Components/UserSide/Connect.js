@@ -5,6 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 import {connectUs} from '../../actions/userActions'
 import {USER_CONNECT_US_RESET} from '../../constants/userConstants'
+import Message from '../Message'
+import Loader from '../Loader'
+
 
 
 
@@ -95,6 +98,8 @@ function Connect() {
                                                 </a>
                                             </div>
                                             <h3 className="text-center mb-4">We will Help You <FcLike style={{}} /> </h3>
+                                            {loading && <Loader />}
+                                            {error && <Message variant='danger'>{error}</Message>}
                                             <div className="basic-form">
                                                 <form onSubmit={handleSubmit(submitHandler)}  >
                                                     <div className="mb-3 row">

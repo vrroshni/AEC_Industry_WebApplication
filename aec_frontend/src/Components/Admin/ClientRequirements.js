@@ -91,7 +91,7 @@ function ClientRequirements() {
                                                                     if (result.isConfirmed) {
                                                                         dispatch(requirement_shared(requirement.id))
                                                                             .then(() => {
-                                                                                setReload(!reload)
+                                                                                dispatch(list_client_requirements())
                                                                             })
 
                                                                     }
@@ -113,7 +113,7 @@ function ClientRequirements() {
                                                                     if (result.isConfirmed) {
                                                                         dispatch(requirement_rejected(requirement.id))
                                                                             .then(() => {
-                                                                                setReload(!reload)
+                                                                                dispatch(list_client_requirements())
                                                                             })
 
                                                                     }
