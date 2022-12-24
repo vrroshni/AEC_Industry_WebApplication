@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux'
-import { getUserProfile, updateProfile, getUserRequest } from '../../actions/userActions'
-import { useNavigate,Link } from 'react-router-dom'
+import { getUserProfile, updateProfile, getUserRequest,addProject } from '../../actions/userActions'
+import { useNavigate, Link } from 'react-router-dom'
 import Message from '../Message'
 import Loader from '../Loader'
-import {USER_UPDATE_PROFILE_RESET} from '../../constants/userConstants'
+import { USER_UPDATE_PROFILE_RESET } from '../../constants/userConstants'
+import UserProjects from './UserProjects';
+import AddProjectModal from '../Modals/AddProjectModal'
 
 
 function UserProfile() {
 
 	const [reload, setReload] = useState(false)
+	const [addprojectShowModal, setaddprojectShowModal] = useState(false)
+    
+
 	const { register, handleSubmit, control, watch, formState: { errors } } = useForm({
 		mode: "onChange"
 	});
@@ -75,11 +80,11 @@ function UserProfile() {
 
 
 	useEffect(() => {
-		
+
 		if (result) {
 			dispatch(getUserProfile())
 		}
-		dispatch({type:USER_UPDATE_PROFILE_RESET})
+		dispatch({ type: USER_UPDATE_PROFILE_RESET })
 		dispatch(getUserRequest())
 
 	}, [reload])
@@ -88,6 +93,13 @@ function UserProfile() {
 		dispatch(updateProfile(username, firstname, lastname, email, phonenumber, pro_pic, cover_pic, e.password))
 
 	}
+
+	const addProjecthandleShow = (id) => {
+		setaddprojectShowModal(true)
+	  }
+	  const addProjecthandleOnhide = () => {
+		setaddprojectShowModal(false)
+	  }
 	const [username, setUsername] = useState(fullUserProfileInfo?.username)
 	const [firstname, setFirstname] = useState(fullUserProfileInfo?.first_name)
 	const [lastname, setLastname] = useState(fullUserProfileInfo?.last_name)
@@ -96,7 +108,8 @@ function UserProfile() {
 	const [pro_pic, setPro_pic] = useState('');
 	const [cover_pic, setCover_pic] = useState('');
 
-
+console.log(fullUserProfileInfo,'infooooooooooo')
+	
 	return (
 		<>
 			{fullUserProfileInfo && (
@@ -130,13 +143,13 @@ function UserProfile() {
 											</div>
 											<div className="dropdown ms-auto d-flex">
 												<div className="profile-email px-2 pt-2" onClick={() => navigate('/profile_verification')}>
-													{!fullUserProfileInfo.is_verified  && <p className="text-dark mb-0">Want to become a part of <span className="text-primary">Together</span>?</p>}
+													{!fullUserProfileInfo.is_verified && <p className="text-dark mb-0">Want to become a part of <span className="text-primary">Together</span>?</p>}
 												</div>
 												<a href="#" className="btn btn-primary light sharp" data-bs-toggle="dropdown" aria-expanded="true"><i className="fa fa-plus text-primary"></i></a>
 												<ul className="dropdown-menu dropdown-menu-end">
 													{(prof_request?.is_verified && !prof_request?.is_premium) && <li className="dropdown-item"><i className="fa fa-user-circle text-primary me-2"></i> Premium Membership</li>}
-													{prof_request?.is_premium &&  <li className="dropdown-item" onClick={()=>navigate('/proposals')}><i className="fa fa-user-circle text-primary me-2"></i>Proposals Dashboard</li>}
-													<li className="dropdown-item" onClick={()=>navigate('/requests')}><i className="fa fa-user-circle text-primary me-2"></i>Requests Dashboard</li>
+													{prof_request?.is_premium && <li className="dropdown-item" onClick={() => navigate('/proposals')}><i className="fa fa-user-circle text-primary me-2"></i>Proposals Dashboard</li>}
+													<li className="dropdown-item" onClick={() => navigate('/requests')}><i className="fa fa-user-circle text-primary me-2"></i>Requests Dashboard</li>
 
 												</ul>
 											</div>
@@ -160,6 +173,8 @@ function UserProfile() {
 												</li>
 												<li className="nav-item"><a href="#profile-settings" data-bs-toggle="tab" className="nav-link">Setting</a>
 												</li>
+												{fullUserProfileInfo.is_verified && <li className="nav-item"><a href="#projects" data-bs-toggle="tab" className="nav-link">Projects</a>
+												</li>}
 											</ul>
 
 											<div className="tab-content">
@@ -412,6 +427,49 @@ function UserProfile() {
 														</div>
 													</div>
 												</div>
+												{fullUserProfileInfo.is_verified && 
+												<div id="projects" className="tab-pane fade">
+													<div className="profile-personal-info">
+														<div className="card">
+															<div className="card-header d-md-flex d-block p-0">
+																<div className="card-tabs mt-3 mt-sm-0 mb-sm-0 mb-3">
+																	<ul className="nav nav-tabs shadow-none text-center" role="tablist">
+																		<li className="nav-item">
+																			<a className="nav-link active" data-bs-toggle="tab" href="#All" role="tab" aria-selected="true">Completed Projects</a>
+																		</li>
+																	</ul>
+																</div>
+																<div className="d-flex p-md-0 p-sm-4 p-3">
+																	<ul className="star-review">
+																		<button type="button" className="btn btn-primary btn-xs" onClick={()=>addProjecthandleShow()}>Add Project</button>
+																	</ul>
+																</div>
+															</div>
+															<div className="card-body pb-0">
+																<div className="tab-content">
+																	<div className="tab-pane show active" id="All">
+																		{fullUserProfileInfo?.user_project.map((project,id) => {
+																			return (
+
+																				<UserProjects project={project} key={id+1} />
+																			)
+																		})}
+
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												
+												}
+												{
+													addprojectShowModal &&
+													<AddProjectModal
+													  showModal={addprojectShowModal}
+													  handleModalClose={() => addProjecthandleOnhide()}
+													/>
+												  }
 											</div>
 										</div>
 										<div className="modal fade" id="replyModal">

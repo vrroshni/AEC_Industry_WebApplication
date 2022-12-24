@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { login } from '../../actions/userActions'
+import { login, googleSignin } from '../../actions/userActions'
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom'
 import Message from '../Message'
 import Loader from '../Loader'
+import jwt_decode from 'jwt-decode'
 
 
 
@@ -30,7 +31,10 @@ function Login() {
     };
     const dispatch = useDispatch()
     const userLogin = useSelector(state => state.userLogin)
-    const { loading, userInfo, error} = userLogin
+    const { loading, userInfo, error } = userLogin
+    function handleCallbackResponse(response) {
+        dispatch(googleSignin(response))
+    }
 
     useEffect(() => {
         if (userInfo?.is_superadmin) {
@@ -40,9 +44,19 @@ function Login() {
         if (userInfo?.is_superadmin === false) {
             navigate('/')
         }
+        /* global google */
+        google.accounts.id.initialize({
+            client_id: "343457976454-bvvnulla58ojkknd3l9jtb5kd10aq8ns.apps.googleusercontent.com",
+            callback: handleCallbackResponse
+
+        });
+        google.accounts.id.renderButton(
+            document.getElementById("signInDiv"),
+            { theme: 'outline', size: "large" }
+        );
 
     }, [userInfo])
-    
+
     const submitHandler = (e) => {
         dispatch(login(e.username, e.password))
     }
@@ -59,7 +73,7 @@ function Login() {
                                     <div className="col-xl-12">
                                         <div className="auth-form">
                                             <div className="text-center mb-3">
-                                            
+
                                                 <a >
                                                     {/* <img src="images/logo-full.png" alt="" /> */}
                                                 </a>
@@ -94,7 +108,12 @@ function Login() {
                                             <div className="new-account mt-3">
                                                 <p>Don't have an account? <a className="text-primary" onClick={() => navigate('/register')} >Sign up</a></p>
                                             </div>
-                                           
+                                            <div className="mt-3 text-center">
+                                                <div id="signInDiv"></div>
+                                            </div>
+
+
+
                                         </div>
                                     </div>
                                 </div>

@@ -81,10 +81,22 @@ import {
     USER_REJECT_BID,
     USER_REJECT_BID_ALL,
 
+    ADD_REVIEW_PROJECT_REQUEST,
+    ADD_REVIEW_PROJECT,
+    ADD_REVIEW_RESET,
+    ADD_REVIEW_FAIL,
+
+
+
+    USER_ADD_PROJECT_REQUEST,
+    USER_ADD_PROJECT_SUCCESS,
+    USER_ADD_PROJECT_FAIL,
 
 } from '../constants/userConstants'
 import storage from 'redux-persist/lib/storage'
 import { persistor } from '../index';
+import jwt_decode from 'jwt-decode'
+
 
 
 
@@ -127,6 +139,71 @@ export const login = (username, password) => async (dispatch) => {
         })
 
         localStorage.setItem('userInfo', JSON.stringify(data))
+
+
+    } catch (error) {
+        dispatch({
+            type: USER_LOGIN_FAIL,
+            payload: error.response && error.response.data.detail ?
+                error.response.data.detail : error.message,
+        })
+    }
+}
+
+export const googleSignin = (e) => async (dispatch) => {
+
+    try {
+
+        console.log('google signinn..........')
+        console.log(e, 'event')
+        var userObject = jwt_decode(e.credential)
+        console.log(userObject, 'from googleeeee')
+
+
+
+        dispatch({
+            type: USER_LOGIN_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }
+
+        axios.post('googleSignIn/',
+            { 'firstname': userObject.given_name, 'lastname': userObject.family_name, 'username': userObject.name, "email": userObject.email, 'password': userObject.sub, "pro_pic": userObject.picture }, config
+        ).then((googledata) => {
+            console.log(googledata, 'kkkkkkkkkk')
+            if (googledata.status == 200) {
+                axios.post('/login/',
+                    { 'username': userObject.name, 'password': userObject.sub, }, config
+                ).then((data) => {
+                    console.log(data,'ffffffffffffff')
+                    dispatch({
+                        type: USER_LOGIN_SUCCESS,
+                        payload: data.data
+
+                    })
+                    localStorage.setItem('userInfo', JSON.stringify(data))
+                })
+
+
+            }
+
+            toast.success(' You have logged in succesfully!', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            })
+        })
+
+
 
 
     } catch (error) {
@@ -237,7 +314,7 @@ export const profileverification = (user, role, location, experience, descriptio
     }
 }
 
-export const connectUs = (role, location,requirementdetails, experience,related) => async (dispatch,getState) => {
+export const connectUs = (role, location, requirementdetails, experience, related) => async (dispatch, getState) => {
     try {
 
         dispatch({
@@ -253,7 +330,7 @@ export const connectUs = (role, location,requirementdetails, experience,related)
                 Authorization: `Bearer ${userInfo.token}`
             }
         }
-        const { data } = await axios.post('connectus/',{'request_from':userInfo.id,'role':role,'location':location,'requirementdetails':requirementdetails,'experience':experience,'related':related},config)
+        const { data } = await axios.post('connectus/', { 'request_from': userInfo.id, 'role': role, 'location': location, 'requirementdetails': requirementdetails, 'experience': experience, 'related': related }, config)
 
         dispatch({
             type: USER_CONNECT_US_SUCCESS,
@@ -294,10 +371,10 @@ export const topremium = (premium_amount) => async (dispatch, getState) => {
         dispatch({
             type: TO_PREMIUM_SUCCESS,
         })
-        
+
         dispatch({
             type: USER_PROFILE_SUCCESS,
-            payload:data
+            payload: data
         })
 
     } catch (error) {
@@ -336,10 +413,10 @@ export const acceptbid = (id) => async (dispatch, getState) => {
         dispatch({
             type: USER_ACCEPT_PROPOSAL_BID,
         })
-        
+
         dispatch({
             type: USER_ACCEPT_PROPOSAL_BIDS_FAIL,
-            payload:data
+            payload: data
         })
 
     } catch (error) {
@@ -358,7 +435,7 @@ export const acceptbid = (id) => async (dispatch, getState) => {
 export const rejecttbid = (id) => async (dispatch, getState) => {
     try {
 
-       
+
 
         const {
             userLogin: { userInfo },
@@ -376,8 +453,8 @@ export const rejecttbid = (id) => async (dispatch, getState) => {
         dispatch({
             type: USER_REJECT_BID,
         })
-        
-        
+
+
 
     } catch (error) {
         dispatch({
@@ -513,7 +590,7 @@ export const getUserAllConnectUsRequest = () => async (dispatch, getState) => {
 
         dispatch({
             type: USER_CONNECT_LIST_ALL_REQUEST,
-           
+
 
         })
 
@@ -551,7 +628,7 @@ export const getUserAllProposalBids = () => async (dispatch, getState) => {
 
         dispatch({
             type: USER_PROPOSAL_BIDS_ALL_REQUEST,
-           
+
 
         })
 
@@ -947,4 +1024,91 @@ export const accept_connection = (user_id) => async (dispatch, getState) => {
     dispatch({
         type: REJECT_CONNECTION_REQUEST,
     })
+}
+
+
+
+export const add_review = (project_id, review_desc, rating) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: ADD_REVIEW_PROJECT_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.post('/add_review/', { project_id, review_desc, rating },
+            config
+        )
+
+        dispatch({
+            type: ADD_REVIEW_PROJECT,
+
+        })
+
+        dispatch({
+            type: OTHER_USER_PROFILE_SUCCESS,
+            payload: data
+
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: ADD_REVIEW_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+
+export const addProject = (project_title, project_desc, project_image,) => async (dispatch, getState) => {
+    try {
+
+        dispatch({
+            type: USER_ADD_PROJECT_REQUEST
+        })
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'multipart/form-data',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.post('/addproject/',
+            { 'user': parseInt(userInfo.id), project_title, project_desc, project_image }, config
+        )
+
+        dispatch({
+            type: USER_ADD_PROJECT_SUCCESS,
+        })
+
+        dispatch({
+            type: USER_PROFILE_SUCCESS,
+            payload: data
+
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: USER_ADD_PROJECT_FAIL,
+            payload: error.response && error.response.data.detail ?
+                error.response.data.detail : error.message,
+        })
+    }
 }

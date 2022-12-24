@@ -1,20 +1,32 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { adminProposalOnprocessList } from '../../actions/premiumActions'
+import { adminProposalOnprocessList, proposal_completed } from '../../actions/premiumActions'
+import PublishModal from '../Modals/PublishModal'
 import DashboardNavbar from './DashboardNavbar'
+import Swal from 'sweetalert2'
 
 function OnProcess() {
-    const [reload, setReload] = useState()
-    const dispatch = useDispatch()
-  
-    const allrequests = useSelector(state => state.adminproposalsOnprocess)
-    const { onprocessproposals } = allrequests
-  
-  
-    useEffect(() => {
-      dispatch(adminProposalOnprocessList())
-    }, [reload])
- 
+  const [reload, setReload] = useState()
+  const [showModal, setShowmodal] = useState(false)
+  const [id, setId] = useState()
+  const dispatch = useDispatch()
+
+  const allrequests = useSelector(state => state.adminproposalsOnprocess)
+  const { onprocessproposals } = allrequests
+
+
+  useEffect(() => {
+    dispatch(adminProposalOnprocessList())
+  }, [reload])
+
+  const handleShow = (id) => {
+    setId(id)
+    setShowmodal(true)
+  }
+
+  const handleOnhide = () => {
+    setShowmodal(false)
+  }
 
   return (
     <>
@@ -63,8 +75,30 @@ function OnProcess() {
                                   <button className="btn btn-xs  btn-info">{proposal.status}</button> <br />
                                 </td>
                                 <td>
-                                <button className="btn btn-xs   btn-primary">Completed</button>
-                                  <button className="btn btn-xs ms-2 btn-primary">Publish</button>
+                                  <button className="btn btn-xs   btn-primary" onClick={() => {
+                                    Swal.fire({
+                                      title: 'Are you sure you want to do this Action?',
+                                      showConfirmButton: true,
+                                      showCancelButton: true,
+                                      confirmButtonText: "OK",
+                                      confirmButtonColor: '#3085d6',
+                                      cancelButtonColor: '#d33',
+                                      cancelButtonText: "Cancel",
+                                      icon: 'warning'
+                                  }
+                                  ).then((result) => {
+                                      if (result.isConfirmed) {
+                                        dispatch(proposal_completed(proposal.id))
+                                              .then(() => {
+                                                  setReload(!reload)
+                                              })
+
+                                      }
+
+                                  })
+                                    
+                                    }}>Completed</button>
+                                  <button className="btn btn-xs ms-2 btn-primary" onClick={() => handleShow(proposal.id) }>Publish</button>
                                 </td>
                               </tr>
                             )
@@ -73,6 +107,14 @@ function OnProcess() {
                       </table>
                     </div>
                   </div>
+                  {
+                                showModal &&
+                                <PublishModal
+                                  id={id}
+                                  showModal={showModal}
+                                  handleModalClose={() => handleOnhide()}
+                                />
+                              }
                 </div>
               </div>
             </div>

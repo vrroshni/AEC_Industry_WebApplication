@@ -207,8 +207,8 @@ export const proposal_rejected = (id) => async (dispatch, getState) => {
     })
 
 }
-export const send_proposal = (admin_proposal, proposal_content, rate,description) => async (dispatch, getState) => {
-    
+export const send_proposal = (admin_proposal, proposal_content, rate, description) => async (dispatch, getState) => {
+    console.log(admin_proposal, 'propooooooo')
     const {
         userLogin: { userInfo },
     } = getState()
@@ -220,7 +220,7 @@ export const send_proposal = (admin_proposal, proposal_content, rate,description
         }
     }
 
-    const { data } = await axios.post('/send_proposal/', { 'admin_proposal': admin_proposal, 'proposal_content': proposal_content, 'rate': rate,'description':description }, config
+    const { data } = await axios.post('/send_proposal/', { 'admin_proposal': admin_proposal, 'proposal_content': proposal_content, 'rate': rate, 'description': description }, config
     )
 
     dispatch({
@@ -246,7 +246,28 @@ export const proposal_completed = (id) => async (dispatch, getState) => {
     )
 
     dispatch({
-        type: ADMIN_PROPOSAL_ACCEPT,
+        type: COMPLETED_PROPOSAL_WORK,
+    })
+
+}
+export const publish_proposal_completed = (id, project_title, project_image, project_desc) => async (dispatch, getState) => {
+
+    const {
+        userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+        headers: {
+            'Content-type': 'multipart/form-data',
+            Authorization: `Bearer ${userInfo.token}`
+        }
+    }
+
+    const { data } = await axios.post('/proposal_completed_publish/', { 'admin_proposal': id, project_title, project_image, project_desc }, config
+    )
+
+    dispatch({
+        type: COMPLETED_PROPOSAL_WORK,
     })
 
 }

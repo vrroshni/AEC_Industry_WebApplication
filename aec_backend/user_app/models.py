@@ -73,6 +73,7 @@ class Account(AbstractBaseUser):
     followers       =models.IntegerField(default=0)
     following       =models.IntegerField(default=0)
     connections     =models.IntegerField(default=0)
+    projects        =models.IntegerField(default=0)
 
  
 
@@ -160,15 +161,16 @@ class Review_Rating(models.Model):
 class Projects(models.Model):
     PROJECT_STATUS=(
         ('COMPLETED','COMPLETED'),
-        ('PENDING','PENDING'),
             )
-    user=models.ForeignKey(Account,related_name='user_project',on_delete=models.CASCADE,null=True)
+    user=models.ForeignKey(Account,related_name='user_project',on_delete=models.CASCADE)
     project_title=models.CharField(max_length=100,null=True)
     project_desc=models.CharField(max_length=200,null=True)
     project_image=models.FileField(upload_to='projects',null=True)
     project_status=models.CharField(max_length=100, null=True,choices=PROJECT_STATUS,default="PENDING")
     project_client=models.ForeignKey(Account,related_name='project_client_user',on_delete=models.CASCADE,null=True)
+    posted_on=models.DateTimeField(auto_now_add=True,null=True)
     review=models.ForeignKey(Review_Rating,related_name='review_project',on_delete=models.CASCADE,null=True)
+    reviewed_on=models.DateTimeField(null=True)
 
     
     

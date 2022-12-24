@@ -45,7 +45,7 @@ function Connect() {
         requirementdetails: {
             required: "Requirement Details is required",
             pattern: {
-                value: /^[a-zA-Z!”$%&'()*\+,\/;\[\\\]\^_`{|}~. ]+$/,
+                value: /^[a-zA-Z!”$%&'()*\+,\/;\[\\\]\^_`{|}~.0-9\ ]+$/,
                 message: "Enter valid Requiremnt Details about yourself",
             },
         },

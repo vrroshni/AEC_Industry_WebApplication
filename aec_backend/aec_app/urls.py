@@ -13,6 +13,7 @@ urlpatterns = [
 
     #UserProfile
     path('register/', registerUser, name='register'),
+    path('googleSignIn/', googleSignIn, name='googleSignIn'),
     path('profile/', getUserProfile, name='profile'),
     path('otheruserprofile/', otherUserProfile, name='otheruserprofile'),
     path('updateprofile/', updateUserProfile, name='updateprofile'),
@@ -24,6 +25,8 @@ urlpatterns = [
     path('stripepayment/', csrf_exempt(StripePaymentProposalBid.as_view()), name='stripepayment'),    
     
     path('addpost/', addPost, name='addpost'),
+    path('add_review/', add_review, name='add_review'),
+    path('addproject/', addproject, name='addproject'),
     path('allfeed/', allFeed, name='allfeed'),
     path('suggestions/', suggestions, name='suggestions'),
     
@@ -46,6 +49,7 @@ urlpatterns = [
     path('proposal_rejected/', proposal_rejected, name='proposal_rejected'),
     path('send_proposal/', send_proposal, name='send_proposal'),
     path('proposal_completed/', proposal_completed, name='proposal_completed'),
+    path('proposal_completed_publish/', proposal_completed_publish, name='proposal_completed_publish'),
 
     
 ]

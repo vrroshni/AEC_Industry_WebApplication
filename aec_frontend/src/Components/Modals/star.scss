@@ -1,0 +1,180 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+    $white-to-black: #FFF;
+    $yellow: #FF0;
+    $dark-to-light: #13121a;
+  
+  // body{
+  //   background: $dark-to-light;
+  //   min-height: 100vh;
+  //   font-family: sans-serif;
+  // }
+  .outer{
+    display: grid;
+    place-items: center;
+    min-height: inherit;
+  }
+  .ratings-box{
+    display: flex;
+    gap: 20px;
+  }
+  .ratings-box__item label{
+    position: relative;
+    cursor: pointer;
+    display: block;
+  }
+  .ratings-box__item label input{
+    display: none;
+    position: absolute;
+  }
+  .ratings-box{
+    position: relative;
+  }
+  .ratings-box__item p{
+    display: inline-block;
+    position: absolute;
+    color: #FFF;
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%);
+    font-size: 18px;
+    opacity: 0;
+    pointer-events: none;
+    margin-top: 10px;
+    text-transform: uppercase;
+  }
+  .ratings-box__item label span.rating-star{
+    width: 30px;
+    height: 30px;
+    display: block;
+    background: $yellow;
+    position: relative;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  }
+  
+  
+  // selector when using :has selector starts
+  .ratings-box__item label span.rating-star::after{
+     content: '';
+     position: absolute;
+     width: 20px;
+    height: 20px;
+    background:  $white-to-black;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  }
+  .ratings-box:has(.ratings-box__item label input:checked) .ratings-box__item span.rating-star::after{
+    transform: translate(-50%, -50%) scale(0);
+  }
+  .ratings-box__item:has(label > input:checked) ~ .ratings-box__item label .star-line-box span.rating-star::after{
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .ratings-box__item:has(label > input:checked) p{
+    opacity: 1;
+  }
+  // selector when using :has selector Ends
+  
+  
+  
+  // selector when using Javascript to add class starts
+  // .ratings-box__item label span.rating-star::after{
+  //    content: '';
+  //    position: absolute;
+  //    width: 20px;
+  //   height: 20px;
+  //   background: $dark-to-light;
+  //   top: 50%;
+  //   left: 50%;
+  //   transform: translate(-50%, -50%) scale(0);
+  //   clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  // }
+  // .ratings-box__item.active ~ .ratings-box__item label .star-line-box span.rating-star::after{
+  //   transform: translate(-50%, -50%) scale(1);
+  // }
+  // .ratings-box__item.active p{
+  //   opacity: 1;
+  // }
+  // selector when using Javascript to add class ends
+  
+  
+  .rating-star-line{
+    position: absolute;
+    width: 2px;
+    height: 10px;
+    background: $yellow;
+    display: block;
+    opacity: 0;
+  }
+  .ratings-box__item input:checked ~ .star-line-box{
+    animation: scaleAnim 0.4s linear;
+    transform-origin: center;
+  }
+  @keyframes scaleAnim{
+    0%,100%{
+      transform: scale(1);
+    }
+    50%{
+      transform: scale(0);
+    }
+  }
+  .rating-star-line:nth-of-type(3),
+  .rating-star-line:nth-of-type(2){
+    transform: rotate(45deg);
+    right: 8px;
+    bottom: 22px;
+    transform-origin: bottom;
+  }
+  .rating-star-line:nth-of-type(3){
+    transform: rotate(-45deg);
+    left: 7px;
+  }
+  .rating-star-line:nth-of-type(4){
+    transform: rotate(0deg);
+    left: calc(50% - 1px);
+    bottom: unset;
+    top: 24px;
+  }
+  .ratings-box__item input:checked ~ .star-line-box .rating-star-line:nth-of-type(2){
+    animation: topLinesAnim 0.4s 0.3s linear;
+  }
+  .ratings-box__item input:checked ~ .star-line-box .rating-star-line:nth-of-type(3){
+    animation: topLinesAnim2 0.4s 0.3s linear;
+  }
+  .ratings-box__item input:checked ~ .star-line-box .rating-star-line:nth-of-type(4){
+    animation: bottomLineAnim 0.4s 0.3s linear;
+  }
+  @keyframes topLinesAnim{
+    from{
+      transform: rotate(45deg);
+      opacity: 1;
+    }
+    to{
+      transform: rotate(45deg) scaleY(1.2) translateY(-5px);
+      opacity: 0;
+    }
+  }
+  @keyframes topLinesAnim2{
+    from{
+      transform: rotate(-45deg);
+      opacity: 1;
+    }
+    to{
+      transform: rotate(-45deg) scaleY(1.2) translateY(-5px);
+      opacity: 0;
+    }
+  }
+  @keyframes bottomLineAnim{
+    from{
+      transform: rotate(0);
+      opacity: 1;
+    }
+    to{
+      transform: rotate(0) scaleY(1.2) translateY(5px);
+      opacity: 0;
+    }
+  }

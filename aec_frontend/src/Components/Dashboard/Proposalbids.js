@@ -67,7 +67,7 @@ function Proposalbids() {
                         {
                             proposals?.length === 0 ?
                                 <h1 className='mt-5 text-center' >No proposalbids available now!</h1> :
-                                <div className="card-body pb-0">
+                                <div className="card-body pb-0 ">
                                     <div className="tab-content">
                                         <div className="tab-pane show active" id="All">
                                             {

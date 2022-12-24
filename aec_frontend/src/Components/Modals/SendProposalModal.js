@@ -1,5 +1,5 @@
 import React from 'react'
-import { send_proposal } from '../../actions/premiumActions'
+import { send_proposal, adminProposalAcceptedList } from '../../actions/premiumActions'
 import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from "react-hook-form";
 
@@ -18,10 +18,10 @@ function SendProposalModal(props) {
     description: {
       required: "Description is required",
       pattern: {
-          value: /^[a-zA-Z!”$%&'()*\+,\/;\[\\\]\^_`{|}~. ]+$/,
-          message: "Enter valid description about yourself",
+        value: /^[a-zA-Z!”$%&'()*\+,\/;\[\\\]\^_`{|}~.0-9\ ]+$/,
+        message: "Enter valid description about yourself",
       },
-  },
+    },
 
 
   };
@@ -32,8 +32,12 @@ function SendProposalModal(props) {
       e.proposal_content[0],
       e.rate,
       e.description
-    ))
-    props.handleModalClose()
+    )).then(() => {
+      props.handleModalClose()
+      dispatch(adminProposalAcceptedList())
+    })
+
+
 
   }
 
@@ -66,7 +70,7 @@ function SendProposalModal(props) {
                   <div class="col-sm-9">
                     <textarea name='description' class="form-control" rows="4" id="comment" {...register('description', registerOptions.description)}></textarea>
                     <small className="text-danger">
-                    {errors?.description && errors.description.message}
+                      {errors?.description && errors.description.message}
                     </small>
                   </div>
                 </div>

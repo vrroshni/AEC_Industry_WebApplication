@@ -1,29 +1,30 @@
-import React, { useEffect ,useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getOtherUserProfile } from '../../actions/userActions'
 import { useNavigate } from 'react-router-dom'
 import Message from '../Message'
 import Loader from '../Loader'
 import { useParams } from 'react-router-dom'
-import {OTHER_USER_PROFILE_RESET} from '../../constants/userConstants'
+import { OTHER_USER_PROFILE_RESET } from '../../constants/userConstants'
 import Accordion from 'react-bootstrap/Accordion';
 import dayjs from "dayjs";
 import { SlLike, SlDislike } from 'react-icons/sl';
 import { GoCommentDiscussion } from 'react-icons/go';
 import Carousel from 'react-bootstrap/Carousel';
 import Bluetick from '../UserSide/Bluetick';
-import { addPost, allFeed, post_like, post_dislike, user_commented,follow_unfollow ,send_connection} from '../../actions/userActions'
+import { addPost, allFeed, post_like, post_dislike, user_commented, follow_unfollow, send_connection } from '../../actions/userActions'
 
+import UserProjects from './UserProjects';
 
 
 
 const mystyle = {
-    background: "var(--primary)",
-    marginLeft: "0.625rem",
-    borderRadius: "0 1.375rem 1.375rem 1.375rem",
-    padding: " 0.625rem 0.9375rem",
-    color: "#fff",
-    position: "relative"
+	background: "var(--primary)",
+	marginLeft: "0.625rem",
+	borderRadius: "0 1.375rem 1.375rem 1.375rem",
+	padding: " 0.625rem 0.9375rem",
+	color: "#fff",
+	position: "relative"
 }
 
 
@@ -39,55 +40,55 @@ function OthersProfile() {
 	const navigate = useNavigate()
 	const user_id = useParams().user_id
 
-    const user_like = (id) => {
-        dispatch(post_like(id))
-    }
-    const Follow_unfollow = (id) => {
-        dispatch(follow_unfollow(id))
+	const user_like = (id) => {
+		dispatch(post_like(id))
+	}
+	const Follow_unfollow = (id) => {
+		dispatch(follow_unfollow(id))
 		dispatch(getOtherUserProfile(user_id))
 
-    }
-    const Send_connection = (id) => {
-        dispatch(send_connection(id))
+	}
+	const Send_connection = (id) => {
+		dispatch(send_connection(id))
 
-    }
+	}
 
-    const user_dislike = (id) => {
-        dispatch(post_dislike(id))
+	const user_dislike = (id) => {
+		dispatch(post_dislike(id))
 
-    }
-    const CommentSubmitHandler = (e) => {
-        e.preventDefault()
-        setPosterror('')
-        if (e.target.comment.value === '') {
-            setPosterror('Add comment to post')
-            setComment('')
-            return
-        }
-        dispatch(user_commented(e.target.post.value, comment))
-        setComment('')
-        setPosterror('')
-
-
-    }
+	}
+	const CommentSubmitHandler = (e) => {
+		e.preventDefault()
+		setPosterror('')
+		if (e.target.comment.value === '') {
+			setPosterror('Add comment to post')
+			setComment('')
+			return
+		}
+		dispatch(user_commented(e.target.post.value, comment))
+		setComment('')
+		setPosterror('')
 
 
-    const getUserProfileInfo = useSelector(state => state.getUserProfile)
-    const { fullUserProfileInfo } = getUserProfileInfo
+	}
+
+
+	const getUserProfileInfo = useSelector(state => state.getUserProfile)
+	const { fullUserProfileInfo } = getUserProfileInfo
 
 
 	const OthersProfile = useSelector(state => state.othersprofile)
 	const { loading, error, otheruser } = OthersProfile
 
-	console.log(otheruser,'oooooooooooooo')
+	console.log(otheruser, 'oooooooooooooo')
 
-    useEffect(() => {
-	  dispatch(getOtherUserProfile(user_id))
-	  return () => {
-		dispatch({type:OTHER_USER_PROFILE_RESET})
-	  }
+	useEffect(() => {
+		dispatch(getOtherUserProfile(user_id))
+		return () => {
+			dispatch({ type: OTHER_USER_PROFILE_RESET })
+		}
 	}, [reload])
-	
+
 	return (
 		<>
 			<div className="row page-titles">
@@ -119,7 +120,7 @@ function OthersProfile() {
 									</div>
 									<div className="dropdown ms-auto d-flex">
 										<div className="profile-email px-2 pt-2" >
-											<button className='btn btn-primary btn-xs' onClick={() => Follow_unfollow(otheruser.id)} >{otheruser?.user_network?.some(e => e.followed_at === fullUserProfileInfo.id)? "Unfollow" : "follow" }</button>
+											<button className='btn btn-primary btn-xs' onClick={() => Follow_unfollow(otheruser.id)} >{otheruser?.user_network?.some(e => e.followed_at === fullUserProfileInfo.id) ? "Unfollow" : "follow"}</button>
 										</div>
 										{/* <a href="#" className="btn btn-primary light sharp" data-bs-toggle="dropdown" aria-expanded="true"><i className="fa fa-plus text-primary"></i></a>
 											<ul className="dropdown-menu dropdown-menu-end">
@@ -145,7 +146,7 @@ function OthersProfile() {
 										<li className="nav-item"><a href="#about-me" data-bs-toggle="tab" className="nav-link">About Me</a>
 										</li>
 
-										{otheruser?.is_verified && <li className="nav-item"><a href="#profile-settings" data-bs-toggle="tab" className="nav-link">Projects</a>
+										{otheruser?.is_verified && <li className="nav-item"><a href="#projects" data-bs-toggle="tab" className="nav-link">Projects</a>
 										</li>}
 									</ul>
 
@@ -187,15 +188,41 @@ function OthersProfile() {
 												</div>
 											</div>
 										</div>
-										<div id="profile-settings" className="tab-pane fade">
-											<div className="pt-3">
-												<div className="settings-form">
+										{otheruser?.is_verified &&
+											<div id="projects" className="tab-pane fade">
+												<div className="profile-personal-info">
+													<div className="card">
+														<div className="card-header d-md-flex d-block p-0">
+															<div className="card-tabs mt-3 mt-sm-0 mb-sm-0 mb-3">
+																<ul className="nav nav-tabs shadow-none text-center" role="tablist">
+																	<li className="nav-item">
+																		<a className="nav-link active" data-bs-toggle="tab" href="#All" role="tab" aria-selected="true">Completed Projects</a>
+																	</li>
+																</ul>
+															</div>
+															<div className="d-flex p-md-0 p-sm-4 p-3">
+																<ul className="star-review">
+																	<button type="button" className="btn btn-primary btn-xs">Add Project</button>
+																</ul>
+															</div>
+														</div>
+														<div className="card-body pb-0">
+															<div className="tab-content">
+																<div className="tab-pane show active" id="All">
+																	{otheruser?.user_project.map((project, id) => {
+																		return (
 
+																			<UserProjects project={project} key={id + 1} />
+																		)
+																	})}
 
-
+																</div>
+															</div>
+														</div>
+													</div>
 												</div>
 											</div>
-										</div>
+										}
 									</div>
 								</div>
 
@@ -246,7 +273,7 @@ function OthersProfile() {
 								{post.post_desc && <h4 className='py-4'>{post.post_desc}</h4>}
 								<div className="comment-respond d-flex flex-column" id="respond">
 									<div className='d-flex '>
-										{console.log(post?.post_reaction,'kkkkkkkkkkkkkkkkkkkkkk')}
+										{console.log(post?.post_reaction, 'kkkkkkkkkkkkkkkkkkkkkk')}
 										{
 											post?.post_reaction.some(e => e.type === 'LIKE' && e.user === fullUserProfileInfo.id) ?
 												<SlLike className="ms-3" onClick={() => user_like(post.id)} style={{

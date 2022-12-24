@@ -26,7 +26,7 @@ function ClientDashboard() {
       {requests?.length !== 0 ?
         <>
         <button className='btn btn-xs mt-2  btn-primary' onClick={()=>Navigate('/proposalbids')}>Proposal Bids</button>
-          <div className="row">
+          <div className="row mt-3">
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-header">

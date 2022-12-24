@@ -93,7 +93,7 @@ class Proposals_Admin(models.Model):
     
 class Aec_Proposals_User(models.Model):
     
-    admin_proposal=models.ForeignKey(Proposals_Admin,related_name='proposal_admin',on_delete=models.CASCADE,null=True)
+    admin_proposal=models.ForeignKey(Proposals_Admin,related_name='proposal_admin',on_delete=models.CASCADE)
     description=models.CharField(max_length=500,null=True)
     proposal_content=models.FileField(upload_to='proposalcontent',null=True)
     rate = models.IntegerField(default=0)

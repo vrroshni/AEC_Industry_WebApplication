@@ -73,6 +73,24 @@ def registerUser(request):
         message = {'detail': "Your Profile is not registered"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['POST'])
+def googleSignIn(request):
+    data = request.data
+    try:
+        if Account.objects.filter(username=data['username']):
+            return Response(200)
+        user=Account.objects.create_user(first_name=data['firstname'],
+                                    last_name=data['lastname'],
+                                    username=data['username'],
+                                    email=data['email'],
+                                    password=data['password'],
+                                    phone_number="",
+                                    )
+        return Response(200)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['POST'])
 def profileVerification(request):
@@ -100,66 +118,67 @@ def profileVerification(request):
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
 
 class CreateCheckOutSession(APIView):
     def post(self, request, *args, **kwargs):
         price = request.POST.get('price')
         try:
             checkout_session = stripe.checkout.Session.create(
-            line_items=[
-                {
-                    # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                    'price_data': {
-                        'currency': 'usd',
-                        'unit_amount': int(price) * 100,
-                        'product_data':{
-                            'name': "Premium Membership",
-                        }
+                line_items=[
+                    {
+                        # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                        'price_data': {
+                            'currency': 'usd',
+                            'unit_amount': int(price) * 100,
+                            'product_data': {
+                                'name': "Premium Membership",
+                            }
+                        },
+                        'quantity': 1,
                     },
-                    'quantity': 1,
-                },
-            ],
-            mode='payment',
-            success_url=settings.SITE_URL + 'payment/?success=true&price='+price,
-            cancel_url=settings.SITE_URL + 'payment/?canceled=true',
+                ],
+                mode='payment',
+                success_url=settings.SITE_URL + 'payment/?success=true&price='+price,
+                cancel_url=settings.SITE_URL + 'payment/?canceled=true',
 
-        )  
+            )
             return redirect(checkout_session.url)
         except Exception as e:
             return Response({'msg': 'something went wrong while creating stripe session', 'error': str(e)}, status=500)
-        
-        
+
+
 class StripePaymentProposalBid(APIView):
     def post(self, request, *args, **kwargs):
         price = request.POST.get('price')
         id = request.POST.get('id')
-        print(int(float(price)),'ppppppppppp')
-        price=int(float(price))
+        print(int(float(price)), 'ppppppppppp')
+        price = int(float(price))
         try:
             checkout_session = stripe.checkout.Session.create(
-            line_items=[
-                {
-                    # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                    'price_data': {
-                        'currency': 'usd',
-                        'unit_amount': int(price) * 100,
-                        'product_data':{
-                            'name': "Accepting ProposalBid",
-                        }
+                line_items=[
+                    {
+                        # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                        'price_data': {
+                            'currency': 'usd',
+                            'unit_amount': int(price) * 100,
+                            'product_data': {
+                                'name': "Accepting ProposalBid",
+                            }
+                        },
+                        'quantity': 1,
                     },
-                    'quantity': 1,
-                },
-            ],
-            mode='payment',
-            success_url=settings.SITE_URL + 'proposalbids/?success=true&id='+id,
-            cancel_url=settings.SITE_URL + 'proposalbids/?canceled=true',
+                ],
+                mode='payment',
+                success_url=settings.SITE_URL + 'proposalbids/?success=true&id='+id,
+                cancel_url=settings.SITE_URL + 'proposalbids/?canceled=true',
 
-        )  
+            )
             return redirect(checkout_session.url)
         except Exception as e:
             return Response({'msg': 'something went wrong while creating stripe session', 'error': str(e)}, status=500)
+
 
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
@@ -172,15 +191,14 @@ def toPremiumMember(request):
     verified_profile.is_premium = True
     verified_profile.save()
     serializer = ProfileSerializer(user, many=False)
-    return Response(serializer.data,status=status.HTTP_200_OK)
-
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getUserProfile(request):
     user = request.user
-    serializer = ProfileSerializer(user, many=False)    
+    serializer = ProfileSerializer(user, many=False)
     return Response(serializer.data)
 
 
@@ -188,7 +206,7 @@ def getUserProfile(request):
 @permission_classes([IsAuthenticated])
 def otherUserProfile(request):
     data = request.data
-    user=Account.objects.get(id=data['id'])
+    user = Account.objects.get(id=data['id'])
     serializer = ProfileSerializer(user, many=False)
     return Response(serializer.data)
 
@@ -259,42 +277,90 @@ def addPost(request):
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_review(request):
+    data = request.data
+    user = request.user
+
+    print(data, 'daaaaaaaaaaaaa')
+    try:
+        existproject = Projects.objects.filter(id=data['project_id']).first()
+
+        if existproject.review:
+            existingreview = Review_Rating.objects.get(
+                id=existproject.review.id)
+            existingreview.review_desc = data['review_desc']
+            existingreview.rating = data['rating']
+            existingreview.rated_user = user
+            existingreview.save()
+            existproject.review = existingreview
+            existproject.save()
+        else:
+            newreview = Review_Rating.objects.create(
+                rated_user=user, review_desc=data['review_desc'], rating=data['rating'])
+            newreview.save()
+            existproject.review = newreview
+            existproject.save()
+        projectuser = Account.objects.get(id=existproject.user.id)
+        serializer = ProfileSerializer(projectuser, many=False)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def addproject(request):
+    data = request.data
+    user = request.user
+    try:
+        projectserializer = NewProjectsSerializer(data=data, many=False)
+        if projectserializer.is_valid():
+            projectserializer.save()
+            serializer = ProfileSerializer(user, many=False)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def allFeed(request):
     try:
-        user=request.user
-        
-        
-        #post suggestions
+        user = request.user
+
+        # post suggestions
         posts = Post.objects.all().order_by('-posted_at')
         serializer = PostSerializer(posts, many=True)
-        return Response({'allposts':serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({'allposts': serializer.data}, status=status.HTTP_201_CREATED)
 
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
-    
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def suggestions(request):
     try:
-        user=request.user
-        
-        #user suggestions
-        user_following=Network.objects.filter(followed_by=user)
-        allusers=Account.objects.exclude(id=user.id).all()
-        user_followings_list=[]
-        
-        
+        user = request.user
+
+        # user suggestions
+        user_following = Network.objects.filter(followed_by=user)
+        allusers = Account.objects.exclude(id=user.id).all()
+        user_followings_list = []
+
         for x in user_following:
-            user_list=Account.objects.get(id=x.followed_to.id)
+            user_list = Account.objects.get(id=x.followed_to.id)
             user_followings_list.append(user_list)
-        
-        new_suggestion_list=[x for x in list(allusers) if (x not in list(user_followings_list))]
+
+        new_suggestion_list = [x for x in list(allusers) if (
+            x not in list(user_followings_list))]
         random.shuffle(new_suggestion_list)
-        userserializer=AccountSerializer(new_suggestion_list,many=True)
+        userserializer = AccountSerializer(new_suggestion_list, many=True)
         return Response(userserializer.data, status=status.HTTP_201_CREATED)
 
     except:
@@ -305,13 +371,13 @@ def suggestions(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def connectUs(request):
-    data=request.data
-    user=request.user
+    data = request.data
+    user = request.user
     try:
-        if Client_Requests.objects.filter(request_from=user,is_acceptedbyUser=False).first():
+        if Client_Requests.objects.filter(request_from=user, is_acceptedbyUser=False).first():
             message = {'detail': "You already have a request pending!"}
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
-        requests=NewClient_RequestSerializer(data=data,many=False)
+        requests = NewClient_RequestSerializer(data=data, many=False)
         if requests.is_valid():
             requests.save()
             return Response(200)
@@ -323,61 +389,66 @@ def connectUs(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def connectUsRequests(request):
-    user=request.user
+    user = request.user
     try:
-        requests=Client_Requests.objects.filter(request_from=user)
-        requestsSerializer=Client_RequestSerializer(requests,many=True)
-        return Response(requestsSerializer.data,status=status.HTTP_200_OK)
+        requests = Client_Requests.objects.filter(request_from=user)
+        requestsSerializer = Client_RequestSerializer(requests, many=True)
+        return Response(requestsSerializer.data, status=status.HTTP_200_OK)
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-    
-    
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def proposalBids(request):
-    user=request.user
+    user = request.user
     try:
-        proposalbids=Aec_Proposals_User.objects.filter(admin_proposal__proposal_from=user,is_accepted=False)
-        proposalbidsSerializer=Aec_Proposals_UserSerializer(proposalbids,many=True)
-        return Response(proposalbidsSerializer.data,status=status.HTTP_200_OK)
+        proposalbids = Aec_Proposals_User.objects.filter(
+            admin_proposal__proposal_from=user, is_accepted=False)
+        proposalbidsSerializer = Aec_Proposals_UserSerializer(
+            proposalbids, many=True)
+        return Response(proposalbidsSerializer.data, status=status.HTTP_200_OK)
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-    
+
 
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
-def accept_proposalBid (request):
-    user=request.user
+def accept_proposalBid(request):
+    user = request.user
     data = request.data
-    id=int(data['id'])
+    id = int(data['id'])
     try:
-        acceptedbid=Aec_Proposals_User.objects.get(id=id)
-        acceptedbid.is_accepted=True
+        acceptedbid = Aec_Proposals_User.objects.get(id=id)
+        acceptedbid.is_accepted = True
         acceptedbid.save()
-        
-        proposal=Proposals_Admin.objects.get(id=acceptedbid.admin_proposal.id)
-        proposal.is_accepted=True
+
+        proposal = Proposals_Admin.objects.get(
+            id=acceptedbid.admin_proposal.id)
+        proposal.is_accepted = True
         proposal.save()
-        
-        leftproposals=Proposals_Admin.objects.exclude(id=acceptedbid.admin_proposal.id).filter(proposal=acceptedbid.admin_proposal.proposal.id)
+
+        leftproposals = Proposals_Admin.objects.exclude(id=acceptedbid.admin_proposal.id).filter(
+            proposal=acceptedbid.admin_proposal.proposal.id)
         if leftproposals:
             for i in leftproposals:
-                i.is_accepted=False
-                i.status='REJECTED'
+                i.is_accepted = False
+                i.status = 'REJECTED'
                 i.save()
-        
-        leftproposalbids=Aec_Proposals_User.objects.filter(admin_proposal__proposal_from=user,is_accepted=False)
+
+        leftproposalbids = Aec_Proposals_User.objects.filter(
+            admin_proposal__proposal_from=user, is_accepted=False)
         if leftproposalbids:
             for i in leftproposalbids:
                 i.delete()
-                
-        clientreq=Client_Requests.objects.get(id=proposal.proposal.id)
-        clientreq.is_acceptedbyUser=True
-        clientreq.status='COMPLETED'
+
+        clientreq = Client_Requests.objects.get(id=proposal.proposal.id)
+        clientreq.is_acceptedbyUser = True
+        clientreq.status = 'COMPLETED'
         clientreq.save()
-        
+
         return Response(status=status.HTTP_200_OK)
     except:
         message = {'detail': "Something went wrong"}
@@ -386,177 +457,190 @@ def accept_proposalBid (request):
 
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
-def reject_proposalBid (request):
-    user=request.user
+def reject_proposalBid(request):
+    user = request.user
     data = request.data
     try:
-       acceptedbid=Aec_Proposals_User.objects.get(id=data['id'])
-       leftproposals=Proposals_Admin.objects.get(id=acceptedbid.admin_proposal)
-       leftproposals.is_accepted=False
-       leftproposals.status='REJECTED'
-       leftproposals.save()
-       acceptedbid.delete()
-       return Response(status=status.HTTP_200_OK)
+        acceptedbid = Aec_Proposals_User.objects.get(id=data['id'])
+        leftproposals = Proposals_Admin.objects.get(
+            id=acceptedbid.admin_proposal.id)
+        leftproposals.is_accepted = False
+        leftproposals.status = 'REJECTED'
+        leftproposals.save()
+        acceptedbid.delete()
+        return Response(status=status.HTTP_200_OK)
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 # ----------------------------- premiummembership ---------------------------- #
 
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def adminProposals (request):
-    user=request.user
+def adminProposals(request):
+    user = request.user
     try:
-        proposals=Proposals_Admin.objects.filter(eligible=user,status='PENDING')
-        proposalsSerializer=Proposals_AdminSerializer(proposals,many=True)
-        return Response(proposalsSerializer.data,status=status.HTTP_200_OK)
-    except:
-        message = {'detail': "Something went wrong"}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
-    
-    
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def adminProposalsAccepted (request):
-    user=request.user
-    try:
-        proposals=Proposals_Admin.objects.filter(eligible=user,status='ACCEPTED')
-        proposalsSerializer=Proposals_AdminSerializer(proposals,many=True)
-        return Response(proposalsSerializer.data,status=status.HTTP_200_OK)
-    except:
-        message = {'detail': "Something went wrong"}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
-    
-    
-    
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def adminProposalsRejected (request):
-    user=request.user
-    try:
-        proposals=Proposals_Admin.objects.filter(eligible=user,is_accepted=False,status='REJECTED')
-        proposalsSerializer=Proposals_AdminSerializer(proposals,many=True)
-        return Response(proposalsSerializer.data,status=status.HTTP_200_OK)
-    except:
-        message = {'detail': "Something went wrong"}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
-    
-    
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def adminProposalsOnprocess (request):
-    user=request.user
-    try:
-        proposals=Proposals_Admin.objects.filter(eligible=user,is_accepted=True,status='PROPOSAL_SENT')
-        proposalsSerializer=Proposals_AdminSerializer(proposals,many=True)
-        return Response(proposalsSerializer.data,status=status.HTTP_200_OK)
+        proposals = Proposals_Admin.objects.filter(
+            eligible=user, status='PENDING')
+        proposalsSerializer = Proposals_AdminSerializer(proposals, many=True)
+        return Response(proposalsSerializer.data, status=status.HTTP_200_OK)
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def adminProposalsAccepted(request):
+    user = request.user
+    try:
+        proposals = Proposals_Admin.objects.filter(
+            eligible=user, status='ACCEPTED')
+        proposalsSerializer = Proposals_AdminSerializer(proposals, many=True)
+        return Response(proposalsSerializer.data, status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def adminProposalsRejected(request):
+    user = request.user
+    try:
+        proposals = Proposals_Admin.objects.filter(
+            eligible=user, is_accepted=False, status='REJECTED')
+        proposalsSerializer = Proposals_AdminSerializer(proposals, many=True)
+        return Response(proposalsSerializer.data, status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def adminProposalsOnprocess(request):
+    user = request.user
+    try:
+        proposals = Proposals_Admin.objects.filter(
+            eligible=user, is_accepted=True, status='PROPOSAL_SENT')
+        proposalsSerializer = Proposals_AdminSerializer(proposals, many=True)
+        return Response(proposalsSerializer.data, status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
-def proposal_accepted (request):
-    user=request.user
+def proposal_accepted(request):
+    user = request.user
     data = request.data
     try:
-        proposal=Proposals_Admin.objects.get(id=data['id'],eligible=user)
-        proposal.status='ACCEPTED'
+        proposal = Proposals_Admin.objects.get(id=data['id'], eligible=user)
+        proposal.status = 'ACCEPTED'
         proposal.save()
         return Response(status=status.HTTP_200_OK)
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
-def proposal_rejected (request):
-    user=request.user
+def proposal_rejected(request):
+    user = request.user
     data = request.data
     try:
-        proposal=Proposals_Admin.objects.get(id=data['id'],eligible=user)
+        proposal = Proposals_Admin.objects.get(id=data['id'], eligible=user)
         proposal.delete()
         return Response(status=status.HTTP_200_OK)
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-    
-    
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def send_proposal (request):
-        user=request.user
-        data = request.data
-        print(data)
-        try:
-            proposals=Proposals_Admin.objects.get(id=data['admin_proposal'],eligible=user)
-            proposals.status='PROPOSAL_SENT'
-            proposals.save()
-            
-            proposal_to_client=Aec_Proposals_UserSerializer(data=data,many=False)
-            print(proposal_to_client)
-            if proposal_to_client.is_valid():
-                proposal_to_client.save()
-                
-            return Response(status=status.HTTP_200_OK)
-        except:
-            message = {'detail': "Something went wrong"}
-            return Response(message, status=status.HTTP_400_BAD_REQUEST)
-    
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def proposal_completed (request):
-    user=request.user
+def send_proposal(request):
+    user = request.user
+    data = request.data
+    print(data)
+    try:
+        proposals = Proposals_Admin.objects.get(
+            id=data['admin_proposal'], eligible=user)
+        proposals.status = 'PROPOSAL_SENT'
+        proposals.save()
+
+        proposal_to_client = NewAec_Proposals_UserSerializer(data=data)
+        print(proposal_to_client)
+        if proposal_to_client.is_valid():
+            proposal_to_client.save()
+
+        return Response(status=status.HTTP_200_OK)
+    except:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def proposal_completed(request):
+    user = request.user
     data = request.data
 
     try:
-        proposal=Proposals_Admin.objects.get(id=data['admin_proposal'],eligible=user)
-        proposal.status="COMPLETED"
+        user.projects += 1
+        user.save()
+        proposal = Proposals_Admin.objects.get(id=data['id'], eligible=user)
+        proposal.status = "COMPLETED"
         proposal.save()
         return Response(status=status.HTTP_200_OK)
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def proposal_completed_publish (request):
-    user=request.user
+def proposal_completed_publish(request):
+    user = request.user
     data = request.data
 
     try:
-        proposal=Proposals_Admin.objects.get(id=data['admin_proposal'],eligible=user)
-        proposal.status="COMPLETED"
+        user.projects += 1
+        user.save()
+        proposal = Proposals_Admin.objects.get(
+            id=data['admin_proposal'], eligible=user)
+        proposal.status = "COMPLETED"
         proposal.save()
-        
-        newproject=Projects.objects.create(user=user,project_title=data['project_title'],project_desc=data['project_desc'],project_image=data['project_image'],project_status='COMPLETED',project_client=proposal.proposal_from)
+
+        newproject = Projects.objects.create(user=user, project_title=data['project_title'], project_desc=data['project_desc'],
+                                             project_image=data['project_image'], project_status='COMPLETED', project_client=proposal.proposal_from)
         newproject.save()
-        
+
         return Response(status=status.HTTP_200_OK)
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-    
-
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def accept_by_client (request):
-    user=request.user
+def accept_by_client(request):
+    user = request.user
     data = request.data
     try:
-        proposal=Aec_Proposals_User.objects.get(id=data['id'])
-        proposal.is_accepted=True
+        proposal = Aec_Proposals_User.objects.get(id=data['id'])
+        proposal.is_accepted = True
         proposal.save()
-        
-        admin_proposal=Proposals_Admin.objects.get(id=proposal.admin_proposal)
-        admin_proposal.is_accepted=True
+
+        admin_proposal = Proposals_Admin.objects.get(
+            id=proposal.admin_proposal)
+        admin_proposal.is_accepted = True
         admin_proposal.save()
         return Response(status=status.HTTP_200_OK)
     except:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-

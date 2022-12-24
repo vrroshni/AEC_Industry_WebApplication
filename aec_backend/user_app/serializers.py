@@ -7,19 +7,30 @@ class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model=Account
         fields='__all__'
+class ReviewSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=Review_Rating
+        fields='__all__'
 
 class NetworkSerializer(serializers.ModelSerializer):
     class Meta:
         model=Network
         fields='__all__'
-        
-class ProjectsSerializer(serializers.ModelSerializer):
-    rated_user=AccountSerializer(read_only=True)
+class NewProjectsSerializer(serializers.ModelSerializer):
     class Meta:
         model=Projects
         fields='__all__'
         
-
+class ProjectsSerializer(serializers.ModelSerializer):
+    review=ReviewSerializer(read_only=True)
+    user=AccountSerializer(read_only=True)
+    project_client=AccountSerializer(read_only=True)
+    class Meta:
+        model=Projects
+        fields='__all__'
+        
+  
 
 class ProfileSerializer(serializers.ModelSerializer):
     user_network=serializers.SerializerMethodField(read_only=True)
@@ -126,6 +137,10 @@ class Proposals_AdminSerializer(serializers.ModelSerializer):
         
 class Aec_Proposals_UserSerializer(serializers.ModelSerializer):
     admin_proposal=Proposals_AdminSerializer(read_only=True)
+    class Meta:
+        model=Aec_Proposals_User
+        fields='__all__'
+class NewAec_Proposals_UserSerializer(serializers.ModelSerializer):
     class Meta:
         model=Aec_Proposals_User
         fields='__all__'
