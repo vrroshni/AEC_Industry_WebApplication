@@ -18,25 +18,25 @@ def like_post(request):
     data=request.data
     post=Post.objects.get(id=data['id'])
     like_filter=Post_Reaction.objects.filter(user=user,post=post).first()
-    if like_filter == None:
+    if like_filter is None:
         new_like=Post_Reaction.objects.create(post=post,user=user,type='LIKE')
         new_like.save()
         post.likes=post.likes+1
         post.save()
+    elif dislike_filter := Post_Reaction.objects.filter(
+        user=user, post=post, type='DISLIKE'
+    ).first():
+        dislike_filter.delete()
+        post.dislikes = post.dislikes-1
+        post.likes = post.likes+1
+        post.save()
+        new_like=Post_Reaction.objects.create(post=post,user=user,type='LIKE')
+        new_like.save()
+
     else:
-        dislike_filter=Post_Reaction.objects.filter(user=user,post=post,type='DISLIKE').first()
-        if dislike_filter:
-            dislike_filter.delete()
-            post.dislikes=post.dislikes-1
-            post.likes=post.likes+1
-            post.save()
-            new_like=Post_Reaction.objects.create(post=post,user=user,type='LIKE')
-            new_like.save()
-            
-        else:
-            like_filter.delete()
-            post.likes=post.likes-1
-            post.save()
+        like_filter.delete()
+        post.likes=post.likes-1
+        post.save()
     posts=Post.objects.all().order_by('-posted_at')
     serializer=PostSerializer(posts,many=True)
     if serializer.is_valid :
@@ -51,24 +51,24 @@ def dislike_post(request):
     post=Post.objects.get(id=data['id'])
     dislike_filter=Post_Reaction.objects.filter(user=user,post=post).first()
 
-    if dislike_filter == None:
+    if dislike_filter is None:
         new_like=Post_Reaction.objects.create(post=post,user=user,type='DISLIKE')
         new_like.save()
         post.dislikes=post.dislikes+1
         post.save()
+    elif like_filter := Post_Reaction.objects.filter(
+        user=user, post=post, type='LIKE'
+    ).first():
+        like_filter.delete()
+        post.likes = post.likes-1
+        post.dislikes = post.dislikes+1
+        post.save()
+        new_dislike=Post_Reaction.objects.create(post=post,user=user,type='DISLIKE')
+        new_dislike.save()
     else:
-        like_filter=Post_Reaction.objects.filter(user=user,post=post,type='LIKE').first()
-        if like_filter:
-            like_filter.delete()
-            post.likes=post.likes-1
-            post.dislikes=post.dislikes+1
-            post.save()
-            new_dislike=Post_Reaction.objects.create(post=post,user=user,type='DISLIKE')
-            new_dislike.save()
-        else:
-            dislike_filter.delete()
-            post.dislikes=post.dislikes-1
-            post.save()
+        dislike_filter.delete()
+        post.dislikes=post.dislikes-1
+        post.save()
     posts=Post.objects.all().order_by('-posted_at')
     serializer=PostSerializer(posts,many=True)
     if serializer.is_valid :
@@ -146,12 +146,12 @@ def send_connection(request):
     user=request.user
     data=request.data
     connection=Account.objects.get(id=data['user_id'])
-    exist_=Network.objects.filter(followed_to=connection,followed_by=user).first()
-    if exist_:
+    if exist_ := Network.objects.filter(
+        followed_to=connection, followed_by=user
+    ).first():
         exist_.is_connect=False
         exist_.connect_status='PENDING'
         exist_.save()
-        return Response(status=status.HTTP_200_OK)
     else:
         new_connection=Network.objects.create(followed_to=connection,followed_by=user)
         new_connection.is_follow=True
@@ -162,7 +162,7 @@ def send_connection(request):
         user.save()
         connection.save()
         new_connection.save()
-        return Response(status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_200_OK)
  
         
                

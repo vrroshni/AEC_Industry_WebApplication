@@ -20,7 +20,7 @@ def allusers(request):
         allusers=Account.objects.all()
         serializer=ProfileSerializer(allusers,many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -42,34 +42,31 @@ def statusChange(request):
     data=request.data
     try:
         user=Account.objects.get(id=data['id'])
-        if user.is_active:
-            user.is_active=False
-            user.save()
-        else:
-            user.is_active=True
-            user.save()
+        user.is_active = not user.is_active
+        user.save()
         return Response(status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def profileVerified(request):
+    try:
         data=request.data
         userrequest=ProfileVerification.objects.get(id=data['id'])
         userrequest.is_verified=True
         userrequest.save()
-        
+
         user=Account.objects.get(id=userrequest.user.id)
         user.is_verified=True
         user.status=userrequest.role
         user.save()
-        
+
         return Response(status=status.HTTP_200_OK)
-    # except:
-    #     message = {'detail': "Something went wrong"}
-    #     return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    except Exception:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -82,7 +79,7 @@ def profileRejected(request):
         userrequest.is_rejected=True
         userrequest.save()
         return Response(status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -94,7 +91,7 @@ def allPosts(request):
         allposts=Post.objects.all().order_by('-posted_at')
         serializer=PostSerializer(allposts,many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -105,14 +102,10 @@ def changeReportStatus(request):
     data=request.data
     try:
         post=Post.objects.get(id=data['id'])
-        if post.reported_status:
-            post.reported_status=False
-            post.save()
-        else:
-            post.reported_status=True
-            post.save()
+        post.reported_status = not post.reported_status
+        post.save()
         return Response(status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
     
@@ -128,7 +121,7 @@ def allClientRequirements(request):
         requests=Client_Requests.objects.filter(status='PENDING')
         requestsSerializer=Client_RequestSerializer(requests,many=True)
         return Response(requestsSerializer.data,status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
     
@@ -139,33 +132,35 @@ def allClientRequirements(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def requirementShared(request):
-        data=request.data
-        print(data,'ddddddddddd')
-        try:
-            requests=Client_Requests.objects.get(id=data['id'])
-            print(requests,'rrrrrrrrrrrr')
-            profiles=ProfileVerification.objects.filter(is_premium=True,role=requests.role,experience=requests.experience,location=requests.location)
-            print(profiles,'rrrrrrrrrrrrr')
-            if profiles:
-                for x in profiles:
-                    share=Proposals_Admin()
-                    share.proposal_from=requests.request_from
-                    share.proposal=requests
-                    share.eligible=x.user
-                    share.save()
-                    requests.status='SHARED'
-                    requests.save()
-                message = {'detail': "Proposal is Shared to Respective Profiles"}
-                return Response(message, status=status.HTTP_201_CREATED)
-            else:
-              requests.status='REJECTED'
-              requests.save()
-              message = {'detail': "No Matching profiles Found,So it is rejected"}
-              return Response(message, status=status.HTTP_400_BAD_REQUEST)
-        
-        except:
-            message = {'detail': "Something went wrong"}
+    data=request.data
+    print(data,'ddddddddddd')
+    try:
+        requests=Client_Requests.objects.get(id=data['id'])
+        if profiles := ProfileVerification.objects.filter(
+            is_premium=True,
+            role=requests.role,
+            experience=requests.experience,
+            location=requests.location,
+        ):
+            for x in profiles:
+                share=Proposals_Admin()
+                share.proposal_from=requests.request_from
+                share.proposal=requests
+                share.eligible=x.user
+                share.save()
+                requests.status='SHARED'
+                requests.save()
+            message = {'detail': "Proposal is Shared to Respective Profiles"}
+            return Response(message, status=status.HTTP_201_CREATED)
+        else:
+            requests.status='REJECTED'
+            requests.save()
+            message = {'detail': "No Matching profiles Found,So it is rejected"}
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+    except Exception:
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -176,6 +171,6 @@ def requirementRejected(request):
         requests.status='REJECTED'
         requests.save()
         return Response(status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)

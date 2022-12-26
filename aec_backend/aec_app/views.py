@@ -69,14 +69,15 @@ def registerUser(request):
             password=data['password']
         )
         return Response(status=status.HTTP_201_CREATED)
-    except:
+    except Exception:
         message = {'detail': "Your Profile is not registered"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def googleSignIn(request):
-    data = request.data
+        
     try:
+        data = request.data
         if Account.objects.filter(username=data['username']):
             return Response(200)
         user=Account.objects.create_user(first_name=data['firstname'],
@@ -87,7 +88,7 @@ def googleSignIn(request):
                                     phone_number="",
                                     )
         return Response(200)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -113,7 +114,7 @@ def profileVerification(request):
         )
         serializer = ProfileVerificationSerializer(profile, many=False)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -134,15 +135,14 @@ class CreateCheckOutSession(APIView):
                             'unit_amount': int(price) * 100,
                             'product_data': {
                                 'name': "Premium Membership",
-                            }
+                            },
                         },
                         'quantity': 1,
                     },
                 ],
                 mode='payment',
-                success_url=settings.SITE_URL + 'payment/?success=true&price='+price,
-                cancel_url=settings.SITE_URL + 'payment/?canceled=true',
-
+                success_url=f'{settings.SITE_URL}payment/?success=true&price={price}',
+                cancel_url=f'{settings.SITE_URL}payment/?canceled=true',
             )
             return redirect(checkout_session.url)
         except Exception as e:
@@ -152,28 +152,26 @@ class CreateCheckOutSession(APIView):
 class StripePaymentProposalBid(APIView):
     def post(self, request, *args, **kwargs):
         price = request.POST.get('price')
-        id = request.POST.get('id')
+        bid_id = request.POST.get('id')
         print(int(float(price)), 'ppppppppppp')
         price = int(float(price))
         try:
             checkout_session = stripe.checkout.Session.create(
                 line_items=[
                     {
-                        # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
                         'price_data': {
                             'currency': 'usd',
-                            'unit_amount': int(price) * 100,
+                            'unit_amount': price * 100,
                             'product_data': {
                                 'name': "Accepting ProposalBid",
-                            }
+                            },
                         },
                         'quantity': 1,
-                    },
+                    }
                 ],
                 mode='payment',
-                success_url=settings.SITE_URL + 'proposalbids/?success=true&id='+id,
-                cancel_url=settings.SITE_URL + 'proposalbids/?canceled=true',
-
+                success_url=f'{settings.SITE_URL}proposalbids/?success=true&id={bid_id}',
+                cancel_url=f'{settings.SITE_URL}proposalbids/?canceled=true',
             )
             return redirect(checkout_session.url)
         except Exception as e:
@@ -219,7 +217,7 @@ def getUserRequest(request):
         data = ProfileVerification.objects.get(user=user.id)
         serializer = ProfileVerificationSerializer(data, many=False)
         return Response(serializer.data)
-    except:
+    except Exception:
         message = {'detail': "Currently no requests"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -251,7 +249,7 @@ def updateUserProfile(request):
         user.save()
         serializer = ProfileSerializerWithToken(user, many=False)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -272,7 +270,7 @@ def addPost(request):
             post.post_content_video = data['video']
         post.save()
         return Response(status=status.HTTP_201_CREATED)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -283,7 +281,6 @@ def add_review(request):
     data = request.data
     user = request.user
 
-    print(data, 'daaaaaaaaaaaaa')
     try:
         existproject = Projects.objects.filter(id=data['project_id']).first()
 
@@ -295,17 +292,16 @@ def add_review(request):
             existingreview.rated_user = user
             existingreview.save()
             existproject.review = existingreview
-            existproject.save()
         else:
             newreview = Review_Rating.objects.create(
                 rated_user=user, review_desc=data['review_desc'], rating=data['rating'])
             newreview.save()
             existproject.review = newreview
-            existproject.save()
+        existproject.save()
         projectuser = Account.objects.get(id=existproject.user.id)
         serializer = ProfileSerializer(projectuser, many=False)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -321,7 +317,7 @@ def addproject(request):
             projectserializer.save()
             serializer = ProfileSerializer(user, many=False)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -337,7 +333,7 @@ def allFeed(request):
         serializer = PostSerializer(posts, many=True)
         return Response({'allposts': serializer.data}, status=status.HTTP_201_CREATED)
 
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -363,7 +359,7 @@ def suggestions(request):
         userserializer = AccountSerializer(new_suggestion_list, many=True)
         return Response(userserializer.data, status=status.HTTP_201_CREATED)
 
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -381,7 +377,7 @@ def connectUs(request):
         if requests.is_valid():
             requests.save()
             return Response(200)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -394,7 +390,7 @@ def connectUsRequests(request):
         requests = Client_Requests.objects.filter(request_from=user)
         requestsSerializer = Client_RequestSerializer(requests, many=True)
         return Response(requestsSerializer.data, status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -409,7 +405,7 @@ def proposalBids(request):
         proposalbidsSerializer = Aec_Proposals_UserSerializer(
             proposalbids, many=True)
         return Response(proposalbidsSerializer.data, status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -419,9 +415,9 @@ def proposalBids(request):
 def accept_proposalBid(request):
     user = request.user
     data = request.data
-    id = int(data['id'])
+    bid_id = int(data['id'])
     try:
-        acceptedbid = Aec_Proposals_User.objects.get(id=id)
+        acceptedbid = Aec_Proposals_User.objects.get(id=bid_id)
         acceptedbid.is_accepted = True
         acceptedbid.save()
 
@@ -430,17 +426,17 @@ def accept_proposalBid(request):
         proposal.is_accepted = True
         proposal.save()
 
-        leftproposals = Proposals_Admin.objects.exclude(id=acceptedbid.admin_proposal.id).filter(
-            proposal=acceptedbid.admin_proposal.proposal.id)
-        if leftproposals:
+        if leftproposals := Proposals_Admin.objects.exclude(
+            id=acceptedbid.admin_proposal.id
+        ).filter(proposal=acceptedbid.admin_proposal.proposal.id):
             for i in leftproposals:
                 i.is_accepted = False
                 i.status = 'REJECTED'
                 i.save()
 
-        leftproposalbids = Aec_Proposals_User.objects.filter(
-            admin_proposal__proposal_from=user, is_accepted=False)
-        if leftproposalbids:
+        if leftproposalbids := Aec_Proposals_User.objects.filter(
+            admin_proposal__proposal_from=user, is_accepted=False
+        ):
             for i in leftproposalbids:
                 i.delete()
 
@@ -450,7 +446,7 @@ def accept_proposalBid(request):
         clientreq.save()
 
         return Response(status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -469,7 +465,7 @@ def reject_proposalBid(request):
         leftproposals.save()
         acceptedbid.delete()
         return Response(status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -485,7 +481,7 @@ def adminProposals(request):
             eligible=user, status='PENDING')
         proposalsSerializer = Proposals_AdminSerializer(proposals, many=True)
         return Response(proposalsSerializer.data, status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -499,7 +495,7 @@ def adminProposalsAccepted(request):
             eligible=user, status='ACCEPTED')
         proposalsSerializer = Proposals_AdminSerializer(proposals, many=True)
         return Response(proposalsSerializer.data, status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -513,7 +509,7 @@ def adminProposalsRejected(request):
             eligible=user, is_accepted=False, status='REJECTED')
         proposalsSerializer = Proposals_AdminSerializer(proposals, many=True)
         return Response(proposalsSerializer.data, status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -527,7 +523,7 @@ def adminProposalsOnprocess(request):
             eligible=user, is_accepted=True, status='PROPOSAL_SENT')
         proposalsSerializer = Proposals_AdminSerializer(proposals, many=True)
         return Response(proposalsSerializer.data, status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -542,7 +538,7 @@ def proposal_accepted(request):
         proposal.status = 'ACCEPTED'
         proposal.save()
         return Response(status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -556,7 +552,7 @@ def proposal_rejected(request):
         proposal = Proposals_Admin.objects.get(id=data['id'], eligible=user)
         proposal.delete()
         return Response(status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -579,7 +575,7 @@ def send_proposal(request):
             proposal_to_client.save()
 
         return Response(status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -597,7 +593,7 @@ def proposal_completed(request):
         proposal.status = "COMPLETED"
         proposal.save()
         return Response(status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -621,7 +617,7 @@ def proposal_completed_publish(request):
         newproject.save()
 
         return Response(status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -641,6 +637,6 @@ def accept_by_client(request):
         admin_proposal.is_accepted = True
         admin_proposal.save()
         return Response(status=status.HTTP_200_OK)
-    except:
+    except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
