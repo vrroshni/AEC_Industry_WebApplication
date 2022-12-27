@@ -132,9 +132,8 @@ def allClientRequirements(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def requirementShared(request):
-    data=request.data
-    print(data,'ddddddddddd')
     try:
+        data=request.data
         requests=Client_Requests.objects.get(id=data['id'])
         if profiles := ProfileVerification.objects.filter(
             is_premium=True,
@@ -154,9 +153,10 @@ def requirementShared(request):
             return Response(message, status=status.HTTP_201_CREATED)
         else:
             requests.status='REJECTED'
+            requests.is_rejected=True
             requests.save()
             message = {'detail': "No Matching profiles Found,So it is rejected"}
-            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+            return Response(message, status=status.HTTP_200_OK)
 
     except Exception:
         message = {'detail': "Something went wrong"}
@@ -165,10 +165,11 @@ def requirementShared(request):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def requirementRejected(request):
-    data=request.data
     try:
+        data=request.data
         requests=Client_Requests.objects.get(id=data['id'])
         requests.status='REJECTED'
+        requests.is_rejected=True
         requests.save()
         return Response(status=status.HTTP_200_OK)
     except Exception:

@@ -14,6 +14,10 @@ from django.shortcuts import redirect
 from django.conf import settings
 from rest_framework.views import APIView
 import random
+from .helpers  import *
+import uuid
+from django.core.cache import cache
+from django.contrib.auth.hashers import make_password
 
 
 # Create your views here.
@@ -38,10 +42,17 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         print(attrs, 'atttrrrr')
         data = super().validate(attrs)
-        print(data)
+        print(data,'uuuuuu')
         serializer = ProfileSerializerWithToken(self.user).data
         for k, v in serializer.items():
             data[k] = v
+        print(data['is_email_verified'],'mmmmmmmmmmm')
+        if not data['is_email_verified']:
+            if data['is_superadmin']:
+                return data
+
+            message = {'detail': "Your Account is not Verified,Check gmail"}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
         return data
 
 
@@ -52,15 +63,15 @@ class MyTokenObtainPairView(TokenObtainPairView):
 # ------------------------------ for user needs ------------------------------ #
 @api_view(['POST'])
 def registerUser(request):
-    data = request.data
     try:
+        data = request.data
         if Account.objects.filter(username=data['username']).exists():
             message = {'detail': 'User with this username already exists'}
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
         if Account.objects.filter(email=data['email']).exists():
             message = {'detail': 'User with this email already exists'}
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
-        Account.objects.create_user(
+        user=Account.objects.create_user(
             first_name=data['firstname'],
             last_name=data['lastname'],
             username=data['username'],
@@ -68,16 +79,26 @@ def registerUser(request):
             email=data['email'],
             password=data['password']
         )
-        return Response(status=status.HTTP_201_CREATED)
-    except Exception:
+        auth_token = str(uuid.uuid4())
+        otp=random.randint(1000,9999)
+        user.otp=make_password(str(otp))
+        user.email_token=make_password(auth_token)
+        user.save()
+        cache.set(user.email,f'{otp}{auth_token}',timeout=60)
+        print(cache.get(user.email),'jhkllllllllllllllll')
+        verify_account_after_registration(user,otp,auth_token)
+        userserializer=AccountSerializer(user)
+        return Response(userserializer.data,status=status.HTTP_201_CREATED)
+    except Exception as e:
+        print(e,'ooooooooooooo')
         message = {'detail': "Your Profile is not registered"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def googleSignIn(request):
-        
-    try:
+    # try:
         data = request.data
+        print(data['lastname'],'lllllllll')
         if Account.objects.filter(username=data['username']):
             return Response(200)
         user=Account.objects.create_user(first_name=data['firstname'],
@@ -87,10 +108,13 @@ def googleSignIn(request):
                                     password=data['password'],
                                     phone_number="",
                                     )
+        user.is_email_verified=True
+        user.save()
         return Response(200)
-    except Exception:
-        message = {'detail': "Something went wrong"}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    # except Exception as e:
+    #     print(e)
+    #     message = {'detail': "Something went wrong"}
+    #     return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -370,7 +394,7 @@ def connectUs(request):
     data = request.data
     user = request.user
     try:
-        if Client_Requests.objects.filter(request_from=user, is_acceptedbyUser=False).first():
+        if Client_Requests.objects.filter(request_from=user, is_rejected=False,is_acceptedbyUser=False).first():
             message = {'detail': "You already have a request pending!"}
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
         requests = NewClient_RequestSerializer(data=data, many=False)
@@ -457,6 +481,9 @@ def reject_proposalBid(request):
     user = request.user
     data = request.data
     try:
+        user = request.user
+        data = request.data
+
         acceptedbid = Aec_Proposals_User.objects.get(id=data['id'])
         leftproposals = Proposals_Admin.objects.get(
             id=acceptedbid.admin_proposal.id)

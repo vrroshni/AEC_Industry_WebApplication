@@ -12,7 +12,6 @@ import Message from '../Message'
 
 
 function Register() {
-    const [reload, setReload] = useState(false)
     const { register, handleSubmit, watch, formState: { errors } } = useForm({
         mode: "onChange"
     });
@@ -61,7 +60,7 @@ function Register() {
     const { loading,error,status } = userRegister
     useEffect(() => {
         if (status) {
-            navigate('/login')
+            navigate('/verify')
         } 
 
     }, [status])

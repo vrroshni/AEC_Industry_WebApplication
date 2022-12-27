@@ -104,6 +104,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+
+
 ROOT_URLCONF = 'aec_backend.urls'
 
 TEMPLATES = [
@@ -198,3 +201,24 @@ MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 
 STRIPE_SECRET_KEY='sk_test_51MDAkSSGGWhWYaNwOef46UptWUpv33GdCYOMny3zd11VygHMLHI1regfJW4Ti2IpzUYDDYt1D7doEiVD6f9J0Jmy00e0x9pndC'
 SITE_URL='http://localhost:3000/'
+BACKEND_SITE_URL='http://localhost:8000/'
+
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'aecindustry2001@gmail.com'
+EMAIL_HOST_PASSWORD = 'zucewdzeyoawfwgi'
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}

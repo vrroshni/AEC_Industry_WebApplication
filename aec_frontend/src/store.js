@@ -19,7 +19,8 @@ import {
     userConnectUsReducer,
     userConnectUsRequestReducer,
     userProposalbidsReducer,
-    ProposalBidActionsReducer
+    ProposalBidActionsReducer,
+    AccountVerifyReducer
 
 } from './reducers/userReducer'
 
@@ -72,6 +73,7 @@ const reducers = combineReducers({
     allConnectrequest: userConnectUsRequestReducer,
     proposalbids:userProposalbidsReducer,
     proposalbidsaction:ProposalBidActionsReducer,
+    accountverify:AccountVerifyReducer,
 
 
 

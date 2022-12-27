@@ -74,6 +74,8 @@ class Account(AbstractBaseUser):
     following       =models.IntegerField(default=0)
     connections     =models.IntegerField(default=0)
     projects        =models.IntegerField(default=0)
+    otp             =models.CharField(null=True,max_length=100)
+    email_token     =models.CharField(max_length=100 ,null=True)
 
  
 
@@ -87,6 +89,8 @@ class Account(AbstractBaseUser):
     is_superadmin   = models.BooleanField(default=False) 
     is_client       = models.BooleanField(default=True)
     is_verified     = models.BooleanField(default=False)
+    is_email_verified=models.BooleanField(default=False)
+
 
 
 

@@ -73,6 +73,7 @@ class Client_Requests(models.Model):
     
     created_at=models.DateTimeField(auto_now_add=True)
     is_acceptedbyUser= models.BooleanField(default=False)
+    is_rejected= models.BooleanField(default=False)
 
 
 class Proposals_Admin(models.Model):

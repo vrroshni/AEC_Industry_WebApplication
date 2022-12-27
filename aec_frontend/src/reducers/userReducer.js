@@ -90,6 +90,11 @@ import {
     USER_ADD_PROJECT_SUCCESS,
     USER_ADD_PROJECT_FAIL,
 
+    USER_REGISTER_ACCOUNT_VERIFICATION_REQUEST,
+    USER_REGISTER_ACCOUNT_VERIFICATION_EMAIL_OTP,
+    USER_REGISTER_ACCOUNT_VERIFICATION_EMAIL_LINK,
+    USER_REGISTER_ACCOUNT_VERIFICATION_FAIL
+
 } from '../constants/userConstants'
 
 
@@ -120,7 +125,7 @@ export const userRegisterReducer = (state = {}, action) => {
             return { loading: true }
 
         case USER_REGISTER_SUCCESS:
-            return { loading: false, status: true }
+            return { loading: false,registereduser:action.payload,status: true }
 
         case USER_REGISTER_FAIL:
             return { loading: false, error: action.payload, status: false }
@@ -267,6 +272,25 @@ export const postAddReducer = (state = {}, action) => {
 
         case USER_ADD_POST_RESET:
             return {}
+
+        default:
+            return state;
+    }
+}
+export const AccountVerifyReducer = (state = {}, action) => {
+    switch (action.type) {
+
+        case USER_REGISTER_ACCOUNT_VERIFICATION_REQUEST:
+            return { loading: true }
+
+        case USER_REGISTER_ACCOUNT_VERIFICATION_EMAIL_OTP:
+            return { loading: false ,otpverified:true}
+
+        case USER_REGISTER_ACCOUNT_VERIFICATION_EMAIL_LINK:
+            return { loading: false,emailverified:true }
+
+        case USER_REGISTER_ACCOUNT_VERIFICATION_FAIL:
+            return { loading: false, error: action.payload }
 
         default:
             return state;

@@ -160,7 +160,7 @@ export const profile_verified = (id) => async (dispatch, getState) => {
     dispatch({
         type: USER_PROFILEVERIFIED_SUCCESS,
     })
-    toast.success(' Yiu have verified a profile!', {
+    toast.success(' You have verified a profile!', {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: true,
@@ -372,7 +372,7 @@ export const requirement_rejected = (id) => async (dispatch, getState) => {
     dispatch({
         type: USER__CLIENT_REQUIREMNT_REJECTED,
     })
-    toast.danger(' You have rejected a Proposal ', {
+    toast.error(' You have rejected a Proposal ', {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: true,

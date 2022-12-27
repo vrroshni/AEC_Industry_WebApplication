@@ -92,6 +92,12 @@ import {
     USER_ADD_PROJECT_SUCCESS,
     USER_ADD_PROJECT_FAIL,
 
+
+    USER_REGISTER_ACCOUNT_VERIFICATION_REQUEST,
+    USER_REGISTER_ACCOUNT_VERIFICATION_EMAIL_OTP,
+    USER_REGISTER_ACCOUNT_VERIFICATION_EMAIL_LINK,
+    USER_REGISTER_ACCOUNT_VERIFICATION_FAIL
+
 } from '../constants/userConstants'
 import storage from 'redux-persist/lib/storage'
 import { persistor } from '../index';
@@ -151,7 +157,7 @@ export const login = (username, password) => async (dispatch) => {
 }
 
 export const googleSignin = (e) => async (dispatch) => {
-
+    let lastname=null
     try {
 
         console.log('google signinn..........')
@@ -170,16 +176,21 @@ export const googleSignin = (e) => async (dispatch) => {
                 'Content-type': 'application/json'
             }
         }
-
+        console.log(userObject.family_name,'kkkkkkkkkkk')
+        if (userObject.family_name === undefined) {
+            lastname = userObject.given_name
+        }else{
+           lastname = userObject.family_name
+        }
         axios.post('googleSignIn/',
-            { 'firstname': userObject.given_name, 'lastname': userObject.family_name, 'username': userObject.name, "email": userObject.email, 'password': userObject.sub, "pro_pic": userObject.picture }, config
+            { 'firstname': userObject.given_name, 'lastname': lastname, 'username': userObject.name, "email": userObject.email, 'password': userObject.sub, "pro_pic": userObject.picture }, config
         ).then((googledata) => {
             console.log(googledata, 'kkkkkkkkkk')
             if (googledata.status == 200) {
                 axios.post('/login/',
                     { 'username': userObject.name, 'password': userObject.sub, }, config
                 ).then((data) => {
-                    console.log(data,'ffffffffffffff')
+                    console.log(data, 'ffffffffffffff')
                     dispatch({
                         type: USER_LOGIN_SUCCESS,
                         payload: data.data
@@ -238,6 +249,157 @@ export const logout = () => (dispatch) => {
     })
     window.location.reload()
 }
+export const account_verify_otp = (userid, otp) => async (dispatch) => {
+    try {
+
+
+        dispatch({
+            type: USER_REGISTER_ACCOUNT_VERIFICATION_REQUEST
+        })
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }
+        console.log(userid, 'kkkkkkkkkkkkkkkkkkkk')
+        const { data } = await axios.patch('/account_verify_otp/',
+            { otp, userid }, config
+        )
+
+        dispatch({
+
+            type: USER_REGISTER_ACCOUNT_VERIFICATION_EMAIL_OTP,
+
+        })
+        toast.info(data.detail, {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+        })
+    } catch (error) {
+        dispatch({
+            type: USER_REGISTER_ACCOUNT_VERIFICATION_FAIL,
+            payload: error.response && error.response.data.detail ?
+                error.response.data.detail : error.message,
+        })
+    }
+}
+export const account_verify_link = (userid, token) => async (dispatch) => {
+    try {
+
+
+        dispatch({
+            type: USER_REGISTER_ACCOUNT_VERIFICATION_REQUEST
+        })
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }
+
+        const { data } = await axios.patch('/email_verify/',
+            { userid, token }, config
+        )
+
+        dispatch({
+
+            type: USER_REGISTER_ACCOUNT_VERIFICATION_EMAIL_LINK,
+
+        })
+
+        toast.info(data.detail, {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+        })
+    } catch (error) {
+        dispatch({
+            type: USER_REGISTER_ACCOUNT_VERIFICATION_FAIL,
+            payload: error.response && error.response.data.detail ?
+                error.response.data.detail : error.message,
+        })
+        console.log(error.response.data.detail, 'kkkkkkkkkkkkkkkkkkkkk')
+        toast.error(error.response.data.detail, {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+        })
+    }
+}
+export const resend_otp = (userid) => async (dispatch) => {
+    try {
+
+
+        dispatch({
+            type: USER_REGISTER_ACCOUNT_VERIFICATION_REQUEST
+        })
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }
+        console.log(userid, 'kkkkkkkkkkkkkkkkkkkk')
+        const { data } = await axios.patch('/resend_verification_credentials/',
+            { userid }, config
+        )
+
+        dispatch({
+
+            type: USER_REGISTER_ACCOUNT_VERIFICATION_EMAIL_OTP,
+
+        })
+        toast.info('New credentials send Succesffully Check your gmail!', {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+        })
+    } catch (error) {
+        dispatch({
+            type: USER_REGISTER_ACCOUNT_VERIFICATION_FAIL,
+            payload: error.response && error.response.data.detail ?
+                error.response.data.detail : error.message,
+        })
+    }
+}
+
+export const registeredUserDetails = (userid) => async (dispatch, getState) => {
+
+    const config = {
+        headers: {
+            'Content-type': 'application/json',
+        }
+    }
+
+    const { data } = await axios.get(`/registereduser/${userid}/`, config
+    )
+
+    dispatch({
+        type: USER_REGISTER_SUCCESS,
+        payload: data
+    })
+
+
+}
 
 export const registeruser = (username, firstname, lastname, email, phonenumber, password,) => async (dispatch) => {
     try {
@@ -259,8 +421,19 @@ export const registeruser = (username, firstname, lastname, email, phonenumber, 
 
         dispatch({
             type: USER_REGISTER_SUCCESS,
+            payload: data
         })
         toast.success(' You have registered succesfully!', {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+        })
+        toast.info(' Check your gmail!', {
             position: "top-right",
             autoClose: 2000,
             hideProgressBar: true,

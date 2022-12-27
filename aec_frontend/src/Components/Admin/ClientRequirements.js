@@ -20,7 +20,7 @@ function ClientRequirements() {
 
     useEffect(() => {
         dispatch(list_client_requirements())
-    }, [reload])
+    },[reload])
 
 
     return (
@@ -77,7 +77,7 @@ function ClientRequirements() {
                                                             
                                                         </td>
                                                         <td ><button className="btn btn-xs  btn-dark">{requirement.status}</button> </td>
-                                                        <td ><button className="btn btn-xs  btn-success" onClick={()=>Swal.fire({
+                                                        <td ><a className="btn btn-xs  btn-success" onClick={()=>Swal.fire({
                                                                     title: 'Are you sure you want to share the proposal?',
                                                                     showConfirmButton: true,
                                                                     showCancelButton: true,
@@ -89,17 +89,17 @@ function ClientRequirements() {
                                                                 }
                                                                 ).then((result) => {
                                                                     if (result.isConfirmed) {
-                                                                        dispatch(requirement_shared(requirement.id))
-                                                                            .then(() => {
-                                                                                dispatch(list_client_requirements())
-                                                                            })
+                                                                        dispatch(requirement_shared(requirement.id)).then(() => {
+                                                                            setReload(!reload)
+                                                                            console.log('then cLLLED')
+                                                                        })
 
                                                                     }
 
                                                                 })
                                                             }
-                                                        >SHARE</button> </td>
-                                                        <td><button className="btn btn-xs  btn-danger" onClick={()=>Swal.fire({
+                                                        >SHARE</a> </td>
+                                                        <td><a className="btn btn-xs  btn-danger" onClick={()=>Swal.fire({
                                                                     title: 'Are you sure you want to reject the proposal?',
                                                                     showConfirmButton: true,
                                                                     showCancelButton: true,
@@ -111,16 +111,16 @@ function ClientRequirements() {
                                                                 }
                                                                 ).then((result) => {
                                                                     if (result.isConfirmed) {
-                                                                        dispatch(requirement_rejected(requirement.id))
-                                                                            .then(() => {
-                                                                                dispatch(list_client_requirements())
-                                                                            })
+                                                                        dispatch(requirement_rejected(requirement.id)).then(() => {
+                                                                            setReload(!reload)
+                                                                            console.log('then cLLLED')
+                                                                        })
 
                                                                     }
 
                                                                 })
                                                             }
-                                                        >REJECT</button> </td>
+                                                        >REJECT</a> </td>
                                                         </tr>)
                                                 })}
                                             </tbody>

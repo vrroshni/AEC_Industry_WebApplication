@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .helpers import otp_verify,email_verify
 from .views  import *
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
@@ -13,6 +14,10 @@ urlpatterns = [
 
     #UserProfile
     path('register/', registerUser, name='register'),
+    path('account_verify_otp/', otp_verify, name='account_verify_otp'),
+    path('resend_verification_credentials/', resend_verification_credentials, name='resend_verification_credentials'),
+    path('email_verify/', email_verify, name='email_verify'),
+    path('registereduser/<int:id>/', registereduser, name='registereduser'),
     path('googleSignIn/', googleSignIn, name='googleSignIn'),
     path('profile/', getUserProfile, name='profile'),
     path('otheruserprofile/', otherUserProfile, name='otheruserprofile'),

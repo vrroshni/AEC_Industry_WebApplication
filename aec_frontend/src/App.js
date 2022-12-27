@@ -31,6 +31,8 @@ import AcceptedProposals from './components/Dashboard/AcceptedProposals'
 import OnProcess from './components/Dashboard/OnProcess'
 import PremiumDashboard from './components/Dashboard/PremiumDashboard'
 import Proposalbids from './components/Dashboard/Proposalbids';
+import Account_Verify from './components/Accounts/Account_Verify';
+import Email_Verify from './components/Accounts/Email_Verify';
 
 function App() {
 
@@ -66,6 +68,8 @@ function App() {
           <Route path='*' element={<Error />} />
           <Route path='login' element={<Login />} />
           <Route path='register' element={<Register />} />
+          <Route path='verify' element={<Account_Verify />} />
+          <Route path='email_verify/:token' element={<Email_Verify />} />
           <Route path="/restricted" element={<Restricted />} />
 
           <Route path="/connectUs" element={<Connect/>} />
