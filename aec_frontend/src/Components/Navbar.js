@@ -1,17 +1,28 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout, getUserProfile, allFeed } from '../actions/userActions'
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
+import useDebounce from '../CustomHooks/useDebounce'
+import { getCharacter } from '../utils/SerachFunction'
+import Loader from './Loader'
+
 
 
 function Navbar() {
+    const [query, setQuery] = useState('')
+    const [listing, setListing] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [showresultdiv, setshowResultdiv] = useState(false)
 
     const userInfo = useSelector(state => state.getUserProfile)
     const { fullUserProfileInfo } = userInfo
-    
+
     const dispatch = useDispatch()
-    const navigate = useNavigate()    
+    const navigate = useNavigate()
+
+    const searchQuery = useDebounce(query, 2000)
+
 
     useEffect(() => {
         if (!fullUserProfileInfo) {
@@ -20,6 +31,26 @@ function Navbar() {
         }
 
     }, [])
+
+    useEffect(() => {
+        setListing('')
+        if (searchQuery) 
+        searchCharacter()
+        else
+        setshowResultdiv(false)
+
+        async function searchCharacter() {
+            setshowResultdiv(true)
+            setListing('')
+            setLoading(true)
+            const data = await getCharacter(searchQuery)
+            console.log(data, 'profile')
+            setListing(data)
+            setLoading(false)
+        }
+
+    }, [searchQuery])
+
 
     const logoutHandler = () => {
         Swal.fire({
@@ -34,21 +65,21 @@ function Navbar() {
         }
         ).then((result) => {
             if (result.isConfirmed) {
-  
+
                 dispatch(logout())
-  
-            } 
-  
+
+            }
+
         })
 
-       
-        
+
+
 
     }
     return (
         <div>
             <div className="nav-header">
-                <a  className="brand-logo">
+                <a className="brand-logo">
                     {/* <svg className="logo-abbr" width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0)">
                             <rect className="rect-primary-rect" width="80" height="80" rx="16" fill="#1362FC" />
@@ -86,11 +117,67 @@ function Navbar() {
                             <ul className="navbar-nav header-right">
                                 {fullUserProfileInfo ?
                                     <>
-                                        <li className="nav-item">
+                                        <li className="nav-item d-flex flex-column mt-4">
                                             <div className="input-group search-area">
-                                                <input type="text" className="form-control" placeholder="Search here" />
+                                                <input type="text" className="form-control" onChange={(event) => {
+                                                    setQuery(event.target.value)
+                                                }} value={query} placeholder="Search here" />
                                                 <span className="input-group-text"><a href="/"><i className="flaticon-381-search-2"></i></a></span>
                                             </div>
+
+                                            {showresultdiv && <div className="col-xl-12 col-xxl-12 col-lg-12 mt-2" >
+                                                <div className="card">
+                                                    {loading === true ? <Loader /> :
+                                                        listing.length !== 0 ? <>
+                                                            <div className="card-header  border-0 pb-0">
+                                                                <h4 className="card-title">Search Results</h4>
+                                                            </div>
+                                                            <div className="card-body">
+                                                                <div id="DZ_W_Todo1" className="widget-media dz-scroll ps ps--active-y" style={{ minHeight: "4.125rem" }}>
+                                                                    <ul className="timeline">
+                                                                        {listing.map(profile => {
+                                                                            return(
+                                                                            <li>
+                                                                                <div className="timeline-panel">
+                                                                                    <div className="media me-2">
+                                                                                        <img alt="image" width="50" src={profile.pro_pic} />
+                                                                                    </div>
+                                                                                    <div className="media-body">
+                                                                                        <h5 className="mb-1">{profile.full_name}</h5>
+                                                                                        <small className="d-block">@{profile.username}</small>
+                                                                                    </div>
+                                                                                    {/* <div className="dropdown">
+                                                                                        <button type="button" className="btn btn-primary light sharp" data-bs-toggle="dropdown">
+                                                                                            <svg width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg>
+                                                                                        </button>
+                                                                                        <div className="dropdown-menu dropdown-menu-end">
+                                                                                            <a className="dropdown-item" href="#">Edit</a>
+                                                                                            <a className="dropdown-item" href="#">Delete</a>
+                                                                                        </div>
+                                                                                    </div> */}
+                                                                                    <hr />
+                                                                                </div>
+                                                                            </li>)
+                                                                        }
+                                                                            )
+                                                                            }
+                                                                    </ul>
+                                                                    {/* <div className="ps__rail-x" style={{ left: "0px", bottom: "-73px" }}>
+                                                                        <div className="ps__thumb-x" tabindex="0" style={{ left: "0px", width: "0px" }}>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="ps__rail-y" style={{ top: "73px", height: "324px", right: "0px" }}>
+                                                                        <div className="ps__thumb-y" tabindex="0" style={{ top: "60px", height: "263px" }}>
+
+                                                                        </div>
+                                                                    </div> */}
+                                                                </div>
+                                                            </div></> : <div className="card-header  border-0 pb-0">
+                                                            <h4 className="card-title">No Search Results</h4>
+                                                        </div>}
+                                                </div>
+                                            </div>}
                                         </li>
                                         <li className="nav-item dropdown notification_dropdown">
                                             <a className="nav-link bell-link ai-icon" href="/">

@@ -14,13 +14,15 @@ from django.shortcuts import redirect
 from django.conf import settings
 from rest_framework.views import APIView
 import random
-from .helpers  import *
+from .helpers import *
 import uuid
 from django.core.cache import cache
 from django.contrib.auth.hashers import make_password
-
+from django.db.models import Q
 
 # Create your views here.
+
+
 @api_view(['GET'])
 def index(request):
     posts = Post.objects.all().order_by('-posted_at')
@@ -42,11 +44,11 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         print(attrs, 'atttrrrr')
         data = super().validate(attrs)
-        print(data,'uuuuuu')
+        print(data, 'uuuuuu')
         serializer = ProfileSerializerWithToken(self.user).data
         for k, v in serializer.items():
             data[k] = v
-        print(data['is_email_verified'],'mmmmmmmmmmm')
+        print(data['is_email_verified'], 'mmmmmmmmmmm')
         if not data['is_email_verified']:
             if data['is_superadmin']:
                 return data
@@ -71,7 +73,7 @@ def registerUser(request):
         if Account.objects.filter(email=data['email']).exists():
             message = {'detail': 'User with this email already exists'}
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
-        user=Account.objects.create_user(
+        user = Account.objects.create_user(
             first_name=data['firstname'],
             last_name=data['lastname'],
             username=data['username'],
@@ -80,41 +82,50 @@ def registerUser(request):
             password=data['password']
         )
         auth_token = str(uuid.uuid4())
-        otp=random.randint(1000,9999)
-        user.otp=make_password(str(otp))
-        user.email_token=make_password(auth_token)
+        otp = random.randint(1000, 9999)
+        user.otp = make_password(str(otp))
+        user.email_token = make_password(auth_token)
         user.save()
-        cache.set(user.email,f'{otp}{auth_token}',timeout=60)
-        print(cache.get(user.email),'jhkllllllllllllllll')
-        verify_account_after_registration(user,otp,auth_token)
-        userserializer=AccountSerializer(user)
-        return Response(userserializer.data,status=status.HTTP_201_CREATED)
+        cache.set(user.email, f'{otp}{auth_token}', timeout=60)
+        print(cache.get(user.email), 'jhkllllllllllllllll')
+        verify_account_after_registration(user, otp, auth_token)
+        userserializer = AccountSerializer(user)
+        return Response(userserializer.data, status=status.HTTP_201_CREATED)
     except Exception as e:
-        print(e,'ooooooooooooo')
+        print(e, 'ooooooooooooo')
         message = {'detail': "Your Profile is not registered"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['POST'])
 def googleSignIn(request):
     # try:
-        data = request.data
-        print(data['lastname'],'lllllllll')
-        if Account.objects.filter(username=data['username']):
-            return Response(200)
-        user=Account.objects.create_user(first_name=data['firstname'],
-                                    last_name=data['lastname'],
-                                    username=data['username'],
-                                    email=data['email'],
-                                    password=data['password'],
-                                    phone_number="",
-                                    )
-        user.is_email_verified=True
-        user.save()
+    data = request.data
+    print(data['lastname'], 'lllllllll')
+    if Account.objects.filter(username=data['username']):
         return Response(200)
+    user = Account.objects.create_user(first_name=data['firstname'],
+                                       last_name=data['lastname'],
+                                       username=data['username'],
+                                       email=data['email'],
+                                       password=data['password'],
+                                       phone_number="",
+                                       )
+    user.is_email_verified = True
+    user.save()
+    return Response(200)
     # except Exception as e:
     #     print(e)
     #     message = {'detail': "Something went wrong"}
     #     return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def getSearchedUsers(request):
+    data = request.data
+    print(data)
+    profile_list = Account.objects.filter(Q(username__icontains=data['value']) | Q(full_name__icontains=data['value']) | Q(status__icontains=data['value']))
+    profile_listSerializer = AccountSerializer(profile_list, many=True)
+    return Response(profile_listSerializer.data)
 
 
 @api_view(['POST'])
@@ -394,7 +405,7 @@ def connectUs(request):
     data = request.data
     user = request.user
     try:
-        if Client_Requests.objects.filter(request_from=user, is_rejected=False,is_acceptedbyUser=False).first():
+        if Client_Requests.objects.filter(request_from=user, is_rejected=False, is_acceptedbyUser=False).first():
             message = {'detail': "You already have a request pending!"}
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
         requests = NewClient_RequestSerializer(data=data, many=False)

@@ -89,7 +89,6 @@ def follow_unfollow(request):
         user.save()
         follower.save()
         delete_follower.delete() 
-        
     else:
         new_follower=Network.objects.create(followed_to=follower,followed_by=user)
         new_follower.is_follow=True

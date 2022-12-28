@@ -12,6 +12,9 @@ import Loader from '../Loader'
 
 function Account_Verify() {
     const [reload, setreload] = useState(false)
+    const [otp, setOtp] = useState("");
+    const [minutes, setMinutes] = useState(1);
+    const [seconds, setSeconds] = useState(30);
     const navigate = useNavigate()
 
     const { register, handleSubmit, formState: { errors } } = useForm({
@@ -32,17 +35,42 @@ function Account_Verify() {
 
 
     const submitHandler = (e) => {
-        dispatch(account_verify_otp(registereduser?.id, e.otp)).then(() =>         dispatch(registeredUserDetails(registereduser?.id))
+        dispatch(account_verify_otp(registereduser?.id, e.otp)).then(() => dispatch(registeredUserDetails(registereduser?.id))
         )
     }
 
     useEffect(() => {
-        if(otpverified)
-        navigate('/login')
+        if (otpverified)
+            navigate('/login')
         dispatch(registeredUserDetails(registereduser?.id))
     }, [otpverified, reload])
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (seconds > 0) {
+                setSeconds(seconds - 1);
+            }
 
+            if (seconds === 0) {
+                if (minutes === 0) {
+                    clearInterval(interval);
+                } else {
+                    setSeconds(59);
+                    setMinutes(minutes - 1);
+                }
+            }
+        }, 1000);
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, [seconds]);
+
+    const resendOTP = () => {
+        setMinutes(1);
+        setSeconds(30);
+        resend_otp(registereduser?.id)
+    };
     return (
         <div className="vh-100" style={{ backgroundImage: "url(AECFiles/images/11.jpg)" }}>
 
@@ -67,9 +95,34 @@ function Account_Verify() {
                                                         {errors?.otp && errors.otp.message}
                                                     </small>
                                                 </div>
-                                                <div className='d-flex justify-content-end'>
-                                                    <p onClick={() => dispatch(resend_otp(registereduser?.id))}> Resend</p>
+                                                <div >
+                                                    <div className='d-flex justify-content-between'>
+                                                        {seconds > 0 || minutes > 0 ? (
+                                                            <p>
+                                                                Time Remaining: {minutes < 10 ? `0${minutes}` : minutes}:
+                                                                {seconds < 10 ? `0${seconds}` : seconds}
+                                                            </p>
+                                                        ) : (
+                                                            <p>Didn't recieve code?</p>
+                                                        )}
+
+                                                        <button
+                                                            disabled={seconds > 0 || minutes > 0}
+                                                            style={{
+                                                                color: seconds > 0 || minutes > 0 ? "#DFE3E8" : "#FF5630",
+                                                                background: "none",
+                                                                cursor: "pointer",
+                                                                outline: "none",
+                                                                border: "none",
+                                                            }}
+                                                            onClick={resendOTP}
+                                                        >
+                                                            <u>Resend OTP</u>
+                                                        </button>
+                                                    </div>
+                                                    {/* <p onClick={() => dispatch(resend_otp(registereduser?.id))}> Resend</p> */}
                                                 </div>
+
                                                 <div className="text-center">
                                                     <button type="submit" className="btn btn-primary btn-block">Verify</button>
                                                 </div>

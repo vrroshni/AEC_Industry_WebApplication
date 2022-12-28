@@ -653,9 +653,9 @@ export const getUserProfile = () => async (dispatch, getState) => {
 
     try {
 
-        dispatch({
-            type: USER_PROFILE_REQUEST
-        })
+        // dispatch({
+        //     type: USER_PROFILE_REQUEST
+        // })
         const {
             userLogin: { userInfo },
         } = getState()

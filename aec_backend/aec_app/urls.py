@@ -19,6 +19,9 @@ urlpatterns = [
     path('email_verify/', email_verify, name='email_verify'),
     path('registereduser/<int:id>/', registereduser, name='registereduser'),
     path('googleSignIn/', googleSignIn, name='googleSignIn'),
+    path('search/', getSearchedUsers, name='getSearchedUsers'),
+
+    
     path('profile/', getUserProfile, name='profile'),
     path('otheruserprofile/', otherUserProfile, name='otheruserprofile'),
     path('updateprofile/', updateUserProfile, name='updateprofile'),

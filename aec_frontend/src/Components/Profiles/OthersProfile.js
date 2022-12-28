@@ -12,7 +12,7 @@ import { SlLike, SlDislike } from 'react-icons/sl';
 import { GoCommentDiscussion } from 'react-icons/go';
 import Carousel from 'react-bootstrap/Carousel';
 import Bluetick from '../UserSide/Bluetick';
-import { addPost, allFeed, post_like, post_dislike, user_commented, follow_unfollow, send_connection } from '../../actions/userActions'
+import { addPost, allFeed, post_like, post_dislike, user_commented, follow_unfollow, send_connection, getUserProfile } from '../../actions/userActions'
 
 import UserProjects from './UserProjects';
 
@@ -41,20 +41,24 @@ function OthersProfile() {
 	const user_id = useParams().user_id
 
 	const user_like = (id) => {
-		dispatch(post_like(id))
+		dispatch(post_like(id)).then(() => dispatch(getOtherUserProfile(user_id))
+		)
 	}
 	const Follow_unfollow = (id) => {
-		dispatch(follow_unfollow(id))
-		dispatch(getOtherUserProfile(user_id))
+		dispatch(follow_unfollow(id)).then(() => dispatch(getOtherUserProfile(user_id))
+		)
 
 	}
 	const Send_connection = (id) => {
-		dispatch(send_connection(id))
+		dispatch(send_connection(id)).then(() => dispatch(getOtherUserProfile(user_id))
+		)
+
 
 	}
 
 	const user_dislike = (id) => {
-		dispatch(post_dislike(id))
+		dispatch(post_dislike(id)).then(() => dispatch(getOtherUserProfile(user_id))
+		)
 
 	}
 	const CommentSubmitHandler = (e) => {
@@ -79,15 +83,18 @@ function OthersProfile() {
 
 	const OthersProfile = useSelector(state => state.othersprofile)
 	const { loading, error, otheruser } = OthersProfile
-
-	console.log(otheruser, 'oooooooooooooo')
-
 	useEffect(() => {
+
 		dispatch(getOtherUserProfile(user_id))
+		dispatch(getUserProfile())
 		return () => {
 			dispatch({ type: OTHER_USER_PROFILE_RESET })
 		}
 	}, [reload])
+
+	console.log(otheruser, 'kkkkkkkkkkkkkkkkkkk')
+	console.log(fullUserProfileInfo, 'iiiiiiiiiiiiiiiiiiiiiii')
+
 
 	return (
 		<>
@@ -119,8 +126,15 @@ function OthersProfile() {
 										<p>Email</p>
 									</div>
 									<div className="dropdown ms-auto d-flex">
+										<div className="profile-email px-2 pt-2">
+											<button className='btn btn-primary btn-xs' onClick={() => Follow_unfollow(otheruser.id)} >{otheruser?.user_network?.some(e => e.followed_by === fullUserProfileInfo.id) ? "Unfollow" : "follow"}</button>
+										</div>
 										<div className="profile-email px-2 pt-2" >
-											<button className='btn btn-primary btn-xs' onClick={() => Follow_unfollow(otheruser.id)} >{otheruser?.user_network?.some(e => e.followed_at === fullUserProfileInfo.id) ? "Unfollow" : "follow"}</button>
+											{console.log(otheruser?.user_network?.some(e => e.is_connect === null && e.followed_by === fullUserProfileInfo.id), 'llllllllllllllllllllllllllllllll')}
+											{otheruser?.user_network?.some(e => e.is_connect === null && e.followed_by === fullUserProfileInfo.id) ? <button className='btn btn-primary btn-xs' onClick={() => Send_connection(otheruser.id)} > Connect </button> :
+												otheruser?.user_network?.some(e => e.is_connect === false && e.followed_by === fullUserProfileInfo.id) ? <button className='btn btn-primary btn-xs' >PENDING </button> : otheruser?.user_network?.some(e => e.is_connect === true && e.followed_by === fullUserProfileInfo.id) ?
+													<button className='btn btn-primary btn-xs'> Message </button> : null
+											}
 										</div>
 										{/* <a href="#" className="btn btn-primary light sharp" data-bs-toggle="dropdown" aria-expanded="true"><i className="fa fa-plus text-primary"></i></a>
 											<ul className="dropdown-menu dropdown-menu-end">
