@@ -23,11 +23,20 @@ function Navbar() {
 
     const searchQuery = useDebounce(query, 2000)
 
+    const gotoProfile = (id) => {
+        setshowResultdiv(false)
+        console.log(id,fullUserProfileInfo.id,'proffffffff')
+        if (id === fullUserProfileInfo.id)
+            navigate('/profile')
+        else
+            navigate(`/profile/${id}`)
+
+    }
 
     useEffect(() => {
         if (!fullUserProfileInfo) {
             dispatch(getUserProfile())
-            dispatch(allFeed())
+            // dispatch(allFeed())
         }
 
     }, [])
@@ -138,7 +147,7 @@ function Navbar() {
                                                                         {listing.map(profile => {
                                                                             return(
                                                                             <li>
-                                                                                <div className="timeline-panel">
+                                                                                <div className="timeline-panel" onClick={() => gotoProfile(profile.id)}>
                                                                                     <div className="media me-2">
                                                                                         <img alt="image" width="50" src={profile.pro_pic} />
                                                                                     </div>

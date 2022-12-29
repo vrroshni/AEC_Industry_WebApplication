@@ -1,5 +1,6 @@
 import React from 'react'
 import { publish_proposal_completed, adminProposalOnprocessList } from '../../actions/premiumActions'
+import { getUserProfile } from '../../actions/userActions'
 import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from "react-hook-form";
 
@@ -32,6 +33,8 @@ function PublishModal(props) {
         )).then(() => {
             props.handleModalClose()
             dispatch(adminProposalOnprocessList())
+            dispatch(getUserProfile())
+            
         })
 
 

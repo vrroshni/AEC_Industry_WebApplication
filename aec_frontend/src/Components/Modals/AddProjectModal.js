@@ -17,7 +17,9 @@ function AddProjectModal(props) {
         project_image: { required: "Project Image is required" },
     };
     const addproject = (e) => {
+
         dispatch(addProject(e.project_title, e.project_desc, e.project_image[0]))
+        props.handleModalClose()
     }
     return (
         <>

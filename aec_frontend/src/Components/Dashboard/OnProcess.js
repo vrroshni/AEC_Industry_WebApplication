@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { adminProposalOnprocessList, proposal_completed } from '../../actions/premiumActions'
+import { adminProposalOnprocessList, proposal_completed,publish_proposal_completed } from '../../actions/premiumActions'
 import PublishModal from '../Modals/PublishModal'
 import DashboardNavbar from './DashboardNavbar'
 import Swal from 'sweetalert2'

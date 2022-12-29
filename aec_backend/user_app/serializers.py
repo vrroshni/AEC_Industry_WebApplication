@@ -29,7 +29,22 @@ class ProjectsSerializer(serializers.ModelSerializer):
     class Meta:
         model=Projects
         fields='__all__'
+class PostReactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post_Reaction
+        fields = "__all__"
         
+class PostCommentSerializer(serializers.ModelSerializer):
+    user=AccountSerializer(read_only=True)
+    class Meta:
+        model = Post_Comment
+        fields = "__all__"
+        
+class PostComment_Reply_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post_Comment_Reply
+        fields = "__all__"
+    
   
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -97,21 +112,6 @@ class ProfileVerificationSerializer(serializers.ModelSerializer):
         
 
     
-class PostReactionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post_Reaction
-        fields = "__all__"
-        
-class PostCommentSerializer(serializers.ModelSerializer):
-    user=ProfileSerializer(read_only=True)
-    class Meta:
-        model = Post_Comment
-        fields = "__all__"
-        
-class PostComment_Reply_Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post_Comment_Reply
-        fields = "__all__"
 
 class NewClient_RequestSerializer(serializers.ModelSerializer):
     class Meta:

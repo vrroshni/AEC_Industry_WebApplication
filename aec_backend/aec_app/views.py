@@ -122,7 +122,6 @@ def googleSignIn(request):
 @api_view(['POST'])
 def getSearchedUsers(request):
     data = request.data
-    print(data)
     profile_list = Account.objects.filter(Q(username__icontains=data['value']) | Q(full_name__icontains=data['value']) | Q(status__icontains=data['value']))
     profile_listSerializer = AccountSerializer(profile_list, many=True)
     return Response(profile_listSerializer.data)
@@ -189,7 +188,6 @@ class StripePaymentProposalBid(APIView):
         price = request.POST.get('price')
         bid_id = request.POST.get('id')
         print(int(float(price)), 'ppppppppppp')
-        price = int(float(price))
         try:
             checkout_session = stripe.checkout.Session.create(
                 line_items=[
@@ -260,8 +258,8 @@ def getUserRequest(request):
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def updateUserProfile(request):
-    user = request.user
     try:
+        user = request.user
         data = request.data
         if Account.objects.exclude(id=user.id).filter(username=data['username']).exists():
             message = {'detail': 'User with this username already exists'}
@@ -304,7 +302,9 @@ def addPost(request):
         if data['video'] != '':
             post.post_content_video = data['video']
         post.save()
-        return Response(status=status.HTTP_201_CREATED)
+        posts = Post.objects.all().order_by('-posted_at')
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
     except Exception:
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
@@ -366,7 +366,7 @@ def allFeed(request):
         # post suggestions
         posts = Post.objects.all().order_by('-posted_at')
         serializer = PostSerializer(posts, many=True)
-        return Response({'allposts': serializer.data}, status=status.HTTP_201_CREATED)
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
 
     except Exception:
         message = {'detail': "Something went wrong"}
@@ -489,8 +489,6 @@ def accept_proposalBid(request):
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def reject_proposalBid(request):
-    user = request.user
-    data = request.data
     try:
         user = request.user
         data = request.data
@@ -513,8 +511,8 @@ def reject_proposalBid(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def adminProposals(request):
-    user = request.user
     try:
+        user = request.user
         proposals = Proposals_Admin.objects.filter(
             eligible=user, status='PENDING')
         proposalsSerializer = Proposals_AdminSerializer(proposals, many=True)
@@ -527,8 +525,8 @@ def adminProposals(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def adminProposalsAccepted(request):
-    user = request.user
     try:
+        user = request.user
         proposals = Proposals_Admin.objects.filter(
             eligible=user, status='ACCEPTED')
         proposalsSerializer = Proposals_AdminSerializer(proposals, many=True)
@@ -541,8 +539,8 @@ def adminProposalsAccepted(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def adminProposalsRejected(request):
-    user = request.user
     try:
+        user = request.user
         proposals = Proposals_Admin.objects.filter(
             eligible=user, is_accepted=False, status='REJECTED')
         proposalsSerializer = Proposals_AdminSerializer(proposals, many=True)
@@ -555,8 +553,8 @@ def adminProposalsRejected(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def adminProposalsOnprocess(request):
-    user = request.user
     try:
+        user = request.user
         proposals = Proposals_Admin.objects.filter(
             eligible=user, is_accepted=True, status='PROPOSAL_SENT')
         proposalsSerializer = Proposals_AdminSerializer(proposals, many=True)
@@ -569,9 +567,9 @@ def adminProposalsOnprocess(request):
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def proposal_accepted(request):
-    user = request.user
-    data = request.data
     try:
+        user = request.user
+        data = request.data
         proposal = Proposals_Admin.objects.get(id=data['id'], eligible=user)
         proposal.status = 'ACCEPTED'
         proposal.save()
@@ -584,9 +582,9 @@ def proposal_accepted(request):
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def proposal_rejected(request):
-    user = request.user
-    data = request.data
     try:
+        user = request.user
+        data = request.data
         proposal = Proposals_Admin.objects.get(id=data['id'], eligible=user)
         proposal.delete()
         return Response(status=status.HTTP_200_OK)
@@ -598,10 +596,9 @@ def proposal_rejected(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def send_proposal(request):
-    user = request.user
-    data = request.data
-    print(data)
     try:
+        user = request.user
+        data = request.data
         proposals = Proposals_Admin.objects.get(
             id=data['admin_proposal'], eligible=user)
         proposals.status = 'PROPOSAL_SENT'
@@ -621,10 +618,10 @@ def send_proposal(request):
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def proposal_completed(request):
-    user = request.user
-    data = request.data
 
     try:
+        user = request.user
+        data = request.data
         user.projects += 1
         user.save()
         proposal = Proposals_Admin.objects.get(id=data['id'], eligible=user)
@@ -639,10 +636,10 @@ def proposal_completed(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def proposal_completed_publish(request):
-    user = request.user
-    data = request.data
 
     try:
+        user = request.user
+        data = request.data
         user.projects += 1
         user.save()
         proposal = Proposals_Admin.objects.get(
@@ -663,9 +660,9 @@ def proposal_completed_publish(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def accept_by_client(request):
-    user = request.user
-    data = request.data
     try:
+        user = request.user
+        data = request.data
         proposal = Aec_Proposals_User.objects.get(id=data['id'])
         proposal.is_accepted = True
         proposal.save()

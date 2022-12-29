@@ -97,8 +97,7 @@ def follow_unfollow(request):
         user.save()
         follower.save()
         new_follower.save()
-    serializer = ProfileSerializer(user, many=False)    
-    return Response(serializer.data)
+    return Response(status=status.HTTP_201_CREATED)
 
  
     
@@ -163,8 +162,8 @@ def send_connection(request):
         new_connection.save()
     return Response(status=status.HTTP_200_OK)
  
-        
-               
+
+              
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def accept_connection(request):

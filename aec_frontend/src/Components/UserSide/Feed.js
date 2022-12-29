@@ -58,22 +58,22 @@ function Feed() {
 
     const addedPost = useSelector(state => state.addPost)
     const { loading } = addedPost
-    console.log(suggestions, 'kkkkkkkkk')
+
 
 
     const submitHandler = (e) => {
+        setfronterror((prev) => '')
         e.preventDefault()
         if ((post_desc === '') && (image === '') && (video === '')) {
             setfronterror('Add sometheing to post')
         } else {
             dispatch(addPost(post_desc, image, video))
                 .then(() => {
-                    setfronterror('')
-                    setImage('')
-                    setVideo('')
-                    setPost_desc('')
+                    setfronterror((prev) => '')
+                    setImage((prev) => '')
+                    setVideo((prev) => '')
+                    setPost_desc((prev) => '')
                     dispatch(allFeed())
-                    dispatch({ type: USER_ADD_POST_RESET })
                 }
                 )
 
@@ -86,28 +86,29 @@ function Feed() {
     }
     const Follow_unfollow = (id) => {
         dispatch(follow_unfollow(id)).then(() => {
-
+            
             dispatch(suggestionslist())
+            dispatch(getUserProfile())
+            
 
         })
     }
     const Send_connection = (id) => {
         dispatch(send_connection(id)).then(() => {
-
             dispatch(suggestionslist())
+            dispatch(getUserProfile())
 
         })
 
     }
 
-    console.log(posts, 'ppppppppppp')
+    console.log(posts, 'ASPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP')
 
     const user_dislike = (id) => {
         dispatch(post_dislike(id))
 
     }
     const gotoProfile = (id) => {
-        console.log(id,fullUserProfileInfo.id,'proffffffff')
         if (id === fullUserProfileInfo.id)
             navigate('/profile')
         else
@@ -122,15 +123,15 @@ function Feed() {
 
     const CommentSubmitHandler = (e) => {
         e.preventDefault()
-        setPosterror('')
+        setPosterror((prev) => '')
         if (e.target.comment.value === '') {
             setPosterror('Add comment to post')
-            setComment('')
+            setComment((prev) => '')
             return
         }
         dispatch(user_commented(e.target.post.value, comment))
-        setComment('')
-        setPosterror('')
+        setComment((prev) => '')
+        setPosterror((prev) => '')
     }
     return (
         <div className="row">

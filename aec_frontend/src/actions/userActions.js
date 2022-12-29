@@ -690,9 +690,9 @@ export const getOtherUserProfile = (user_id) => async (dispatch, getState) => {
     console.log(user_id, 'iddddddddddddddd')
     try {
 
-        dispatch({
-            type: OTHER_USER_PROFILE_REQUEST
-        })
+        // dispatch({
+        //     type: OTHER_USER_PROFILE_REQUEST
+        // })
         const {
             userLogin: { userInfo },
         } = getState()
@@ -954,7 +954,7 @@ export const allFeed = () => async (dispatch, getState) => {
 
         dispatch({
             type: USER_FEED_ALL_POSTS_LIST_SUCCESS,
-            payload: data.allposts
+            payload: data
         })
 
 
@@ -1126,11 +1126,7 @@ export const follow_unfollow = (user_id) => async (dispatch, getState) => {
     dispatch({
         type: UNFOLLOW_FOLLOW_USER,
     })
-    dispatch({
-        type: USER_PROFILE_SUCCESS,
-        payload: data
-
-    })
+  
 
 
 

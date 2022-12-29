@@ -210,7 +210,7 @@ function OthersProfile() {
 															<div className="card-tabs mt-3 mt-sm-0 mb-sm-0 mb-3">
 																<ul className="nav nav-tabs shadow-none text-center" role="tablist">
 																	<li className="nav-item">
-																		<a className="nav-link active" data-bs-toggle="tab" href="#All" role="tab" aria-selected="true">Completed Projects</a>
+																		<a className="nav-link active" data-bs-toggle="tab" href="#All" role="tab" aria-selected="true">Completed Projects {otheruser?.projects}</a>
 																	</li>
 																</ul>
 															</div>

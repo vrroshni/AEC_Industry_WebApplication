@@ -435,7 +435,7 @@ console.log(fullUserProfileInfo,'infooooooooooo')
 																<div className="card-tabs mt-3 mt-sm-0 mb-sm-0 mb-3">
 																	<ul className="nav nav-tabs shadow-none text-center" role="tablist">
 																		<li className="nav-item">
-																			<a className="nav-link active" data-bs-toggle="tab" href="#All" role="tab" aria-selected="true">Completed Projects</a>
+																			<a className="nav-link active" data-bs-toggle="tab" href="#All" role="tab" aria-selected="true">Completed Projects {fullUserProfileInfo?.projects}</a>
 																		</li>
 																	</ul>
 																</div>
@@ -450,7 +450,7 @@ console.log(fullUserProfileInfo,'infooooooooooo')
 																	<div className="tab-pane show active" id="All">
 																		{fullUserProfileInfo?.user_project.map((project,id) => {
 																			return (
-
+																				
 																				<UserProjects project={project} key={id+1} />
 																			)
 																		})}
