@@ -32,6 +32,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,6 +44,8 @@ INSTALLED_APPS = [
     'aec_app.apps.AecAppConfig',
     'admin_app',
     'user_app',
+    'chat_app', 
+    
 
     'rest_framework',
     "corsheaders",
@@ -128,6 +132,16 @@ TEMPLATES = [
 WSGI_APPLICATION = 'aec_backend.wsgi.application'
 AUTH_USER_MODEL = 'user_app.Account'
 
+
+CHANNEL_LAYERS={
+    "default":{
+        "BACKEND":"channels_redis.core.RedisChannelLayer",
+        "CONFIG":{
+            "hosts":[("127.0.0.1",6379)],
+        }
+        
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -229,3 +243,4 @@ CACHES = {
         }
     }
 }
+

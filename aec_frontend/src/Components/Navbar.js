@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout, getUserProfile, allFeed } from '../actions/userActions'
 import { useNavigate } from 'react-router-dom'
@@ -14,6 +14,7 @@ function Navbar() {
     const [listing, setListing] = useState('')
     const [loading, setLoading] = useState(false)
     const [showresultdiv, setshowResultdiv] = useState(false)
+    const controllerRef = useRef()
 
     const userInfo = useSelector(state => state.getUserProfile)
     const { fullUserProfileInfo } = userInfo
@@ -22,10 +23,12 @@ function Navbar() {
     const navigate = useNavigate()
 
     const searchQuery = useDebounce(query, 2000)
+    const controller = new AbortController();
+    controllerRef.current = controller;
 
     const gotoProfile = (id) => {
         setshowResultdiv(false)
-        console.log(id,fullUserProfileInfo.id,'proffffffff')
+        console.log(id, fullUserProfileInfo.id, 'proffffffff')
         if (id === fullUserProfileInfo.id)
             navigate('/profile')
         else
@@ -41,23 +44,31 @@ function Navbar() {
 
     }, [])
 
+    async function searchCharacter() {
+        setshowResultdiv(true)
+        setListing('')
+        setLoading(true)
+        console.log(controllerRef.current?.signal,'kkkkkkkkkkkkkkkk')
+        const data = await getCharacter(searchQuery,controllerRef.current?.signal)
+        controllerRef.current = null;
+        console.log(controllerRef.current,'mmhhhhh')
+        setListing(data)
+        setLoading(false)
+    }
+
+
+    const cancelSearch = () => {
+        setshowResultdiv(false)
+        controllerRef.current.abort();
+        console.log(controllerRef.current?.signal,'ccccccccccccc')
+
+      }
+
     useEffect(() => {
         setListing('')
-        if (searchQuery) 
-        searchCharacter()
-        else
-        setshowResultdiv(false)
-
-        async function searchCharacter() {
-            setshowResultdiv(true)
-            setListing('')
-            setLoading(true)
-            const data = await getCharacter(searchQuery)
-            console.log(data, 'profile')
-            setListing(data)
-            setLoading(false)
-        }
-
+        if (searchQuery || query.trim().length <0)
+            searchCharacter()
+        else return cancelSearch()
     }, [searchQuery])
 
 
@@ -129,6 +140,7 @@ function Navbar() {
                                         <li className="nav-item d-flex flex-column mt-4">
                                             <div className="input-group search-area">
                                                 <input type="text" className="form-control" onChange={(event) => {
+                                                    
                                                     setQuery(event.target.value)
                                                 }} value={query} placeholder="Search here" />
                                                 <span className="input-group-text"><a href="/"><i className="flaticon-381-search-2"></i></a></span>
@@ -145,17 +157,17 @@ function Navbar() {
                                                                 <div id="DZ_W_Todo1" className="widget-media dz-scroll ps ps--active-y" style={{ minHeight: "4.125rem" }}>
                                                                     <ul className="timeline">
                                                                         {listing.map(profile => {
-                                                                            return(
-                                                                            <li>
-                                                                                <div className="timeline-panel" onClick={() => gotoProfile(profile.id)}>
-                                                                                    <div className="media me-2">
-                                                                                        <img alt="image" width="50" src={profile.pro_pic} />
-                                                                                    </div>
-                                                                                    <div className="media-body">
-                                                                                        <h5 className="mb-1">{profile.full_name}</h5>
-                                                                                        <small className="d-block">@{profile.username}</small>
-                                                                                    </div>
-                                                                                    {/* <div className="dropdown">
+                                                                            return (
+                                                                                <li key={profile.id}>
+                                                                                    <div className="timeline-panel" onClick={() => gotoProfile(profile.id)}>
+                                                                                        <div className="media me-2">
+                                                                                            <img alt="image" width="50" src={profile.pro_pic} />
+                                                                                        </div>
+                                                                                        <div className="media-body">
+                                                                                            <h5 className="mb-1">{profile.full_name}</h5>
+                                                                                            <small className="d-block">@{profile.username}</small>
+                                                                                        </div>
+                                                                                        {/* <div className="dropdown">
                                                                                         <button type="button" className="btn btn-primary light sharp" data-bs-toggle="dropdown">
                                                                                             <svg width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg>
                                                                                         </button>
@@ -164,12 +176,12 @@ function Navbar() {
                                                                                             <a className="dropdown-item" href="#">Delete</a>
                                                                                         </div>
                                                                                     </div> */}
-                                                                                    <hr />
-                                                                                </div>
-                                                                            </li>)
+                                                                                        <hr />
+                                                                                    </div>
+                                                                                </li>)
                                                                         }
-                                                                            )
-                                                                            }
+                                                                        )
+                                                                        }
                                                                     </ul>
                                                                     {/* <div className="ps__rail-x" style={{ left: "0px", bottom: "-73px" }}>
                                                                         <div className="ps__thumb-x" tabindex="0" style={{ left: "0px", width: "0px" }}>

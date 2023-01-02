@@ -7,8 +7,8 @@ function SmallLoader() {
             animation='border'
             role='status'
             style={{
-                height: '20px',
-                width: '20px',
+                height: '40px',
+                width: '40px',
                 margin: 'auto',
                 display: 'block'
             }}

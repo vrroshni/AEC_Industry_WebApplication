@@ -26,24 +26,24 @@ const mystyle = {
 function Feed() {
 
     const [reload, setReload] = useState('')
-    const [image, setImage] = useState('')
-    const [video, setVideo] = useState('')
-    const [post_desc, setPost_desc] = useState('')
+    const [image, setImage] = useState(null)
+    const [video, setVideo] = useState(null)
+    const [post_desc, setPost_desc] = useState(null)
     const [fronterror, setfronterror] = useState(null)
-    const [posterror, setPosterror] = useState('')
-    const [comment, setComment] = useState('')
+    const [posterror, setPosterror] = useState(null)
+    const [comment, setComment] = useState(null)
 
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const ImagehandleChange = (e) => {
-        setfronterror('')
+        setfronterror(null)
         setImage(e.target.files[0])
     }
 
     const VideohandleChange = (e) => {
-        setfronterror('')
+        setfronterror(null)
         setVideo(e.target.files[0])
     }
 
@@ -62,17 +62,22 @@ function Feed() {
 
 
     const submitHandler = (e) => {
-        setfronterror((prev) => '')
+        setfronterror((fronterror) => setfronterror(null))
+        alert('helo')
         e.preventDefault()
-        if ((post_desc === '') && (image === '') && (video === '')) {
-            setfronterror('Add sometheing to post')
+        console.log(post_desc, image, video, 'kkkkkkkkkkkkkkkk')
+
+        if ((post_desc === null) && (image === null) && (video === null)) {
+            setfronterror((fronterror) => setfronterror('Add sometheing to post'))
+            console.log('Add sometheing to post')
+            console.log(fronterror, 'lllllllllllll')
         } else {
             dispatch(addPost(post_desc, image, video))
                 .then(() => {
-                    setfronterror((prev) => '')
-                    setImage((prev) => '')
-                    setVideo((prev) => '')
-                    setPost_desc((prev) => '')
+                    setfronterror((fronterror) => setfronterror(null))
+                    setImage((image) => setImage(null))
+                    setVideo((video) => setVideo(null))
+                    setPost_desc((post_desc) => setPost_desc(null))
                     dispatch(allFeed())
                 }
                 )
@@ -86,10 +91,10 @@ function Feed() {
     }
     const Follow_unfollow = (id) => {
         dispatch(follow_unfollow(id)).then(() => {
-            
+
             dispatch(suggestionslist())
             dispatch(getUserProfile())
-            
+
 
         })
     }
@@ -102,7 +107,6 @@ function Feed() {
 
     }
 
-    console.log(posts, 'ASPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP')
 
     const user_dislike = (id) => {
         dispatch(post_dislike(id))
@@ -123,10 +127,10 @@ function Feed() {
 
     const CommentSubmitHandler = (e) => {
         e.preventDefault()
-        setPosterror((prev) => '')
+        setPosterror((prev) => setPosterror(''))
         if (e.target.comment.value === '') {
             setPosterror('Add comment to post')
-            setComment((prev) => '')
+            setComment((prev) => setComment(''))
             return
         }
         dispatch(user_commented(e.target.post.value, comment))
@@ -202,7 +206,8 @@ function Feed() {
                                         <div className="tab-content">
                                             <div id="my-posts" className="tab-pane fade active show">
                                                 <div className="my-post-content pt-3">
-                                                    {fronterror && <Message variant='danger'>{fronterror}</Message>}
+                                                    {console.log(fronterror)}
+                                                    {fronterror && <Message variant='danger' >{fronterror}</Message>}
                                                     <div className="post-input" style={{ marginBottom: "0" }}>
                                                         <form onSubmit={submitHandler}>
                                                             <textarea name="post_desc" id="textarea" cols="30" rows="5" className="form-control bg-transparent" placeholder="Please type what you want...." value={post_desc} onChange={(e) => {
@@ -291,7 +296,7 @@ function Feed() {
                         <div className="card">
                             {loading && <Loader />}
                             {posts?.length !== 0 ? posts?.map((post, id) => (
-                                <div key={id} className="card-body mt-4" style={{
+                                <div key={post.id} className="card-body mt-4" style={{
                                     boxShadow: "0.3125rem 0.3125rem 0.3125rem 0.3125rem rgb(82 63 105 / 5%)", border: "0rem solid transparent",
                                     borderRadius: "1.375rem"
                                 }}>
@@ -396,7 +401,7 @@ function Feed() {
 
                                                         </form>
                                                         {(post.post_comment).map(comment => (
-                                                            <div className="d-flex justify-content-start mb-3">
+                                                            <div key={comment.id} className="d-flex justify-content-start mb-3">
                                                                 <div className="img_cont_msg">
                                                                     <img src={comment.user.pro_pic} className="rounded-circle user_img_msg" alt="" style={{ width: "30px", height: "30px" }} />
                                                                 </div>
@@ -431,7 +436,7 @@ function Feed() {
                                 <h5 className="text-primary d-inline">You may Know</h5>
                                 {suggestions?.map((user, id) => {
                                     return (
-                                        <div className="media pt-3 pb-3">
+                                        <div key={user.id} className="media pt-3 pb-3">
                                             <img src={user.pro_pic} alt="image" className="me-3 rounded" width="50" />
                                             <div className="media-body">
                                                 <div >

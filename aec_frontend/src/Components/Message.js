@@ -10,6 +10,7 @@ function Message({ variant, children }) {
     } 
     useEffect(() => {
         handleVisible();
+        return clearTimeout(handleVisible)
     })
     
 

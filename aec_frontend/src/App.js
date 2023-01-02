@@ -33,6 +33,7 @@ import PremiumDashboard from './components/Dashboard/PremiumDashboard'
 import Proposalbids from './components/Dashboard/Proposalbids';
 import Account_Verify from './components/Accounts/Account_Verify';
 import Email_Verify from './components/Accounts/Email_Verify';
+import ChatPage from './components/Chat/ChatPage';
 
 function App() {
 
@@ -60,6 +61,7 @@ function App() {
               <Route path='/rejectedproposals' element={<RejectedProposals/>} />
               <Route path='/onprocess' element={<OnProcess/>} />
               <Route path='/proposalbids' element={<Proposalbids/>} />
+              <Route path='/chat' element={<ChatPage/>} />
             
             </Route>
             

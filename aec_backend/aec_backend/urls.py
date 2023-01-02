@@ -23,4 +23,5 @@ urlpatterns = [
     path('',include('aec_app.urls')),
     path('user/',include('user_app.urls')),
     path('aecadmin/', include('admin_app.urls')),
+    path('chat/', include('chat_app.urls')),
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

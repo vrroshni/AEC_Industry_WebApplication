@@ -7,7 +7,7 @@ const useDebounce = (value, delay) => {
         const handler = setTimeout(() => {
             setDebouncedValue(value)
 
-        }, delay)
+        }, delay || 1000)
 
         return () => {
             clearTimeout(handler)

@@ -7,8 +7,6 @@ export async function getCharacter(value) {
             'Content-type': 'application/json'
         }
     }
-    console.log(value,'hhhhhhhhhhhhhhhh')
     const { data } = await axios.post('/search/', { value }, config)
-    console.log(data,'sdtata')
     return data
 }
