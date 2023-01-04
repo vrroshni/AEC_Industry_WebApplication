@@ -148,14 +148,12 @@ class NewAec_Proposals_UserSerializer(serializers.ModelSerializer):
         
         
         
-class ChatModel_Serializer(serializers.ModelSerializer):
-    class Meta:
-        model=ChatModel
-        fields='__all__'
+
         
         
 class Chat_MessageSerializer(serializers.ModelSerializer):
-    thread=ChatModel_Serializer(read_only=True)
+    sender=AccountSerializer(read_only=True)
+    receiver=AccountSerializer(read_only=True)
     class Meta:
         model=ChatMessages
         fields='__all__'

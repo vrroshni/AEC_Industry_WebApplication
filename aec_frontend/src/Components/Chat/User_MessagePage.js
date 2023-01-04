@@ -14,6 +14,11 @@ function User_MessagePage({ message_to_user_server, receiver_id }) {
 
 	const ChatMessages = useSelector(state => state.chatmessages)
 	const { messages } = ChatMessages
+	console.log(messages, 'lllllllllll')
+
+	const getUserProfileInfo = useSelector(state => state.getUserProfile)
+	const { fullUserProfileInfo } = getUserProfileInfo
+
 
 	const OthersProfile = useSelector(state => state.othersprofile)
 	const { loading, otheruser } = OthersProfile
@@ -44,8 +49,8 @@ function User_MessagePage({ message_to_user_server, receiver_id }) {
 							<img src={otheruser?.pro_pic} class="rounded-circle user_img_msg" alt="" />
 						</div>
 						<div>
-						<h6 class=" mt-2 ms-2">Chat with {otheruser?.full_name}</h6>
-						<p class="mb-1 text-primary">@{otheruser?.username}</p>
+							<h6 class=" mt-2 ms-2">Chat with {otheruser?.full_name}</h6>
+							<p class="mb-1 text-primary">@{otheruser?.username}</p>
 
 						</div>
 						{/* <p class="mb-1 text-primary">@{otheruser?.username}</p> */}
@@ -58,27 +63,51 @@ function User_MessagePage({ message_to_user_server, receiver_id }) {
 						</ul>
 					</div>
 				</div>
-				<div class="card-body msg_card_body dz-scroll" id="DZ_W_Contacts_Body3">
-					
-					<div class="d-flex justify-content-start mb-4">
-						<div class="img_cont_msg">
-							<img src="images/avatar/1.jpg" class="rounded-circle user_img_msg" alt="" />
-						</div>
-						<div class="msg_cotainer">
-							Hi, how are you samim?
-							<span class="msg_time">8:40 AM, Today</span>
-						</div>
-					</div>
-					<div class="d-flex justify-content-end mb-4">
-						<div class="msg_cotainer_send">
-							Hi Khalid i am good tnx how about you?
-							<span class="msg_time_send">8:55 AM, Today</span>
-						</div>
-						<div class="img_cont_msg">
-							<img src="images/avatar/2.jpg" class="rounded-circle user_img_msg" alt="" />
-						</div>
-					</div>
-				</div>
+				 <div class="card-body msg_card_body dz-scroll" id="DZ_W_Contacts_Body3">
+					{console.log(messages, 'mmmmmmmmmmmmmmmmmmmmmmmm')}
+					{
+						messages?.length !== 1 ?
+
+							<>{messages?.filter(e=>e.message != null).map((message) => {
+								return (
+									<>
+										{
+											(message?.sender?.id === fullUserProfileInfo.id) ?
+
+											<div class="d-flex justify-content-end mb-4">
+												<div class="msg_cotainer_send"> {message.message}
+													<span class="msg_time_send">hello 8:55 AM, Today</span>
+												</div>
+												<div class="img_cont_msg">
+													<img src={message?.sender?.pro_pic} class="rounded-circle user_img_msg" alt="" />
+												</div>
+											</div>:
+											<div class="d-flex justify-content-start mb-4">
+												<div class="img_cont_msg">
+													<img src={message?.receiver?.pro_pic} class="rounded-circle user_img_msg" alt="" />
+												</div>
+												<div class="msg_cotainer">
+													{message.message}
+													<span class="msg_time">8:40 AM, Today</span>
+												</div>
+											</div>
+
+
+										}
+
+
+									</>
+								)
+							})}
+							</>
+							:
+							<li class="active dz-chat-user">
+								<p>NO Messages yet YET!</p>
+							</li>
+
+
+					}
+				</div> 
 				<div class="card-footer type_msg">
 					<div class="input-group">
 						<textarea class="form-control" placeholder="Type your message..." value={message} onChange={(e) => setMessage(e.target.value)} ></textarea>

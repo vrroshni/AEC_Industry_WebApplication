@@ -1318,7 +1318,7 @@ export const chatmessages = (receiver_id) => async (dispatch, getState) => {
                 Authorization: `Bearer ${userInfo.token}`
             }
         }
-        const { data } = await axios.post('/chat/chat_messages/',
+        const { data } = await axios.post('/chat/chat_messages/', 
             { receiver_id }, config
         )
 

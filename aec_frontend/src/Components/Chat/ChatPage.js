@@ -34,7 +34,7 @@ function ChatPage() {
 	}
 
 	socket.onclose = function (e) {
-		console.log('Connection lost');
+		console.log('Connection lost',e);
 	}
 
 	socket.onerror = function (e) {
@@ -42,14 +42,20 @@ function ChatPage() {
 	}
 
 	socket.onmessage = function (e) {
-
+		console.log(e,'messageeeeeeeeeeeee')
+		const data = JSON.parse(e.data)
+		if (data) {
+			dispatch(chatmessages(receiverId))
+		}
+    
 	}
 
 
 	const message_to_user_server = (message, receiver_id) => {
-
+		console.log(message,'kkkkkkkkkkkkkkkkk')
 		socket.send(JSON.stringify({
 			'message': message,
+			'sender_id':fullUserProfileInfo.id,
 			'receiver_id': receiver_id
 		}))
 		user_chatlist()
