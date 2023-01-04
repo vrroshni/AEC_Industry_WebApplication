@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'channels',
+    'daphne',
     
     'django.contrib.admin',
     'django.contrib.auth',
@@ -129,7 +129,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'aec_backend.wsgi.application'
+# WSGI_APPLICATION = 'aec_backend.wsgi.application'
+ASGI_APPLICATION = 'aec_backend.asgi.application'
 AUTH_USER_MODEL = 'user_app.Account'
 
 

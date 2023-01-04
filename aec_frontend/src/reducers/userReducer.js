@@ -93,7 +93,16 @@ import {
     USER_REGISTER_ACCOUNT_VERIFICATION_REQUEST,
     USER_REGISTER_ACCOUNT_VERIFICATION_EMAIL_OTP,
     USER_REGISTER_ACCOUNT_VERIFICATION_EMAIL_LINK,
-    USER_REGISTER_ACCOUNT_VERIFICATION_FAIL
+    USER_REGISTER_ACCOUNT_VERIFICATION_FAIL,
+
+
+    CHAT_FROM_PROFILE,
+    CHAT_FROM_PROFILE_RESET,
+
+    GET_USER_CHAT_LIST_,
+    GET_CHAT,
+    ADD_TO_CHAT_LIST_
+
 
 } from '../constants/userConstants'
 
@@ -367,6 +376,51 @@ export const SuggestionReducer = (state = { suggestions: [] }, action) => {
 
         case USER_ALL_SUGGESTIONS:
             return { suggestions: action.payload }
+
+        default:
+            return state
+    }
+}
+export const ChatMessagesReducer = (state = { messages: [] }, action) => {
+    switch (action.type) {
+
+        case GET_CHAT:
+            return { messages: action.payload }
+
+        default:
+            return state
+    }
+}
+export const UserChatListReducer = (state = { chat_list_users: [] }, action) => {
+    switch (action.type) {
+
+        case GET_USER_CHAT_LIST_:
+            return { chat_list_users: action.payload }
+
+        default:
+            return state
+    }
+}
+export const AddToChatListReducer = (state = {  }, action) => {
+    switch (action.type) {
+
+        case ADD_TO_CHAT_LIST_:
+            return { added:true }
+
+        default:
+            return state
+    }
+}
+
+
+export const chatFromProfileReducer = (state = {}, action) => {
+    switch (action.type) {
+
+        case CHAT_FROM_PROFILE:
+            return { profileid: action.payload }
+
+        case CHAT_FROM_PROFILE_RESET:
+            return { }
 
         default:
             return state

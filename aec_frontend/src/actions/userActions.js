@@ -96,17 +96,20 @@ import {
     USER_REGISTER_ACCOUNT_VERIFICATION_REQUEST,
     USER_REGISTER_ACCOUNT_VERIFICATION_EMAIL_OTP,
     USER_REGISTER_ACCOUNT_VERIFICATION_EMAIL_LINK,
-    USER_REGISTER_ACCOUNT_VERIFICATION_FAIL
+    USER_REGISTER_ACCOUNT_VERIFICATION_FAIL,
+
+
+    CHAT_FROM_PROFILE,
+    CHAT_FROM_PROFILE_RESET,
+
+    GET_USER_CHAT_LIST_,
+    GET_CHAT,
+    ADD_TO_CHAT_LIST_
 
 } from '../constants/userConstants'
 import storage from 'redux-persist/lib/storage'
 import { persistor } from '../index';
 import jwt_decode from 'jwt-decode'
-
-
-
-
-
 
 
 
@@ -1280,4 +1283,67 @@ export const addProject = (project_title, project_desc, project_image,) => async
                 error.response.data.detail : error.message,
         })
     }
+}
+
+
+export const addtoChat = (receiver_id) => async (dispatch, getState) => {
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'multipart/form-data',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+        const { data } = await axios.post('/chat/add_to_chat/',
+            { receiver_id }, config
+        )
+
+        dispatch({
+            type: ADD_TO_CHAT_LIST_,
+        })
+
+}
+
+export const chatmessages = (receiver_id) => async (dispatch, getState) => {
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'multipart/form-data',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+        const { data } = await axios.post('/chat/chat_messages/',
+            { receiver_id }, config
+        )
+
+        dispatch({
+            type: GET_CHAT,
+            payload:data
+        })
+}
+export const userChatList = () => async (dispatch, getState) => {
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'multipart/form-data',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+        const { data } = await axios.get('/chat/chat_list/',
+             config
+        )
+
+        dispatch({
+            type: GET_USER_CHAT_LIST_,
+            payload:data
+        })
 }

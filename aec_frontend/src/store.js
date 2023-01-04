@@ -20,7 +20,12 @@ import {
     userConnectUsRequestReducer,
     userProposalbidsReducer,
     ProposalBidActionsReducer,
-    AccountVerifyReducer
+    AccountVerifyReducer,
+    chatFromProfileReducer,
+    UserChatListReducer,
+    ChatMessagesReducer,
+    AddToChatListReducer,
+
 
 } from './reducers/userReducer'
 
@@ -74,7 +79,10 @@ const reducers = combineReducers({
     proposalbids:userProposalbidsReducer,
     proposalbidsaction:ProposalBidActionsReducer,
     accountverify:AccountVerifyReducer,
-
+    chatFromProfile:chatFromProfileReducer,
+    chatmessages:ChatMessagesReducer,
+    userChatList:UserChatListReducer,
+    addtoChatlist:AddToChatListReducer,
 
 
     allUsers: allUserListReducer,

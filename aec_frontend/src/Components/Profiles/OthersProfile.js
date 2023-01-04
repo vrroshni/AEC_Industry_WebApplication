@@ -12,7 +12,10 @@ import { SlLike, SlDislike } from 'react-icons/sl';
 import { GoCommentDiscussion } from 'react-icons/go';
 import Carousel from 'react-bootstrap/Carousel';
 import Bluetick from '../UserSide/Bluetick';
-import { addPost, allFeed, post_like, post_dislike, user_commented, follow_unfollow, send_connection, getUserProfile } from '../../actions/userActions'
+import { addtoChat, post_like, post_dislike, user_commented, follow_unfollow, send_connection, getUserProfile } from '../../actions/userActions'
+import {
+	CHAT_FROM_PROFILE
+} from '../../constants/userConstants'
 
 import UserProjects from './UserProjects';
 
@@ -92,8 +95,15 @@ function OthersProfile() {
 		}
 	}, [reload])
 
-	console.log(otheruser, 'kkkkkkkkkkkkkkkkkkk')
-	console.log(fullUserProfileInfo, 'iiiiiiiiiiiiiiiiiiiiiii')
+	const add_To_Chat = (receiver_id) => {
+		dispatch(addtoChat(receiver_id)).then(() => {
+			dispatch({
+				type: CHAT_FROM_PROFILE,
+				payload: receiver_id
+			})
+			navigate('/chat')
+		})
+	}
 
 
 	return (
@@ -130,10 +140,10 @@ function OthersProfile() {
 											<button className='btn btn-primary btn-xs' onClick={() => Follow_unfollow(otheruser.id)} >{otheruser?.user_network?.some(e => e.followed_by === fullUserProfileInfo.id) ? "Unfollow" : "follow"}</button>
 										</div>
 										<div className="profile-email px-2 pt-2" >
-											{console.log(otheruser?.user_network?.some(e => e.is_connect === null && e.followed_by === fullUserProfileInfo.id), 'llllllllllllllllllllllllllllllll')}
+
 											{otheruser?.user_network?.some(e => e.is_connect === null && e.followed_by === fullUserProfileInfo.id) ? <button className='btn btn-primary btn-xs' onClick={() => Send_connection(otheruser.id)} > Connect </button> :
 												otheruser?.user_network?.some(e => e.is_connect === false && e.followed_by === fullUserProfileInfo.id) ? <button className='btn btn-primary btn-xs' >PENDING </button> : otheruser?.user_network?.some(e => e.is_connect === true && e.followed_by === fullUserProfileInfo.id) ?
-													<button className='btn btn-primary btn-xs'> Message </button> : null
+													<button className='btn btn-primary btn-xs' onClick={() => add_To_Chat(otheruser.id)}> Message </button> : null
 											}
 										</div>
 										{/* <a href="#" className="btn btn-primary light sharp" data-bs-toggle="dropdown" aria-expanded="true"><i className="fa fa-plus text-primary"></i></a>

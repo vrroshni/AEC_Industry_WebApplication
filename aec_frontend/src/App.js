@@ -62,9 +62,7 @@ function App() {
               <Route path='/onprocess' element={<OnProcess/>} />
               <Route path='/proposalbids' element={<Proposalbids/>} />
               <Route path='/chat' element={<ChatPage/>} />
-            
             </Route>
-            
           </Route>
 
           <Route path='*' element={<Error />} />

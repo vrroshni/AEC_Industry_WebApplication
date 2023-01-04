@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import *
 from aec_app.models import *
+from chat_app.models import *
 from rest_framework_simplejwt.tokens import RefreshToken
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -143,4 +144,18 @@ class Aec_Proposals_UserSerializer(serializers.ModelSerializer):
 class NewAec_Proposals_UserSerializer(serializers.ModelSerializer):
     class Meta:
         model=Aec_Proposals_User
+        fields='__all__'
+        
+        
+        
+class ChatModel_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model=ChatModel
+        fields='__all__'
+        
+        
+class Chat_MessageSerializer(serializers.ModelSerializer):
+    thread=ChatModel_Serializer(read_only=True)
+    class Meta:
+        model=ChatMessages
         fields='__all__'
