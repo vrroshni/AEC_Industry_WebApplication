@@ -101,7 +101,13 @@ import {
 
     GET_USER_CHAT_LIST_,
     GET_CHAT,
-    ADD_TO_CHAT_LIST_
+    ADD_TO_CHAT_LIST_,
+
+    NOTIFICATION_LIST_,
+    NOTIFICATION_COUNT,
+    NOTIFICATION_COUNT_RESET,
+
+
 
 
 } from '../constants/userConstants'
@@ -396,6 +402,29 @@ export const UserChatListReducer = (state = { chat_list_users: [] }, action) => 
 
         case GET_USER_CHAT_LIST_:
             return { chat_list_users: action.payload }
+
+        default:
+            return state
+    }
+}
+export const NotificationListReducer = (state = { notifications: [] }, action) => {
+    switch (action.type) {
+
+        case NOTIFICATION_LIST_:
+            return { notifications: action.payload }
+
+        default:
+            return state
+    }
+}
+export const NotificationCountReducer = (state = { count: 0 }, action) => {
+    switch (action.type) {
+
+        case NOTIFICATION_COUNT:
+            return { count: action.payload }
+
+        case NOTIFICATION_COUNT_RESET:
+            return {}
 
         default:
             return state

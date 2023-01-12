@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { getOtherUserProfile } from '../../actions/userActions';
 import { OTHER_USER_PROFILE_RESET } from '../../constants/userConstants'
 import Loader from '../Loader';
+import { format, render, cancel, register } from 'timeago.js';
 
 
 function User_MessagePage({ message_to_user_server, receiver_id }) {
@@ -63,8 +64,8 @@ function User_MessagePage({ message_to_user_server, receiver_id }) {
 						</ul>
 					</div>
 				</div>
-				 <div class="card-body msg_card_body dz-scroll" id="DZ_W_Contacts_Body3">
-					{console.log(messages, 'mmmmmmmmmmmmmmmmmmmmmmmm')}
+				 <div class="card-body msg_card_body" id="DZ_W_Contacts_Body3" style={{overflowY: "auto",height: "8 0vh"}}>
+					
 					{
 						messages?.length !== 1 ?
 
@@ -76,7 +77,7 @@ function User_MessagePage({ message_to_user_server, receiver_id }) {
 
 											<div class="d-flex justify-content-end mb-4">
 												<div class="msg_cotainer_send"> {message.message}
-													<span class="msg_time_send">hello 8:55 AM, Today</span>
+													<span class="msg_time_send">{format(message.timestamp)}</span>
 												</div>
 												<div class="img_cont_msg">
 													<img src={message?.sender?.pro_pic} class="rounded-circle user_img_msg" alt="" />
@@ -88,7 +89,7 @@ function User_MessagePage({ message_to_user_server, receiver_id }) {
 												</div>
 												<div class="msg_cotainer">
 													{message.message}
-													<span class="msg_time">8:40 AM, Today</span>
+													<span class="msg_time">{format(message.timestamp)}</span>
 												</div>
 											</div>
 

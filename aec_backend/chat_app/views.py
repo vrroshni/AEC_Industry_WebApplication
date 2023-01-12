@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from user_app.models import Account
-from user_app.serializers import AccountSerializer, Chat_MessageSerializer
+from user_app.serializers import AccountSerializer
+from .serializers import Chat_MessageSerializer,NotificationSerializer
+
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser  # staff status true
 from rest_framework import status
-from .models import ChatMessages
+from .models import ChatMessages,Notifications
 from django.db.models import Q
 
 
@@ -76,5 +78,28 @@ def addtoChat(request):
         return Response(status=status.HTTP_200_OK)
     except Exception as e:
         print(e,'ooooooooooooo')
+        message = {'detail': "Something went wrong"}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def notifications(request):
+    try:
+        user = request.user
+        if notifications := Notifications.objects.filter(
+            message_receiver=user
+        ).order_by('-id'):
+            for notification in notifications:
+                notification.is_seen=True
+                notification.save()
+            notificationsSerializer = NotificationSerializer(notifications, many=True)
+            return Response(notificationsSerializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e,'eeeeeeeeee')
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)

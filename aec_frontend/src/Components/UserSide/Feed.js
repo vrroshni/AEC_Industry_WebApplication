@@ -26,9 +26,9 @@ const mystyle = {
 function Feed() {
 
     const [reload, setReload] = useState('')
-    const [image, setImage] = useState(null)
-    const [video, setVideo] = useState(null)
-    const [post_desc, setPost_desc] = useState(null)
+    const [image, setImage] = useState('')
+    const [video, setVideo] = useState('')
+    const [post_desc, setPost_desc] = useState('')
     const [fronterror, setfronterror] = useState(null)
     const [posterror, setPosterror] = useState(null)
     const [comment, setComment] = useState(null)
@@ -63,7 +63,6 @@ function Feed() {
 
     const submitHandler = (e) => {
         setfronterror((fronterror) => setfronterror(null))
-        alert('helo')
         e.preventDefault()
         console.log(post_desc, image, video, 'kkkkkkkkkkkkkkkk')
 
@@ -75,9 +74,9 @@ function Feed() {
             dispatch(addPost(post_desc, image, video))
                 .then(() => {
                     setfronterror((fronterror) => setfronterror(null))
-                    setImage((image) => setImage(null))
-                    setVideo((video) => setVideo(null))
-                    setPost_desc((post_desc) => setPost_desc(null))
+                    setImage((image) => setImage(''))
+                    setVideo((video) => setVideo(''))
+                    setPost_desc((post_desc) => setPost_desc(''))
                     dispatch(allFeed())
                 }
                 )

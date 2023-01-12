@@ -10,7 +10,7 @@ urlpatterns = [
     path('',index),
     #JWT
     path('login/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('tokenrefresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     #UserProfile
     path('register/', registerUser, name='register'),

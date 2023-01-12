@@ -1,11 +1,18 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { logout, getUserProfile, allFeed } from '../actions/userActions'
+import { logout, getUserProfile, showNotifications } from '../actions/userActions'
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import useDebounce from '../CustomHooks/useDebounce'
 import { getCharacter } from '../utils/SerachFunction'
 import Loader from './Loader'
+import Notification from './Chat/Notification'
+import {
+    NOTIFICATION_COUNT,
+    NOTIFICATION_COUNT_RESET
+
+} from '../constants/userConstants'
+
 
 
 
@@ -14,10 +21,16 @@ function Navbar() {
     const [listing, setListing] = useState('')
     const [loading, setLoading] = useState(false)
     const [showresultdiv, setshowResultdiv] = useState(false)
+    const [shownotifications, setShowNotification] = useState(false)
     const controllerRef = useRef()
+
 
     const userInfo = useSelector(state => state.getUserProfile)
     const { fullUserProfileInfo } = userInfo
+
+    const count = useSelector(state => state.notification_count)
+
+
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -33,13 +46,11 @@ function Navbar() {
             navigate('/profile')
         else
             navigate(`/profile/${id}`)
-
     }
 
     useEffect(() => {
         if (!fullUserProfileInfo) {
             dispatch(getUserProfile())
-            // dispatch(allFeed())
         }
 
     }, [])
@@ -48,10 +59,10 @@ function Navbar() {
         setshowResultdiv(true)
         setListing('')
         setLoading(true)
-        console.log(controllerRef.current?.signal,'kkkkkkkkkkkkkkkk')
-        const data = await getCharacter(searchQuery,controllerRef.current?.signal)
+        console.log(controllerRef.current?.signal, 'kkkkkkkkkkkkkkkk')
+        const data = await getCharacter(searchQuery, controllerRef.current?.signal)
         controllerRef.current = null;
-        console.log(controllerRef.current,'mmhhhhh')
+        console.log(controllerRef.current, 'mmhhhhh')
         setListing(data)
         setLoading(false)
     }
@@ -60,16 +71,65 @@ function Navbar() {
     const cancelSearch = () => {
         setshowResultdiv(false)
         controllerRef.current.abort();
-        console.log(controllerRef.current?.signal,'ccccccccccccc')
 
-      }
+    }
 
     useEffect(() => {
         setListing('')
-        if (searchQuery || query.trim().length <0)
+        if (searchQuery || query.trim().length < 0)
             searchCharacter()
         else return cancelSearch()
     }, [searchQuery])
+
+
+
+
+    const notify_socket = new WebSocket('ws://127.0.0.1:8000/ws/' + fullUserProfileInfo?.id + '/')
+
+    notify_socket.onopen = function (e) {
+        console.log('Connection Established,navbarrrrrrrr');
+    }
+
+    notify_socket.onclose = function (e) {
+        console.log('Connection lost', e);
+    }
+
+    notify_socket.onerror = function (e) {
+        console.log('Error', e);
+    }
+
+    notify_socket.onmessage = function (e) {
+        const data = JSON.parse(e.data)
+        console.log(data)
+        if(data){
+            setShowNotification(false)
+            dispatch(showNotifications())
+            dispatch({
+                type: NOTIFICATION_COUNT,
+                payload:data.count
+    
+            })
+        }
+
+
+
+    }
+
+
+    const notifications = () => {
+
+        setShowNotification(!shownotifications)
+        
+        dispatch(showNotifications())
+            dispatch({
+                type: NOTIFICATION_COUNT_RESET,
+                
+            })
+            
+
+        
+
+    }
 
 
     const logoutHandler = () => {
@@ -137,86 +197,77 @@ function Navbar() {
                             <ul className="navbar-nav header-right">
                                 {fullUserProfileInfo ?
                                     <>
-                                        <li className="nav-item d-flex flex-column mt-4">
+                                        <li className="nav-item d-flex flex-column mt-3">
                                             <div className="input-group search-area">
                                                 <input type="text" className="form-control" onChange={(event) => {
-                                                    
+
                                                     setQuery(event.target.value)
                                                 }} value={query} placeholder="Search here" />
                                                 <span className="input-group-text"><a href="/"><i className="flaticon-381-search-2"></i></a></span>
                                             </div>
 
-                                            {showresultdiv && <div className="col-xl-12 col-xxl-12 col-lg-12 mt-2" >
-                                                <div className="card">
-                                                    {loading === true ? <Loader /> :
-                                                        listing.length !== 0 ? <>
-                                                            <div className="card-header  border-0 pb-0">
-                                                                <h4 className="card-title">Search Results</h4>
-                                                            </div>
-                                                            <div className="card-body">
-                                                                <div id="DZ_W_Todo1" className="widget-media dz-scroll ps ps--active-y" style={{ minHeight: "4.125rem" }}>
-                                                                    <ul className="timeline">
-                                                                        {listing.map(profile => {
-                                                                            return (
-                                                                                <li key={profile.id}>
-                                                                                    <div className="timeline-panel" onClick={() => gotoProfile(profile.id)}>
-                                                                                        <div className="media me-2">
-                                                                                            <img alt="image" width="50" src={profile.pro_pic} />
-                                                                                        </div>
-                                                                                        <div className="media-body">
-                                                                                            <h5 className="mb-1">{profile.full_name}</h5>
-                                                                                            <small className="d-block">@{profile.username}</small>
-                                                                                        </div>
-                                                                                        {/* <div className="dropdown">
-                                                                                        <button type="button" className="btn btn-primary light sharp" data-bs-toggle="dropdown">
-                                                                                            <svg width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg>
-                                                                                        </button>
-                                                                                        <div className="dropdown-menu dropdown-menu-end">
-                                                                                            <a className="dropdown-item" href="#">Edit</a>
-                                                                                            <a className="dropdown-item" href="#">Delete</a>
-                                                                                        </div>
-                                                                                    </div> */}
-                                                                                        <hr />
-                                                                                    </div>
-                                                                                </li>)
-                                                                        }
-                                                                        )
-                                                                        }
-                                                                    </ul>
-                                                                    {/* <div className="ps__rail-x" style={{ left: "0px", bottom: "-73px" }}>
-                                                                        <div className="ps__thumb-x" tabindex="0" style={{ left: "0px", width: "0px" }}>
-
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="ps__rail-y" style={{ top: "73px", height: "324px", right: "0px" }}>
-                                                                        <div className="ps__thumb-y" tabindex="0" style={{ top: "60px", height: "263px" }}>
-
-                                                                        </div>
-                                                                    </div> */}
+                                            {
+                                                showresultdiv &&
+                                                <div className="col-xl-12 col-xxl-12 col-lg-12 mt-2" >
+                                                    <div className="card">
+                                                        {loading === true ? <Loader /> :
+                                                            listing.length !== 0 ? <>
+                                                                <div className="card-header  border-0 pb-0">
+                                                                    <h4 className="card-title">Search Results</h4>
                                                                 </div>
-                                                            </div></> : <div className="card-header  border-0 pb-0">
-                                                            <h4 className="card-title">No Search Results</h4>
-                                                        </div>}
-                                                </div>
-                                            </div>}
+                                                                <div className="card-body">
+                                                                    <div id="DZ_W_Todo1" className="widget-media dz-scroll ps ps--active-y" style={{ minHeight: "4.125rem" }}>
+                                                                        <ul className="timeline">
+                                                                            {listing.map(profile => {
+                                                                                return (
+                                                                                    <li key={profile.id}>
+                                                                                        <div className="timeline-panel" onClick={() => gotoProfile(profile.id)}>
+                                                                                            <div className="media me-2">
+                                                                                                <img alt="image" width="50" src={profile.pro_pic} />
+                                                                                            </div>
+                                                                                            <div className="media-body">
+                                                                                                <h5 className="mb-1">{profile.full_name}</h5>
+                                                                                                <small className="d-block">@{profile.username}</small>
+                                                                                            </div>
+                                                                      
+                                                                                            <hr />
+                                                                                        </div>
+                                                                                    </li>)
+                                                                            }
+                                                                            )
+                                                                            }
+                                                                        </ul>
+                                                                  
+                                                                    </div>
+                                                                </div></> : 
+                                                                <div className="card-header  border-0 pb-0">
+                                                                <h4 className="card-title">No Search Results</h4>
+                                                            </div>}
+                                                    </div>
+                                                </div>}
                                         </li>
-                                        <li className="nav-item dropdown notification_dropdown">
-                                            <a className="nav-link bell-link ai-icon" href="/">
+                                        <li className="nav-item  notification_dropdown" onClick={() => navigate('/chat')}>
+                                            <a className="nav-link bell-link ai-icon">
                                                 <svg width="24" height="22" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path fillRule="evenodd" clipRule="evenodd" d="M23.6667 5.16666C23.6667 2.5895 21.5772 0.5 19 0.5C15.1162 0.5 8.88387 0.5 5.00004 0.5C2.42287 0.5 0.333374 2.5895 0.333374 5.16666V20.3333C0.333374 20.8058 0.618046 21.2305 1.05321 21.4113C1.48955 21.5922 1.99121 21.4918 2.32487 21.1582C2.32487 21.1582 4.59287 18.8902 5.9672 17.517C6.4047 17.0795 6.99739 16.8333 7.61689 16.8333H19C21.5772 16.8333 23.6667 14.7438 23.6667 12.1667V5.16666ZM21.3334 5.16666C21.3334 3.87866 20.2892 2.83333 19 2.83333C15.1162 2.83333 8.88387 2.83333 5.00004 2.83333C3.71204 2.83333 2.66671 3.87866 2.66671 5.16666V17.517L4.31638 15.8673C5.19138 14.9923 6.37905 14.5 7.61689 14.5H19C20.2892 14.5 21.3334 13.4558 21.3334 12.1667V5.16666ZM6.16671 12.1667H15.5C16.144 12.1667 16.6667 11.644 16.6667 11C16.6667 10.356 16.144 9.83333 15.5 9.83333H6.16671C5.52271 9.83333 5.00004 10.356 5.00004 11C5.00004 11.644 5.52271 12.1667 6.16671 12.1667ZM6.16671 7.5H17.8334C18.4774 7.5 19 6.97733 19 6.33333C19 5.68933 18.4774 5.16666 17.8334 5.16666H6.16671C5.52271 5.16666 5.00004 5.68933 5.00004 6.33333C5.00004 6.97733 5.52271 7.5 6.16671 7.5Z" fill="#1362FC" />
                                                 </svg>
                                                 <div className="pulse-css"></div>
                                             </a>
                                         </li>
-                                        <li className="nav-item dropdown notification_dropdown">
-                                            <a className="nav-link  ai-icon" href="/" role="button" data-bs-toggle="dropdown">
+                                        <li className="nav-item d-flex flex-column notification_dropdown mt-3 " onClick={() => {
+                                            notifications()
+                                        }}>
+
+                                            <a className="nav-link  ai-icon" role="button" >
                                                 <svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path fillRule="evenodd" clipRule="evenodd" d="M8.83333 3.91738V1.50004C8.83333 0.856041 9.356 0.333374 10 0.333374C10.6428 0.333374 11.1667 0.856041 11.1667 1.50004V3.91738C12.9003 4.16704 14.5208 4.97204 15.7738 6.22504C17.3057 7.75687 18.1667 9.8347 18.1667 12V16.3914L19.1105 18.279C19.562 19.1832 19.5142 20.2565 18.9822 21.1164C18.4513 21.9762 17.5122 22.5 16.5018 22.5H11.1667C11.1667 23.144 10.6428 23.6667 10 23.6667C9.356 23.6667 8.83333 23.144 8.83333 22.5H3.49817C2.48667 22.5 1.54752 21.9762 1.01669 21.1164C0.484686 20.2565 0.436843 19.1832 0.889509 18.279L1.83333 16.3914V12C1.83333 9.8347 2.69319 7.75687 4.22502 6.22504C5.47919 4.97204 7.0985 4.16704 8.83333 3.91738ZM10 6.1667C8.45183 6.1667 6.96902 6.78154 5.87469 7.87587C4.78035 8.96904 4.16666 10.453 4.16666 12V16.6667C4.16666 16.8475 4.12351 17.026 4.04301 17.1882C4.04301 17.1882 3.52384 18.2265 2.9755 19.322C2.88567 19.5029 2.89501 19.7187 3.00117 19.8902C3.10734 20.0617 3.29517 20.1667 3.49817 20.1667H16.5018C16.7037 20.1667 16.8915 20.0617 16.9977 19.8902C17.1038 19.7187 17.1132 19.5029 17.0234 19.322C16.475 18.2265 15.9558 17.1882 15.9558 17.1882C15.8753 17.026 15.8333 16.8475 15.8333 16.6667V12C15.8333 10.453 15.2185 8.96904 14.1242 7.87587C13.0298 6.78154 11.547 6.1667 10 6.1667Z" fill="#1362FC" />
                                                 </svg>
-                                                <div className="pulse-css"></div>
+                                                <div className="pulse-css">{count?.count>0 &&<span class="badge badge-danger text-white badge-sm float-end"> {count?.count}</span>}</div>
                                             </a>
 
+
                                         </li>
+
                                         <li className="nav-item dropdown notification_dropdown">
                                             <a className="nav-link ai-icon" href="/" data-bs-toggle="dropdown">
                                                 <svg width="24" height="22" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -251,10 +302,17 @@ function Navbar() {
                                         <button type="button" className="btn btn-rounded btn-primary btn-sm" onClick={() => navigate('/login')}>Login/Register</button>
                                     </li>
                                 }
+
                             </ul>
+
                         </div>
+
                     </nav>
+
                 </div>
+                {shownotifications && <Notification />
+
+                }
             </div>
 
             <div className="deznav">

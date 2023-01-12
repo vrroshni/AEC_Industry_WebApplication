@@ -104,6 +104,7 @@ class ProfileSerializerWithToken(ProfileSerializer):
     def get_token(self,obj):
         token=RefreshToken.for_user(obj)
         return str(token.access_token)
+    
 
 class ProfileVerificationSerializer(serializers.ModelSerializer):
     user=ProfileSerializer(read_only=True)
@@ -151,9 +152,3 @@ class NewAec_Proposals_UserSerializer(serializers.ModelSerializer):
 
         
         
-class Chat_MessageSerializer(serializers.ModelSerializer):
-    sender=AccountSerializer(read_only=True)
-    receiver=AccountSerializer(read_only=True)
-    class Meta:
-        model=ChatMessages
-        fields='__all__'

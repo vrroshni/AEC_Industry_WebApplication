@@ -25,6 +25,8 @@ import {
     UserChatListReducer,
     ChatMessagesReducer,
     AddToChatListReducer,
+    NotificationCountReducer,
+    NotificationListReducer
 
 
 } from './reducers/userReducer'
@@ -83,7 +85,8 @@ const reducers = combineReducers({
     chatmessages:ChatMessagesReducer,
     userChatList:UserChatListReducer,
     addtoChatlist:AddToChatListReducer,
-
+    notification_count:NotificationCountReducer,
+    notification:NotificationListReducer,
 
     allUsers: allUserListReducer,
     statusChanger: statusChangeReducer,

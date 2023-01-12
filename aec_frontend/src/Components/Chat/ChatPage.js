@@ -26,8 +26,7 @@ function ChatPage() {
 
 
 	const socket = new WebSocket('ws://127.0.0.1:8000/ws/' + fullUserProfileInfo.id + '/' + receiverId + '/')
-	// const [width, height] = useWindowSize()
-	// console.log(width, height, 'diiiiiiiiiiiii')
+
 
 	socket.onopen = function (e) {
 		console.log('Connection Established');

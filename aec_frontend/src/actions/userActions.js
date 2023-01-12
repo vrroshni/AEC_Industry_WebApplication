@@ -98,9 +98,14 @@ import {
     USER_REGISTER_ACCOUNT_VERIFICATION_EMAIL_LINK,
     USER_REGISTER_ACCOUNT_VERIFICATION_FAIL,
 
+    NOTIFICATION_LIST_,
+    NOTIFICATION_COUNT,
+    NOTIFICATION_COUNT_RESET,
 
     CHAT_FROM_PROFILE,
     CHAT_FROM_PROFILE_RESET,
+
+
 
     GET_USER_CHAT_LIST_,
     GET_CHAT,
@@ -160,7 +165,7 @@ export const login = (username, password) => async (dispatch) => {
 }
 
 export const googleSignin = (e) => async (dispatch) => {
-    let lastname=null
+    let lastname = null
     try {
 
         console.log('google signinn..........')
@@ -179,11 +184,11 @@ export const googleSignin = (e) => async (dispatch) => {
                 'Content-type': 'application/json'
             }
         }
-        console.log(userObject.family_name,'kkkkkkkkkkk')
+        console.log(userObject.family_name, 'kkkkkkkkkkk')
         if (userObject.family_name === undefined) {
             lastname = userObject.given_name
-        }else{
-           lastname = userObject.family_name
+        } else {
+            lastname = userObject.family_name
         }
         axios.post('googleSignIn/',
             { 'firstname': userObject.given_name, 'lastname': lastname, 'username': userObject.name, "email": userObject.email, 'password': userObject.sub, "pro_pic": userObject.picture }, config
@@ -798,6 +803,31 @@ export const getUserAllConnectUsRequest = () => async (dispatch, getState) => {
         })
     }
 }
+
+export const showNotifications = () => async (dispatch, getState) => {
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.get('/chat/show_notifications/',
+            config
+        )
+
+        dispatch({
+            type: NOTIFICATION_LIST_,
+            payload: data
+        })
+
+
+}
+
 export const getUserAllProposalBids = () => async (dispatch, getState) => {
 
     try {
@@ -1129,7 +1159,7 @@ export const follow_unfollow = (user_id) => async (dispatch, getState) => {
     dispatch({
         type: UNFOLLOW_FOLLOW_USER,
     })
-  
+
 
 
 
@@ -1156,7 +1186,7 @@ export const send_connection = (user_id) => async (dispatch, getState) => {
     })
 }
 
-export const reject_connection = (user_id) => async (dispatch, getState) => {
+export const reject_connection = (network_id) => async (dispatch, getState) => {
 
     const {
         userLogin: { userInfo },
@@ -1168,8 +1198,8 @@ export const reject_connection = (user_id) => async (dispatch, getState) => {
             Authorization: `Bearer ${userInfo.token}`
         }
     }
-
-    const { data } = await axios.put('/user/reject_connection/', { 'user_id': user_id, }, config
+console.log(network_id,'kkkkkkkkkkkkkkkk')
+    const { data } = await axios.patch('/user/reject_connection/', { 'network_id': network_id, }, config
     )
 
     dispatch({
@@ -1177,7 +1207,7 @@ export const reject_connection = (user_id) => async (dispatch, getState) => {
     })
 }
 
-export const accept_connection = (user_id) => async (dispatch, getState) => {
+export const accept_connection = (network_id) => async (dispatch, getState) => {
 
     const {
         userLogin: { userInfo },
@@ -1190,7 +1220,7 @@ export const accept_connection = (user_id) => async (dispatch, getState) => {
         }
     }
 
-    const { data } = await axios.put('/user/accept_connection/', { 'user_id': user_id, }, config
+    const { data } = await axios.patch('/user/accept_connection/', { 'network_id': network_id, }, config
     )
 
     dispatch({
@@ -1287,63 +1317,63 @@ export const addProject = (project_title, project_desc, project_image,) => async
 
 
 export const addtoChat = (receiver_id) => async (dispatch, getState) => {
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+        userLogin: { userInfo },
+    } = getState()
 
-        const config = {
-            headers: {
-                'Content-type': 'multipart/form-data',
-                Authorization: `Bearer ${userInfo.token}`
-            }
+    const config = {
+        headers: {
+            'Content-type': 'multipart/form-data',
+            Authorization: `Bearer ${userInfo.token}`
         }
-        const { data } = await axios.post('/chat/add_to_chat/',
-            { receiver_id }, config
-        )
+    }
+    const { data } = await axios.post('/chat/add_to_chat/',
+        { receiver_id }, config
+    )
 
-        dispatch({
-            type: ADD_TO_CHAT_LIST_,
-        })
+    dispatch({
+        type: ADD_TO_CHAT_LIST_,
+    })
 
 }
 
 export const chatmessages = (receiver_id) => async (dispatch, getState) => {
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+        userLogin: { userInfo },
+    } = getState()
 
-        const config = {
-            headers: {
-                'Content-type': 'multipart/form-data',
-                Authorization: `Bearer ${userInfo.token}`
-            }
+    const config = {
+        headers: {
+            'Content-type': 'multipart/form-data',
+            Authorization: `Bearer ${userInfo.token}`
         }
-        const { data } = await axios.post('/chat/chat_messages/', 
-            { receiver_id }, config
-        )
+    }
+    const { data } = await axios.post('/chat/chat_messages/',
+        { receiver_id }, config
+    )
 
-        dispatch({
-            type: GET_CHAT,
-            payload:data
-        })
+    dispatch({
+        type: GET_CHAT,
+        payload: data
+    })
 }
 export const userChatList = () => async (dispatch, getState) => {
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+        userLogin: { userInfo },
+    } = getState()
 
-        const config = {
-            headers: {
-                'Content-type': 'multipart/form-data',
-                Authorization: `Bearer ${userInfo.token}`
-            }
+    const config = {
+        headers: {
+            'Content-type': 'multipart/form-data',
+            Authorization: `Bearer ${userInfo.token}`
         }
-        const { data } = await axios.get('/chat/chat_list/',
-             config
-        )
+    }
+    const { data } = await axios.get('/chat/chat_list/',
+        config
+    )
 
-        dispatch({
-            type: GET_USER_CHAT_LIST_,
-            payload:data
-        })
+    dispatch({
+        type: GET_USER_CHAT_LIST_,
+        payload: data
+    })
 }

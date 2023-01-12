@@ -137,13 +137,11 @@ function OthersProfile() {
 									</div>
 									<div className="dropdown ms-auto d-flex">
 										<div className="profile-email px-2 pt-2">
-											<button className='btn btn-primary btn-xs' onClick={() => Follow_unfollow(otheruser.id)} >{otheruser?.user_network?.some(e => e.followed_by === fullUserProfileInfo.id) ? "Unfollow" : "follow"}</button>
+											<button className='btn btn-primary btn-xs' onClick={() => Follow_unfollow(otheruser?.id)} >{otheruser?.user_network?.some(e => e.followed_by === fullUserProfileInfo.id) ? "Unfollow" : "follow"}</button>
 										</div>
 										<div className="profile-email px-2 pt-2" >
-										<button className='btn btn-primary btn-xs' onClick={() => add_To_Chat(otheruser.id)}> Message </button>
-
 											{otheruser?.user_network?.some(e => e.is_connect === null && e.followed_by === fullUserProfileInfo.id) ? <button className='btn btn-primary btn-xs' onClick={() => Send_connection(otheruser.id)} > Connect </button> :
-												otheruser?.user_network?.some(e => e.is_connect === false && e.followed_by === fullUserProfileInfo.id) ? <button className='btn btn-primary btn-xs' >PENDING </button> : otheruser?.user_network?.some(e => e.is_connect === true && e.followed_by === fullUserProfileInfo.id) ?
+												otheruser?.user_network?.some(e => e.is_connect === false && e.followed_by === fullUserProfileInfo.id) ? <button className='btn btn-primary btn-xs disabled' >PENDING </button> : otheruser?.user_network?.some(e => e.is_connect === true && e.followed_by === fullUserProfileInfo.id) ?
 													<button className='btn btn-primary btn-xs' onClick={() => add_To_Chat(otheruser.id)}> Message </button> : null
 											}
 										</div>

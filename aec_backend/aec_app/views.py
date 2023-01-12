@@ -42,13 +42,10 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     #     # ...
     #     return token
     def validate(self, attrs):
-        print(attrs, 'atttrrrr')
         data = super().validate(attrs)
-        print(data, 'uuuuuu')
         serializer = ProfileSerializerWithToken(self.user).data
         for k, v in serializer.items():
-            data[k] = v
-        print(data['is_email_verified'], 'mmmmmmmmmmm')
+            data[k] = v        
         if not data['is_email_verified']:
             if data['is_superadmin']:
                 return data
@@ -290,9 +287,9 @@ def updateUserProfile(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addPost(request):
-    user = request.user
-    data = request.data
     try:
+        user = request.user
+        data = request.data
         post = Post()
         post.user = user
         if data['post_desc'] != '':
@@ -305,7 +302,8 @@ def addPost(request):
         posts = Post.objects.all().order_by('-posted_at')
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data,status=status.HTTP_201_CREATED)
-    except Exception:
+    except Exception as e:
+        print(e,'gggggggggggg')
         message = {'detail': "Something went wrong"}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -402,9 +400,9 @@ def suggestions(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def connectUs(request):
-    data = request.data
-    user = request.user
     try:
+        data = request.data
+        user = request.user
         if Client_Requests.objects.filter(request_from=user, is_rejected=False, is_acceptedbyUser=False).first():
             message = {'detail': "You already have a request pending!"}
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
@@ -605,7 +603,6 @@ def send_proposal(request):
         proposals.save()
 
         proposal_to_client = NewAec_Proposals_UserSerializer(data=data)
-        print(proposal_to_client)
         if proposal_to_client.is_valid():
             proposal_to_client.save()
 
