@@ -18,7 +18,7 @@ const Section5 = () => {
                             <div class="service-icon">
                                 <i class="fas fa-layer-group"></i>
                             </div>
-                            <h4>Web Application</h4>
+                            <h4>Architect</h4>
                             <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry...</p>
                             <a href="#">Read More</a>
                         </div>
@@ -28,7 +28,7 @@ const Section5 = () => {
                             <div class="service-icon">
                                 <i class="far fa-chart-bar"></i>
                             </div>
-                            <h4>Highly customizable</h4>
+                            <h4>Engineer</h4>
                             <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry...</p>
                             <a href="#">Read More</a>
                         </div>
@@ -38,7 +38,7 @@ const Section5 = () => {
                             <div class="service-icon">
                                 <i class="fas fa-database"></i>
                             </div>
-                            <h4>Responsive design</h4>
+                            <h4>Constructor</h4>
                             <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry...</p>
                             <a href="#">Read More</a>
                         </div>
@@ -48,7 +48,7 @@ const Section5 = () => {
                             <div class="service-icon">
                                 <i class="fas fa-cogs"></i>
                             </div>
-                            <h4>service & plugins</h4>
+                            <h4>24hr service </h4>
                             <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry...</p>
                             <a href="#">Read More</a>
                         </div>
@@ -58,7 +58,7 @@ const Section5 = () => {
                             <div class="service-icon">
                                 <i class="fas fa-chart-pie"></i>
                             </div>
-                            <h4>Optimised for speed</h4>
+                            <h4>Optimised for perfection</h4>
                             <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry...</p>
                             <a href="#">Read More</a>
                         </div>

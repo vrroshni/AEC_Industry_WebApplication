@@ -3,8 +3,8 @@ import { FcLike } from "react-icons/fc";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
-import {connectUs} from '../../actions/userActions'
-import {USER_CONNECT_US_RESET} from '../../constants/userConstants'
+import { connectUs } from '../../actions/userActions'
+import { USER_CONNECT_US_RESET } from '../../constants/userConstants'
 import Message from '../Message'
 import Loader from '../Loader'
 
@@ -15,8 +15,10 @@ function Connect() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const connectUsDetails = useSelector(state => state.connectUs)
-    const { loading,connect,error } = connectUsDetails
+    const { loading, connect, error } = connectUsDetails
 
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
 
 
     const {
@@ -61,26 +63,27 @@ function Connect() {
             },
         },
     };
-    
-    useEffect(() => {
 
-        if(connect){
-          navigate('/requests')
+    useEffect(() => {
+        if (!userInfo)
+            navigate('/login')
+        if (connect) {
+            navigate('/requests')
         }
-      
+
         return () => {
-          dispatch({
-              type: USER_CONNECT_US_RESET
-          })
+            dispatch({
+                type: USER_CONNECT_US_RESET
+            })
         }
-      }, [connect])
+    }, [connect])
     const submitHandler = (e) => {
-        dispatch(connectUs(e.role,e.location,e.requirementdetails,e.experience,e.related))
+        dispatch(connectUs(e.role, e.location, e.requirementdetails, e.experience, e.related))
     };
 
 
 
-    
+
     return (
         <div className="vh-100" style={{ backgroundImage: "url(AECFiles/images/11.jpg)" }}>
             <div className="authincation h-100">

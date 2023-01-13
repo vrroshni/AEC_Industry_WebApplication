@@ -102,6 +102,7 @@ function Navbar() {
         const data = JSON.parse(e.data)
         console.log(data)
         if(data){
+            dispatch(getUserProfile())
             setShowNotification(false)
             dispatch(showNotifications())
             dispatch({
@@ -175,6 +176,7 @@ function Navbar() {
                             </clipPath>
                         </defs>
                     </svg> */}
+                    <img src="AECFiles/images/logo-color.png" className='ms-3 img-fluid' alt=""  />
 
                 </a>
                 <div className="nav-control">
@@ -221,7 +223,9 @@ function Navbar() {
                                                                             {listing.map(profile => {
                                                                                 return (
                                                                                     <li key={profile.id}>
-                                                                                        <div className="timeline-panel" onClick={() => gotoProfile(profile.id)}>
+                                                                                        <div className="timeline-panel" onClick={() =>{
+                                                                                            setQuery('')
+                                                                                            gotoProfile(profile.id)}}>
                                                                                             <div className="media me-2">
                                                                                                 <img alt="image" width="50" src={profile.pro_pic} />
                                                                                             </div>

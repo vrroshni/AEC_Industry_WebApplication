@@ -13,7 +13,7 @@ function Home() {
       <Section1/>
       <Section5/>
       <Section4/>
-      <Section2/>
+      {/* <Section2/> */}
       <Section3/>
     </div>
   )

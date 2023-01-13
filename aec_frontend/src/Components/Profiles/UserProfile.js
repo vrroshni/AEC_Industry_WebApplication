@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux'
-import { getUserProfile, updateProfile, getUserRequest,addProject } from '../../actions/userActions'
+import { getUserProfile, updateProfile, getUserRequest, addProject } from '../../actions/userActions'
 import { useNavigate, Link } from 'react-router-dom'
 import Message from '../Message'
 import Loader from '../Loader'
 import { USER_UPDATE_PROFILE_RESET } from '../../constants/userConstants'
 import UserProjects from './UserProjects';
 import AddProjectModal from '../Modals/AddProjectModal'
+import ListModal from '../Modals/ListModal';
 
 
 function UserProfile() {
 
 	const [reload, setReload] = useState(false)
 	const [addprojectShowModal, setaddprojectShowModal] = useState(false)
-    
+	const [friendslistshow, friendslistshowShowModal] = useState(false)
+	const [list, setList] = useState([])
+	const [title, setTitle] = useState(null)
+
 
 	const { register, handleSubmit, control, watch, formState: { errors } } = useForm({
 		mode: "onChange"
@@ -96,10 +100,20 @@ function UserProfile() {
 
 	const addProjecthandleShow = (id) => {
 		setaddprojectShowModal(true)
-	  }
-	  const addProjecthandleOnhide = () => {
+	}
+	const addProjecthandleOnhide = () => {
 		setaddprojectShowModal(false)
-	  }
+	}
+	const friendslisthandleShow = (title) => {
+		console.log(fullUserProfileInfo,'hhhhhhhhhhh')
+		console.log(fullUserProfileInfo?.user_network,'uuuuuuuuuuuuuuuuu')
+		console.log(list, 'kkkkkkk')
+		setTitle(title)
+		friendslistshowShowModal(true)
+	}
+	const friendslisthandleOnhide = () => {
+		friendslistshowShowModal(false)
+	}
 	const [username, setUsername] = useState(fullUserProfileInfo?.username)
 	const [firstname, setFirstname] = useState(fullUserProfileInfo?.first_name)
 	const [lastname, setLastname] = useState(fullUserProfileInfo?.last_name)
@@ -108,8 +122,7 @@ function UserProfile() {
 	const [pro_pic, setPro_pic] = useState('');
 	const [cover_pic, setCover_pic] = useState('');
 
-console.log(fullUserProfileInfo,'infooooooooooo')
-	
+
 	return (
 		<>
 			{fullUserProfileInfo && (
@@ -140,6 +153,27 @@ console.log(fullUserProfileInfo,'infooooooooooo')
 											<div className="profile-email px-2 pt-2">
 												<h4 className="text-muted mb-0">{fullUserProfileInfo.email}</h4>
 												<p>Email</p>
+											</div>
+											<div className="px-2 pt-2 text-center">
+												<h4 className="mb-0">{fullUserProfileInfo?.followers}</h4>
+												<a onClick={() => {
+													setList(fullUserProfileInfo?.user_network)
+													friendslisthandleShow('Followers')
+												}}>Followers</a>
+											</div>
+											<div className=" px-2 pt-2 text-center">
+												<h4 className="mb-0">{fullUserProfileInfo?.following}</h4>
+												<a onClick={() => {
+													setList(fullUserProfileInfo?.user_network?.filter(network => network.is_follow ===true))
+													friendslisthandleShow('Followings')
+												}}>Followings</a>
+											</div>
+											<div className=" px-2 pt-2 text-center">
+												<h4 className="mb-0">{fullUserProfileInfo?.connections}</h4>
+												<a onClick={() => {
+													setList(fullUserProfileInfo?.user_network?.filter(network => network.is_connect === true && network.connect_status === 'CONNECTED'))
+													friendslisthandleShow('Connections')
+												}}>Connections</a>
 											</div>
 											<div className="dropdown ms-auto d-flex">
 												<div className="profile-email px-2 pt-2" onClick={() => navigate('/profile_verification')}>
@@ -179,51 +213,9 @@ console.log(fullUserProfileInfo,'infooooooooooo')
 
 											<div className="tab-content">
 												<div id="my-posts" className="tab-pane fade active show">
-													<div className="my-post-content pt-3">
-														<div className="post-input">
-															<textarea name="textarea" id="textarea" cols="30" rows="5" className="form-control bg-transparent" placeholder="Please type what you want...."></textarea>
-
-															<a href="/" className="btn btn-primary light me-1 px-3" data-bs-toggle="modal" data-bs-target="#cameraModal"><i className="fa fa-camera m-0"></i> </a>
-															<div className="modal fade" id="cameraModal">
-																<div className="modal-dialog modal-dialog-centered" role="document">
-																	<div className="modal-content">
-																		<div className="modal-header">
-																			<h5 className="modal-title">Upload images</h5>
-																			<button type="button" className="btn-close" data-bs-dismiss="modal">
-																			</button>
-																		</div>
-																		<div className="modal-body">
-																			<div className="input-group mb-3">
-																				<span className="input-group-text">Upload</span>
-																				<div className="form-file">
-																					<input type="file" className="form-file-input form-control" />
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</div>
-															<a href="/" className="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#postModal">Post</a>
-															<div className="modal fade" id="postModal">
-																<div className="modal-dialog modal-dialog-centered" role="document">
-																	<div className="modal-content">
-																		<div className="modal-header">
-																			<h5 className="modal-title">Post</h5>
-																			<button type="button" className="btn-close" data-bs-dismiss="modal">
-																			</button>
-																		</div>
-																		<div className="modal-body">
-																			<textarea name="textarea" id="textarea2" cols="30" rows="5" className="form-control bg-transparent" placeholder="Please type what you want...."></textarea>
-																			<a className="btn btn-primary btn-rounded" href="/">Post</a>
-																		</div>
-																	</div>
-																</div>
-															</div>
-														</div>
-													</div>
 												</div>
 
-												<div id="about-me" className="tab-pane fade">
+												<div id="about-me" className="tab-pane fade active show">
 
 													<div className="profile-personal-info">
 														<div className="row mb-2 text-center mt-4">
@@ -280,7 +272,6 @@ console.log(fullUserProfileInfo,'infooooooooooo')
 																			onChange={e => {
 																				FirstnameRegister.onChange(e);
 																				setFirstname(e.target.value);
-																				console.log(firstname)
 																			}} />
 																		<small className="text-danger">
 																			{errors?.firstname && errors.firstname.message}
@@ -303,7 +294,6 @@ console.log(fullUserProfileInfo,'infooooooooooo')
 																			onChange={e => {
 																				UsernameRegister.onChange(e);
 																				setUsername(e.target.value);
-																				console.log(username)
 																			}} />
 																		<small className="text-danger">
 																			{errors?.username && errors.username.message}
@@ -427,49 +417,58 @@ console.log(fullUserProfileInfo,'infooooooooooo')
 														</div>
 													</div>
 												</div>
-												{fullUserProfileInfo.is_verified && 
-												<div id="projects" className="tab-pane fade">
-													<div className="profile-personal-info">
-														<div className="card">
-															<div className="card-header d-md-flex d-block p-0">
-																<div className="card-tabs mt-3 mt-sm-0 mb-sm-0 mb-3">
-																	<ul className="nav nav-tabs shadow-none text-center" role="tablist">
-																		<li className="nav-item">
-																			<a className="nav-link active" data-bs-toggle="tab" href="#All" role="tab" aria-selected="true">Completed Projects {fullUserProfileInfo?.projects}</a>
-																		</li>
-																	</ul>
+												{fullUserProfileInfo.is_verified &&
+													<div id="projects" className="tab-pane fade">
+														<div className="profile-personal-info">
+															<div className="card">
+																<div className="card-header d-md-flex d-block p-0">
+																	<div className="card-tabs mt-3 mt-sm-0 mb-sm-0 mb-3">
+																		<ul className="nav nav-tabs shadow-none text-center" role="tablist">
+																			<li className="nav-item">
+																				<a className="nav-link active" data-bs-toggle="tab" href="#All" role="tab" aria-selected="true">Completed Projects {fullUserProfileInfo?.projects}</a>
+																			</li>
+																		</ul>
+																	</div>
+																	<div className="d-flex p-md-0 p-sm-4 p-3">
+																		<ul className="star-review">
+																			<button type="button" className="btn btn-primary btn-xs" onClick={() => addProjecthandleShow()}>Add Project</button>
+																		</ul>
+																	</div>
 																</div>
-																<div className="d-flex p-md-0 p-sm-4 p-3">
-																	<ul className="star-review">
-																		<button type="button" className="btn btn-primary btn-xs" onClick={()=>addProjecthandleShow()}>Add Project</button>
-																	</ul>
-																</div>
-															</div>
-															<div className="card-body pb-0">
-																<div className="tab-content">
-																	<div className="tab-pane show active" id="All">
-																		{fullUserProfileInfo?.user_project.map((project,id) => {
-																			return (
-																				
-																				<UserProjects project={project} key={id+1} />
-																			)
-																		})}
+																<div className="card-body pb-0">
+																	<div className="tab-content">
+																		<div className="tab-pane show active" id="All">
+																			{fullUserProfileInfo?.user_project.map((project, id) => {
+																				return (
 
+																					<UserProjects project={project} key={id + 1} />
+																				)
+																			})}
+
+																		</div>
 																	</div>
 																</div>
 															</div>
 														</div>
 													</div>
-												</div>
-												
+
 												}
 												{
 													addprojectShowModal &&
 													<AddProjectModal
-													  showModal={addprojectShowModal}
-													  handleModalClose={() => addProjecthandleOnhide()}
+														showModal={addprojectShowModal}
+														handleModalClose={() => addProjecthandleOnhide()}
 													/>
-												  }
+												}
+												{
+													friendslistshow &&
+													<ListModal
+													network={list}
+														title={title}
+														showModal={friendslistshow}
+														handleModalClose={() => friendslisthandleOnhide()}
+													/>
+												}
 											</div>
 										</div>
 										<div className="modal fade" id="replyModal">

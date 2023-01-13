@@ -10,7 +10,7 @@ const Section4 = () => {
                 <div class="card">
                     <div class="card-body" style={{ padding: "0.5rem" }}>
                         <div class="profile-blog">
-                            <img src="innap/images/profile/1.jpg" alt="" class="img-fluid mt-4 mb-4 w-100" />
+                            <img src="AECFiles/images/67.webp" alt="" class="img-fluid mt-4 mb-4 w-100" />
                             <h4><a href="post-details.html" class="text-primary">Darwin Creative Agency Theme</a></h4>
                             <p class="mb-0 text-black">A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
                         </div>
@@ -21,7 +21,7 @@ const Section4 = () => {
                 <div class="card">
                     <div class="card-body" style={{ padding: "0.5rem" }}>
                         <div class="profile-blog">
-                            <img src="innap/images/profile/1.jpg" alt="" class="img-fluid mt-4 mb-4 w-100" />
+                            <img src="AECFiles/images/56.jpg" alt="" class="img-fluid mt-4 mb-4 w-100" />
                             <h4><a href="post-details.html" class="text-primary">Darwin Creative Agency Theme</a></h4>
                             <p class="mb-0 text-black">A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
                         </div>
@@ -32,7 +32,7 @@ const Section4 = () => {
                 <div class="card">
                     <div class="card-body" style={{ padding: "0.5rem" }}>
                         <div class="profile-blog">
-                            <img src="innap/images/profile/1.jpg" alt="" class="img-fluid mt-4 mb-4 w-100" />
+                            <img src="AECFiles/images/45.webp" alt="" class="img-fluid mt-4 mb-4 w-100" />
                             <h4><a href="post-details.html" class="text-primary">Darwin Creative Agency Theme</a></h4>
                             <p class="mb-0 text-black">A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
                         </div>
@@ -43,7 +43,7 @@ const Section4 = () => {
                 <div class="card">
                     <div class="card-body" style={{ padding: "0.5rem" }}>
                         <div class="profile-blog">
-                            <img src="innap/images/profile/1.jpg" alt="" class="img-fluid mt-4 mb-4 w-100" />
+                            <img src="AECFiles/images/1.jpg" alt="" class="img-fluid mt-4 mb-4 w-100" />
                             <h4><a  class="text-primary">Darwin Creative Agency Theme</a></h4>
                             <p class="mb-0 text-black">A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
                         </div>

@@ -5,7 +5,7 @@ const Section3 = () => {
         <div class="container">
         <div className="row mt-3">
             <div className="col-xl-12 col-xxl-12 col-lg-12 text-center mb-2">
-                <h3 className='mt-2 text-black fs-2'>Contact Us <span className='text-primary'>...</span></h3> <br />
+                <h3 className='mt-2 text-black fs-2'>Contact Us<span className='text-primary'>...</span></h3> <br />
             </div>
 
             <div class="col-xl-3 col-xxl-3 col-sm-6">

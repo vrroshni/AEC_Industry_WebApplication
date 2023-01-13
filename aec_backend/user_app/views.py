@@ -18,11 +18,9 @@ def toNotify_Post_Consumer(userId, receiverId, notify_text,notification_of,post)
     room_group_name = f'notifications_{room_name}'
     notify_sender = Account.objects.get(id=userId)
     notify_receiver = Account.objects.get(id=receiverId)
-    print('on dtabase')
     Notifications.objects.create(
             thread_name=room_group_name,notification_text=notify_text, message_sender=notify_sender, message_receiver=notify_receiver,notification_of=notification_of,post_notification=post)
     count=Notifications.objects.filter(message_receiver=receiverId,is_seen=False).count()
-    print(count,'noticount')
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         room_group_name,
@@ -33,16 +31,13 @@ def toNotify_Post_Consumer(userId, receiverId, notify_text,notification_of,post)
     )
     
 def toNotify_Network_Consumer(userId, receiverId, notify_text,notification_of,network):
-    print('its to notifyyyyyyyyyyy')
     room_name = f'collection_{receiverId}'
     room_group_name = f'notifications_{room_name}'
     notify_sender = Account.objects.get(id=userId)
     notify_receiver = Account.objects.get(id=receiverId)
-    print('on dtabase')
     Notifications.objects.create(
             thread_name=room_group_name,notification_text=notify_text, message_sender=notify_sender, message_receiver=notify_receiver,notification_of=notification_of,network_notification=network)
     count=Notifications.objects.filter(message_receiver=receiverId,is_seen=False).count()
-    print(count,'noticount')
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         room_group_name,
@@ -53,19 +48,14 @@ def toNotify_Network_Consumer(userId, receiverId, notify_text,notification_of,ne
     )
     
 def toDeleteNotify_Network_Consumer(userId, receiverId,network):
-    print('its to delnotifyyyyyyyyyyy')
     room_name = f'collection_{receiverId}'
     room_group_name = f'notifications_{room_name}'
     notify_sender = Account.objects.get(id=userId)
     notify_receiver = Account.objects.get(id=receiverId)
-    print('on dtabase')
     notify=Notifications.objects.filter(
             message_sender=notify_sender, message_receiver=notify_receiver,network_notification=network).first()
-    print(notify,'gggggggggg')
     notify.delete()
     count=Notifications.objects.filter(message_receiver=receiverId,is_seen=False).count()
-    print(count,'noticount')
-
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         room_group_name,
@@ -76,17 +66,14 @@ def toDeleteNotify_Network_Consumer(userId, receiverId,network):
     )
     
 def toDeleteNotify_Post_Consumer(userId, receiverId, notify_text,notification_of,post):
-    print('its to delnotifyyyyyyyyyyy')
     room_name = f'collection_{receiverId}'
     room_group_name = f'notifications_{room_name}'
     notify_sender = Account.objects.get(id=userId)
     notify_receiver = Account.objects.get(id=receiverId)
-    print('on dtabase')
     notify=Notifications.objects.filter(
             thread_name=room_group_name,notification_text=notify_text, message_sender=notify_sender, message_receiver=notify_receiver).first()
     notify.delete()
     count=Notifications.objects.filter(message_receiver=receiverId,is_seen=False).count()
-    print(count,'noticount')
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         room_group_name,
@@ -280,6 +267,8 @@ def send_connection(request):
 def accept_connection(request):
     user = request.user
     data = request.data
+    notification_text_delete=f"{user.username} sent you a connection request"
+
     notification_text=f"{user.username} accepted your  connection request"
 
     connection = Network.objects.get(id=data['network_id'])
@@ -293,7 +282,10 @@ def accept_connection(request):
     connected_user.followers += 1
     connected_user.save()
     async_to_sync(toNotify_Network_Consumer(user.id,connected_user.id, notification_text,'connection_accepted',connection))
-
+    notify=Notifications.objects.filter(
+            message_sender=user.id, message_receiver=connected_user.id,notification_text=notification_text_delete,network_notification=connection).first()
+    print(notify,'gggggggggg')
+    notify.delete()
     return Response(status=status.HTTP_200_OK)
 
 
